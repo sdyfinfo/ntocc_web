@@ -1,0 +1,274 @@
+label{
+    font-weight: normal;
+    font-size: 14px;
+}
+.main-div {
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0
+}
+.main-div .top-white {
+    width:1280px;
+    height:90px;
+    line-height:90px;
+    margin:auto
+}
+.main-div .top-white .left {
+    float:left;
+    margin-left:20px;
+    line-height:90px;
+    font-size:0
+}
+.main-div .top-white .left .logo {
+    vertical-align:middle;
+    width:80px;
+    height:50px;
+    display:inline-block
+}
+.main-div .top-white .left .title {
+    font-weight:700;
+    color:#333;
+    font-size:30px;
+    padding:0 10px;
+    line-height:30px;
+    display:inline-block;
+    vertical-align:middle;
+    border-right:1px solid #003cab
+}
+.main-div .top-white .left .wel {
+    color:#555;
+    font-size:24px;
+    display:inline-block;
+    vertical-align:middle;
+    line-height:24px;
+    padding:0 10px
+}
+.main-div .top-white .right {
+    float:right;
+    margin-right:20px
+}
+.main-div .form-area {
+    height:440px;
+    background-image:url(../images/login-bg.png);
+    background-position:center center;
+    background-repeat:no-repeat;
+    background-color:#030713
+}
+.main-div .form-area .form-inner {
+    position:relative;
+    width:1280px;
+    margin:0 auto
+}
+.main-div .form-area .login-r {
+    background-color:#fff;
+    width:340px;
+    border-radius:10px;
+    position:absolute;
+    top:10px;
+    right:106px;
+    padding-top:25px;
+    padding-bottom:20px
+}
+.main-div .form-area .login-r .form-item {
+    font-size:0;
+    padding-left:40px
+}
+.main-div .form-area .login-r .form-item label {
+    display:block;
+    color:#999;
+    line-height:35px
+}
+.main-div .form-area .login-r .form-item input[type=password],.main-div .form-area .login-r .form-item input[type=text] {
+    border:1px solid #eee;
+    padding:0 5px;
+    width:260px;
+    height:40px;
+    line-height:38px;
+    border-radius:3px
+}
+.main-div .form-area .login-r .form-item input[type=button] {
+    width:260px;
+    height:40px;
+    line-height:38px;
+    border-radius:3px;
+    background-color:#4660ad;
+    color:#fff
+}
+.main-div .form-area .login-r .form-item input[type=button]:disabled {
+    background-color:#666;
+    color:#fff;
+    cursor:not-allowed
+}
+.main-div .form-area .login-r .form-item .verImg {
+    width:80px;
+    height:35px;
+    vertical-align:top;
+    margin-left:5px
+}
+.main-div .form-area .login-r .form-item .rem {
+    margin-bottom:8px;
+    color:#999;
+    line-height:35px;
+    cursor:default
+}
+.main-div .form-area .login-r .form-item .rem:before {
+    display:inline-block;
+    content:"";
+    width:12px;
+    height:12px;
+    margin-right:3px;
+    box-sizing:border-box;
+    border:1px solid #4660ad;
+    position:relative;
+    top:1px;
+    border-radius:2px
+}
+.main-div .form-area .login-r .form-item .rem.checked:before {
+    display:inline-block;
+    border:none;
+    background-image:url(../images/checked.png)
+}
+.main-div .form-area .login-r .form-item img {
+    width:88px;
+    height:40px;
+    border-top-right-radius:3px;
+    border-bottom-right-radius:3px
+}
+.main-div .form-area .login-r .form-item .sendCode {
+    width:80px;
+    height:40px;
+    display:inline-block;
+    background:#4660ad;
+    color:#fff;
+    text-align:center;
+    line-height:40px;
+    margin-left:5px;
+    cursor:pointer
+}
+.main-div .footer {
+    width:100%;
+    height:60px;
+    position:fixed;
+    bottom:0;
+    left:0;
+    text-align:center;
+    font-size:14px;
+    line-height:60px;
+    background:#666;
+    color:#939393
+}
+.main-div .footerInfo {
+    width:1280px;
+    margin:36px auto
+}
+.main-div .footerInfo .item {
+    width:33%;
+    padding-left:15px;
+    padding-right:25px
+}
+.main-div .footerInfo .item .title .info {
+    padding-left:28px;
+    line-height:22px;
+    color:#4660ad;
+    font-weight:700;
+    font-size:14px;
+    background:url(../images/loginCompany.png) no-repeat;
+    margin-bottom:10px
+}
+.main-div .footerInfo .item .phone .info {
+    background-image:url(../images/loginPhone.png)
+}
+.main-div .footerInfo .item .address .info {
+    background-image:url(../images/loginAddress.png)
+}
+.main-div .footerInfo .item .infoBox {
+    line-height:30px;
+    font-size:14px;
+    color:#333;
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:3;
+    overflow:hidden
+}
+@media (max-width:1367px) {
+    .main-div .top-white {
+        height:64px;
+        line-height:64px
+    }
+    .main-div .top-white .left {
+        line-height:64px
+    }
+    .main-div .top-white .left .logo {
+        width:57px;
+        height:35.5px
+    }
+    .main-div .top-white .left .title {
+        font-size:22px
+    }
+    .main-div .top-white .left .wel {
+        font-size:18px
+    }
+    .main-div .tab .tab-item {
+        width:61px;
+        line-height:24px;
+        font-size:12px
+    }
+    .main-div .form-area {
+        height:345px
+    }
+    .main-div .form-area .login-r {
+        padding-top:18px
+    }
+    .main-div .form-area .login-r .form-item {
+        padding-left:28px
+    }
+    .main-div .form-area .login-r .form-item label {
+        line-height:25px
+    }
+    .main-div .form-area .login-r .form-item input[type=button],.main-div .form-area .login-r .form-item input[type=password],.main-div .form-area .login-r .form-item input[type=text] {
+        height:28px;
+        line-height:27px
+    }
+    .main-div .form-area .login-r .form-item .sendCode,.main-div .form-area .login-r .form-item .verImg {
+        width:80px;
+        height:28px
+    }
+    .main-div .form-area .login-r .form-item .sendCode {
+        line-height:28px
+    }
+    .main-div .footerInfo {
+        margin:25.6px auto
+    }
+    .main-div .footer {
+        height:42.6px;
+        line-height:42.6px
+    }
+}.tab {
+     font-size:0
+ }
+.tab .tab-item {
+    width:86px;
+    display:inline-block;
+    text-align:center;
+    line-height:32px;
+    color:#999;
+    border:1px solid #ddd;
+    border-right:none;
+    cursor:pointer
+}
+.tab .tab-item:first-child {
+    border-top-left-radius:3px;
+    border-bottom-left-radius:3px
+}
+.tab .tab-item:last-child {
+    border-top-right-radius:3px;
+    border-bottom-right-radius:3px;
+    border-right:1px solid #ddd
+}
+.tab .tab-item.active {
+    background-color:#4660ad;
+    color:#fff;
+    border-color:#4660ad
+}
