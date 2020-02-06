@@ -339,17 +339,17 @@ function getMenuDataEnd(flg, result, callback){
             var res = result.response;
             menuList = res.menulist;
             //做成新增或者删除菜单的树形结构
-            menuNameSelectBuild(menuList, $("#menutree"), false);
+            menuNameSelectBuild1(menuList, $("#menutree"), false);
             //给页面上的table赋值
             bootstrapTreeTableDataSet(res.totalcount, res.menulist, "menulist", "menuid", callback);
         }else{
-            menuNameSelectBuild([], $("#menutree"), false);
+            menuNameSelectBuild1([], $("#menutree"), false);
             //给页面上的table赋值
             bootstrapTreeTableDataSet(0, [], "menulist", "menuid", callback);
             alertDialog("菜单信息获取失败！");
         }
     }else{
-        menuNameSelectBuild([], $("#menutree"), false);
+        menuNameSelectBuild1([], $("#menutree"), false);
         //给页面上的table赋值
         bootstrapTreeTableDataSet(0, [], "menulist", "menuid", callback);
         alertDialog("菜单信息获取失败！");
@@ -515,7 +515,7 @@ var FunctionTable = function () {
                 }, {
                     title : '操作',
                     formatter: function (value, row, index) {
-                        if(!makeEdit(menu,loginSucc.functionlist,"#function_edit")) return '-';
+                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#function_edit")) return '-';
                         return '<a href="javascript:;" id="function_edit" data-id="' + row.functionid + '">编辑</a>'
                     }
                 }

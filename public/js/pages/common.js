@@ -424,6 +424,62 @@ function menuListTreeDataMake(menulist, data, flg){
     }
 }
 
+function menuNameSelectBuild1(menulist, id, flg){
+    var data = [];
+    menuListTreeDataMake1(menulist, data, flg);
+    if(id.jstree(true)) {
+        id.jstree(true).settings.core.data = data;
+        id.jstree(true).refresh();
+    }else{
+        id.jstree({
+            "core" : {
+                "themes" : {
+                    "responsive": false
+                },
+                "data": data
+            },
+
+            "types" : {
+                "default" : {
+                    "icon" : "fa fa-folder icon-state-warning icon-lg"
+                },
+                "file" : {
+                    "icon" : "fa fa-file icon-state-warning icon-lg"
+                }
+            },
+            "plugins": ["wholerow", "types"],
+            "checkbox": {
+                "keep_selected_style": false,//是否默认选中
+                "three_state": false//父子级别级联选择
+            }
+        });
+    }
+
+}
+
+function menuListTreeDataMake1(menulist, data, flg){
+    for(var i=0; i < menulist.length; i++){
+        var el = {
+            text: menulist[i].menuname,
+            id: menulist[i].menuid,
+            "state": {
+                "selected": false,
+                "opened": true
+            }
+        };
+        if(menulist[i].hasOwnProperty("menulist") && menulist[i].menulist != ""){
+            el.icon = "fa fa-folder icon-state-warning icon-lg";
+            el.children = [];
+            data.push(el);
+            menuListTreeDataMake1(menulist[i].menulist, el.children,true);
+        }else{
+            el.icon = "fa fa-file-text-o icon-state-warning icon-lg";
+            data.push(el);
+        }
+    }
+}
+
+
 function changeDataPower(data){
     for(var i in data){
         if(data[i]['check'] == true){
