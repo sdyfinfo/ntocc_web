@@ -23,7 +23,7 @@ var OrganTable = function () {
             showRefresh : false,//刷新按钮
             idField: 'organid',
             checkboxHeader: false,
-            height: 500,
+            height: 320,
             ajax :function (e) {
                 //因为需要做成机构选择的树形机构，所以一次获取所有数据，前端分页
                 var data = e.data;
@@ -75,7 +75,7 @@ var OrganTable = function () {
                 } , {
                     title : '操作',
                     formatter: function (value, row, index) {
-                        if(!makeEdit(menu,loginSucc.functionlist,"#op_edit")) return '-';
+                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")) return '-';
                         return '<a href="javascript:;" id="op_edit" organid="' + row.organid + '">编辑</a>'
                     }
                 }

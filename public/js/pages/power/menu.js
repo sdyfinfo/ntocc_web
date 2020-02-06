@@ -28,7 +28,7 @@ var MenuTable = function () {
             showRefresh : false,//刷新按钮
             idField: 'menuid',
             checkboxHeader: false,
-            height: 500,
+            height: 360,
             ajax :function (e) {
                 //因为需要做成菜单选择的树形菜单，所以一次获取所有数据，前端分页
                 var callback = e.success;
@@ -87,7 +87,7 @@ var MenuTable = function () {
                 }, {
                     title : '操作',
                     formatter: function (value, row, index) {
-                        if(!makeEdit(menu,loginSucc.functionlist,"#op_edit")) return '-';
+                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")) return '-';
                         return '<a href="javascript:;" id="op_edit" data-menu-id="' + row.menuid + '">编辑</a>'
                     }
                 }
