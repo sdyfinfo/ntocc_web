@@ -79,6 +79,9 @@ const COUNTEDIT = 54;
 const COUNTADD = 55;
 const COUNTDELETE = 49;
 const COUNTKJYPE = 50;
+const PROJECTADD = 51;
+const PROJECTEDIT = 52;
+const PROJECTDELETE = 53;
 
 
 const TableLanguage = {

@@ -1407,7 +1407,42 @@ router.post('/countyquery',function(req,res,next){
     )
 });
 
-
+router.post('/projectdataquery',function(req,res,next){
+    var draw = req.query.currentpage;
+    var response = {
+        retcode:"0000",
+        response:{
+            draw: draw,
+            totalcount:"6",
+            filtercount:"6",
+            projectlist:[
+                {
+                    "proid":"001",
+                    "proname":"项目1",
+                    "routelist":[
+                        {"routeid":"0001","route":"济南-潍坊"},
+                        {"routeid":"0002","route":"济南-青岛"}
+                    ],
+                    "create_time":"20200103",
+                    "update_time":"20200207"
+                },
+                {
+                    "proid":"002",
+                    "proname":"项目2",
+                    "routelist":[
+                        {"routeid":"0003","route":"济南-菏泽"},
+                        {"routeid":"0004","route":"济南-泰安"}
+                    ],
+                    "create_time":"20200203",
+                    "update_time":"20200210"
+                }
+            ]
+        }
+    };
+    res.send(
+        response
+    )
+});
 
 
 module.exports = router;

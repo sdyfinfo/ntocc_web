@@ -739,3 +739,90 @@ function regDelete(data){
         }
     });
 }
+
+//项目查询
+function projectDataGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {proname: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: "http://127.0.0.1:8007/ywt/web/front/projectdataquery",    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("projectDataGet:" + JSON.stringify(result));
+            getProjectDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("projectDataGet-error:" + JSON.stringify(errorMsg));
+            getProjectDataEnd(false, "", callback);
+        }
+    });
+}
+
+//项目新增
+function projectAdd(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: userRightUrl + "projectadd",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("projectAdd:" + JSON.stringify(result));
+            projectEditEnd(true, result, PROJECTADD);
+        },
+        error: function (errorMsg) {
+            console.info("projectAdd-error:" + JSON.stringify(errorMsg));
+            projectEditEnd(false, "", PROJECTADD);
+        }
+    });
+}
+
+//项目编辑
+function projectEdit(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: userRightUrl + "projectedit",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("projectEdit:" + JSON.stringify(result));
+            projectEditEnd(true, result, PROJECTEDIT);
+        },
+        error: function (errorMsg) {
+            console.info("projectEdit-error:" + JSON.stringify(errorMsg));
+            projectEditEnd(false, "", PROJECTEDIT);
+        }
+    });
+}
+
+//项目删除
+function userDelete(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: userRightUrl + "projectdelete",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("projectEdit:" + JSON.stringify(result));
+            projectEditEnd(true, result, PROJECTDELETE);
+        },
+        error: function (errorMsg) {
+            console.info("projectEdit-error:" + JSON.stringify(errorMsg));
+            projectEditEnd(false, "", PROJECTDELETE);
+        }
+    });
+}
