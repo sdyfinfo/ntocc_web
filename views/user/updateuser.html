@@ -35,74 +35,88 @@
         <div class="row">
             <div class="col-md-offset-1 col-md-10">
                 <form class="register-form form-horizontal" role="form">
-                    <div class="form-body">
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label class="col-md-4 control-label">登录名<span class="required"> * </span></label>
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" placeholder="登录名" name="userid" id="userid" readonly>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="col-md-4 control-label">姓名<span class="required"> * </span></label>
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" placeholder="姓名" name="username" id="username" readonly>
-                                </div>
+                    <div class="row" style="width:20%;float: left">
+                        <div class="form-group col-md-6" style="width: 100%">
+                            <label>用户头像</label>
+                            <div class="img-upload" style="width: 100%;">
+                                <label for="img_head">
+                                    <img style="width: 200px;height: 200px;border: 1px solid #cccccc;border-radius:50%">
+                                </label>
+                                <input type="file" accept="image/*" id="img_head" style="display: none">
+                                <input type="text" name="img_head" hidden="hidden">
                             </div>
                         </div>
+                    </div>
+                    <div class="form-body"  style="width:80%;float: left">
                         <div class="row">
-                            <div class="form-group col-md-6">
-                                <label class="col-md-4 control-label">出生日期</label>
-                                <div class="col-md-8">
-                                    <input class="form-control date-picker" readonly size="16" type="date" value="" name="birthday"  id="birthday" data-date-end-date="0d" />
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">登录名<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="登录名" name="userid" id="userid" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">姓名<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="姓名" name="username" id="username" readonly>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group col-md-6">
-                                <label class="col-md-4 control-label">性别<span class="required"> * </span></label>
-                                <div class="col-md-8">
-                                    <select class="form-control" name="sex">
-                                        <option value="">请选择</option>
-                                        <option value="0">男</option>
-                                        <option value="1">女</option>
-                                    </select>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">出生日期</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control date-picker" readonly size="16" type="date" value="" name="birthday"  id="birthday" data-date-end-date="0d" />
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">性别<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <select class="form-control" name="sex">
+                                            <option value="">请选择</option>
+                                            <option value="0">男</option>
+                                            <option value="1">女</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label class="col-md-4 control-label">所属机构<span class="required"> * </span></label>
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" placeholder="所属机构" name="organid" readonly
-                                           onfocus="$('#organtree').show()" id="organ"/>
-                                    <div id="organtree" class="tree-under-input" style="display: none; "></div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">所属机构<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="所属机构" name="organid" readonly
+                                               onfocus="$('#organtree').show()" id="organ"/>
+                                        <div id="organtree" class="tree-under-input" style="display: none; "></div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">电子邮箱</label>
+                                    <div class="col-md-8">
+                                        <input type="email" class="form-control" placeholder="电子邮箱" name="mail">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group col-md-6">
-                                <label class="col-md-4 control-label">电子邮箱</label>
-                                <div class="col-md-8">
-                                    <input type="email" class="form-control" placeholder="电子邮箱" name="mail">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">手机号码</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="手机号码" name="mobile">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">电话&emsp;</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="电话" name="phone">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label class="col-md-4 control-label">手机号码</label>
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" placeholder="手机号码" name="mobile">
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="col-md-4 control-label">电话&emsp;</label>
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" placeholder="电话" name="phone">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-12">
-                                <label class="col-md-2 control-label">备注</label>
-                                <div class="col-md-10" style="padding-left: 10px;width: 80%">
-                                    <textarea rows="5" class="form-control" placeholder="备注" name="remark"></textarea>
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label class="col-md-2 control-label">备注</label>
+                                    <div class="col-md-10" style="padding-left: 10px;width: 80%">
+                                        <textarea rows="5" class="form-control" placeholder="备注" name="remark"></textarea>
+                                    </div>
                                 </div>
                             </div>
                         </div>
