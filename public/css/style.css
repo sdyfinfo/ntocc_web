@@ -2413,7 +2413,7 @@ table.dataTable thead .sorting:after {
 
 .onoffswitch-switch {
     display: block;
-    width: 18px;
+    width: 30%;
     margin: 0px;
     background: #FFFFFF;
     border: 2px solid #1AB394;

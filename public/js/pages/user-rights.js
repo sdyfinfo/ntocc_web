@@ -787,7 +787,7 @@ function projectAdd(data){
 }
 
 //项目编辑
-function projectEdit(data){
+function projectEdit(data,type){
     App.blockUI({target:'#lay-out',boxed: true});
     $.ajax({
         type: "post",
@@ -798,17 +798,17 @@ function projectEdit(data){
         dataType: "json",        //返回数据形式为json
         success: function (result) {
             console.info("projectEdit:" + JSON.stringify(result));
-            projectEditEnd(true, result, PROJECTEDIT);
+            projectEditEnd(true, result, type);
         },
         error: function (errorMsg) {
             console.info("projectEdit-error:" + JSON.stringify(errorMsg));
-            projectEditEnd(false, "", PROJECTEDIT);
+            projectEditEnd(false, "", type);
         }
     });
 }
 
 //项目删除
-function userDelete(data){
+function projectDelete(data){
     App.blockUI({target:'#lay-out',boxed: true});
     $.ajax({
         type: "post",
@@ -824,6 +824,27 @@ function userDelete(data){
         error: function (errorMsg) {
             console.info("projectEdit-error:" + JSON.stringify(errorMsg));
             projectEditEnd(false, "", PROJECTDELETE);
+        }
+    });
+}
+
+//获取线路详细信息
+function routeDataGet(data){
+    App.blockUI({target: '#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: "http://127.0.0.1:8007/ywt/web/front/routequery",    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("routeDataGet:" + JSON.stringify(result));
+            getRouteDataEnd(true, result);
+        },
+        error: function (errorMsg) {
+            console.info("routeDataGet-error:" + JSON.stringify(errorMsg));
+            getRouteDataEnd(false, "");
         }
     });
 }

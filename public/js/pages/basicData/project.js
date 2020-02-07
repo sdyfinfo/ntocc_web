@@ -3,6 +3,7 @@
  */
 
 var projectList = [];
+var routeInfo = {};
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
@@ -50,6 +51,7 @@ var ProjectTable = function () {
                 { "data": "routelist" },
                 { "data": "create_time" },
                 { "data": "update_time" },
+                { "data": "status"},
                 { "data": null }
             ],
             columnDefs: [
@@ -85,6 +87,11 @@ var ProjectTable = function () {
                 },{
                     "targets": [7],
                     "render": function (data, type, row, meta) {
+                        return statusFormat(data);
+                    }
+                },{
+                    "targets": [8],
+                    "render": function (data, type, row, meta) {
                         var edit = '<a href="javascript:;" id="op_edit">编辑</a>';
 //                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
 //                            edit = '-';
@@ -96,11 +103,7 @@ var ProjectTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0)', nRow).attr('style', 'text-align: center;');
-                $('td:eq(1)', nRow).attr('style', 'text-align: center;');
-                $('td:eq(4)', nRow).attr('style', 'text-align: center;');
-                $('td:eq(5)', nRow).attr('style', 'text-align: center;');
-                $('td:eq(6)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(4),td:eq(5),td:eq(6),td:eq(7)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );
@@ -144,7 +147,7 @@ function formatRoute(data){
     if(data.length != 0){
         var content = "";
         for(var i = 0; i<data.length;i++){
-            content += "<div data-routeid='"+data[i].routeid+"'><a href='javascript:;' id='route_detail'>"+data[i].route+"</a></div>";
+            content += "<div><a href='javascript:;' id='route_detail' data-routeid='"+data[i].routeid+"'>"+data[i].route+"</a></div>";
         }
         var main =
             "<div style='width: 100px;'>"+
@@ -170,6 +173,65 @@ $("#pro_table").on('click','#routeOpen',function(){
         $(this).find("i").addClass('icon-jianhao');
         $(this).find("i").html("点击收回");
     }
+});
+
+//项目状态显示
+function statusFormat(data){
+    var content;
+    switch (data){
+        case "0":  //启用
+            content =
+                "<div class='switch'>"+
+                    "<div class='onoffswitch'>"+
+                    "<input type='checkbox' checked='' class='onoffswitch-checkbox' id='statusChange'>"+
+                        "<label class='onoffswitch-label' data-status='1' for='statusChange'>"+
+                            "<span class='inner on_inner' style='float: left'>启用</span>"+
+                            "<span class='switch' style='float: right'></span>"+
+                        "</label>"+
+                    "</div>"+
+                "</div>";
+            break;
+        case "1":  //启用
+            content =
+                "<div class='switch'>"+
+                    "<div class='onoffswitch'>"+
+                        "<input type='checkbox' checked='' class='onoffswitch-checkbox' id='statusChange'>"+
+                        "<label class='onoffswitch-label' style='border: 2px solid #ff0000;' data-status='0' for='statusChange'>"+
+                            "<span class='inner off_inner' style='float: right'>停用</span>"+
+                            "<span class='switch' style='float: left'></span>"+
+                        "</label>"+
+                    "</div>"+
+                "</div>";
+            break;
+    }
+    return content;
+}
+
+//项目状态更改
+var StatusChange = function(){
+    var project = {};
+    $("#pro_table").on('click','#statusChange',function(){
+        //获取id和status
+        var row = $(this).parents('tr')[0];
+        var proid = $("#pro_table").dataTable().fnGetData(row).proid;
+        project.proid = proid;
+        project.status = $(this).siblings('label').data('status');
+        //先提示
+        confirmDialog("您确定要更改该项目状态吗？", StatusChange.changeStatus);
+    });
+    return{
+        changeStatus: function(){
+            projectEdit(project,PROJECTSTATUS);
+        }
+    }
+}();
+
+//查看线路详细信息
+$("#pro_table").on('click','#route_detail',function(){
+    //获取线路id
+    var data = {};
+    data.routeid = $(this).data("routeid");
+    routeDataGet(data);
 });
 
 //项目表操作
@@ -230,13 +292,7 @@ var ProjectEdit = function() {
             if($("input[name=edittype]").val() == PROJECTADD){
                 projectAdd(project);
             }else {
-                var data;
-                for (var i = 0; i < projectList.length; i++) {
-                    if (project.proid == projectList[i].proid) {
-                        data = projectList[i];
-                    }
-                }
-                projectEdit(project);
+                projectEdit(project,PROJECTEDIT);
             }
         });
         //新增项目
@@ -294,9 +350,10 @@ var ProjectDelete = function() {
         deletePro: function(){
             var prolist = {proidlist:[]};
             $(".checkboxes:checked").parents("td").each(function () {
-                prolist.proidlist.push($(this).siblings().eq(1).text());
+                var row = $(this).parents('tr')[0];
+                prolist.proidlist.push($("#pro_table").dataTable().fnGetData(row).proid);
             });
-            userDelete(prolist);
+            projectDelete(prolist);
         }
     }
 }();
@@ -335,6 +392,9 @@ function projectEditEnd(flg, result, type){
         case PROJECTDELETE:
             text = "删除";
             break;
+        case PROJECTSTATUS:
+            text = "状态设置";
+            break;
     }
     if(flg){
         if(result && result.retcode != SUCCESS){
@@ -346,7 +406,40 @@ function projectEditEnd(flg, result, type){
             $('#edit_pro').modal('hide');
         }
     }
-    if(alert == "") alert = text + "项目" + res + "！";
+    if(alert == ""){
+        if(type == PROJECTSTATUS){
+            alert ="项目"+ text + res + "！";
+        }else{
+            alert = text + "项目" + res + "！";
+        }
+    }
     App.unblockUI('#lay-out');
     alertDialog(alert);
+}
+
+//线路信息获取返回结果
+function getRouteDataEnd(flg,result){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+            var res = result.response;
+            routeInfo = res.list[0];
+            //显示路线信息
+            routeInfoDisplay();
+        }else{
+            alertDialog("线路信息获取失败！");
+        }
+    }else{
+        alertDialog("线路信息获取失败！");
+    }
+}
+
+//显示路线信息
+function routeInfoDisplay(){
+    var exclude = [];
+    var options = { jsonValue: routeInfo, exclude:exclude,isDebug: false};
+    $(".route-form").initForm(options);
+    //全部为只读
+    $("#edit_route").find('.form-control').attr("disabled","disabled");
+    $('#edit_route').modal('show');
 }

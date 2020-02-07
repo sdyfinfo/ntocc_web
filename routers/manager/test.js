@@ -1423,6 +1423,7 @@ router.post('/projectdataquery',function(req,res,next){
                         {"routeid":"0001","route":"济南-潍坊"},
                         {"routeid":"0002","route":"济南-青岛"}
                     ],
+                    "status":"0",
                     "create_time":"20200103",
                     "update_time":"20200207"
                 },
@@ -1433,6 +1434,7 @@ router.post('/projectdataquery',function(req,res,next){
                         {"routeid":"0003","route":"济南-菏泽"},
                         {"routeid":"0004","route":"济南-泰安"}
                     ],
+                    "status":"1",
                     "create_time":"20200203",
                     "update_time":"20200210"
                 }
@@ -1444,5 +1446,47 @@ router.post('/projectdataquery',function(req,res,next){
     )
 });
 
+router.post('/routequery',function(req,res,next){
+    var draw = req.query.currentpage;
+    var response = {
+        "response": {
+            "totalcount": "1",
+            "draw": "1",
+            "list": [
+                {
+                    "loading_address": "花园路23号",
+                    "consignee": "小红",
+                    "addTime": "20200102084425",
+                    "consigneeTel": "15288877732",
+                    "lid": "70c2cabf02af425da02d4d12447cfdb1",
+                    "univalence": "10000",
+                    "goods": "煤炭",
+                    "updateTime": "20200102084603",
+                    "project_name": "测试",
+                    "unloading_place": "山东省威海市文登区",
+                    "operator": "admin",
+                    "number": "10",
+                    "unit": "吨",
+                    "project_id": "6c747281f9dc46c2b2475bffd6a76a85",
+                    "consignorTel": "15288877732",
+                    "phone": "15288877732",
+                    "loading_place": "山东省济南市平阴县",
+                    "unloading_address": "文登路12号",
+                    "organid": "6c747281f9dc46c2b2475bffd6a75b89",
+                    "linename": "平阴→文登",
+                    "goods_type": "煤炭及制品",
+                    "state": "0",
+                    "consignor": "小明",
+                    "contacts": "线路人"
+                }
+            ]
+        },
+        "retmsg": "调用成功",
+        "retcode": "0000"
+    };
+    res.send(
+        response
+    )
+});
 
 module.exports = router;
