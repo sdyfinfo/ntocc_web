@@ -154,7 +154,7 @@ var UserEdit = function() {
             return this.optional(element) || (tel.test(value));
         }, "请正确填写您的固定电话");
         var exclude = ["organid"];
-        var ser = userList[0];
+        var ser = userList;
         var options = {jsonValue : ser, exclude: exclude, isDebug:false};
         $(".register-form").initForm(options);
         //出生日期框
@@ -184,7 +184,7 @@ $('#register-btn').click(function() {
         user.birthday = user.birthday.replace(/-/g, '');
         user.organid = ($('#organtree').jstree(true).get_selected(true))[0].id;
         var rolelist = [];
-        rolelist.push(userList[0].roleid);
+        rolelist.push(userList.roleid);
         user.rolelist = rolelist;
     }
     userEdit(user);
@@ -240,12 +240,11 @@ var PasswordRest = function() {
     }
 }();
 
-function getUserDataEnd(flg, result, callback){
+function getUserInformationEnd(flg, result, callback){
     App.unblockUI('#lay-out');
     if(flg){
         if (result && result.retcode == SUCCESS) {
-            var res = result.response;
-            userList = res.userlist;
+             userList = result.response;
             //新增编辑用户控件初始化
             UserEdit.init();
 
@@ -352,5 +351,5 @@ function changeButtonStatus(){
 
 function slefDataGet(){
     var date = { userid : loginSucc.userid };
-    userDataGet(date);
+    userInformationGet(date);
 }

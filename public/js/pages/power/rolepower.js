@@ -26,7 +26,7 @@ var RoleTable = function () {
             showRefresh : false,//刷新按钮
             idField: 'roleid',
             checkboxHeader: false,
-            height: 500,
+            height: 350,
             singleSelect:true,//单选
             ajax :function (e) {
                 //因为需要做成菜单选择的树形菜单，所以一次获取所有数据，前端分页
@@ -45,7 +45,7 @@ var RoleTable = function () {
                 {
                     field: 'xuhao',
                     width: 36,
-                    title : '',
+                    title : '序号',
                     formatter: function (value, row, index) {
                         return index + 1;
                     }
@@ -111,7 +111,7 @@ var MenuTable = function () {
             showRefresh : false,//刷新按钮
             idField: 'menuid',
             checkboxHeader: false,
-            height:500,
+            height:350,
             ajax :function (e) {
                 //因为需要做成菜单选择的树形菜单，所以一次获取所有数据，前端分页
                 var callback = e.success;
@@ -127,7 +127,7 @@ var MenuTable = function () {
                 {
                     field: 'xuhao',
                     width: 36,
-                    title : '',
+                    title : '序号',
                     formatter: function (value, row, index) {
                         return index + 1;
                     }
@@ -220,7 +220,7 @@ var FunctionTable = function () {
             showRefresh : false,//刷新按钮
             idField: 'functionid',
             checkboxHeader: false,//取消全部选中
-            //height: 500,
+            height: 300,
             ajax :function (e) {
                 //因为需要做成菜单选择的树形菜单，所以一次获取所有数据，前端分页
                 var callback = e.success;
@@ -254,7 +254,7 @@ var FunctionTable = function () {
                 {
                     field: 'xuhao',
                     width: 36,
-                    title : '',
+                    title : '序号',
                     formatter: function (value, row, index) {
                         return index + 1;
                     }

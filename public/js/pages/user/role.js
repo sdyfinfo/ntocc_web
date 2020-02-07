@@ -23,7 +23,7 @@ var RoleTable = function () {
             "destroy": true,
             "pageLength": PageLength,
             "serverSide": true,
-            "pagingType": "bootstrap_extended",
+            //"pagingType": "bootstrap_extended",
             "processing": true,
             "searching": false,
             "ordering": false,
@@ -73,7 +73,7 @@ var RoleTable = function () {
                 },{
                     "targets":[8],
                     "render": function(data, type, row, meta) {
-                        if(!makeEdit(menu,loginSucc.functionlist,"#op_edit")) return '-';
+                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")) return '-';
                         return '<a href="javascript:;" id="op_edit">编辑</a>'
                     }
                 }
