@@ -159,6 +159,8 @@ var UserEdit = function() {
         $(".register-form").initForm(options);
         //出生日期框
         $("input[name=birthday]").datepicker("setDate",dateFormat(ser.birthday, "-"));
+        //头像显示
+        $(".img-upload").find("img").attr("src",userList.img_head || "/public/images/head_img.png");
         //清空机构输入框
         clearSelectCheck($("#organtree"));
         //机构框赋值
@@ -166,6 +168,8 @@ var UserEdit = function() {
             $('#organtree').jstree('select_node',ser.organid);
         });
         $('#organtree').jstree(true).select_node(ser.organid);
+        //机构只读
+        $('#organ').attr("disabled",true);
         //用户代码不可以输入
         $(".register-form").find("input[name=userid]").attr("readonly", true);
     };
@@ -186,8 +190,15 @@ $('#register-btn').click(function() {
         var rolelist = [];
         rolelist.push(userList.roleid);
         user.rolelist = rolelist;
+        var formData = new FormData();
+        formData.append("img_head",null);
+        if($("#img_head").get(0).files[0]){
+            formData.set("img_head",$("#img_head").get(0).files[0]);
+        }
+        var data = sendMessageEdit(DEFAULT, user);
+        formData.append("body",new Blob([data],{type:"application/json"}));
+        userEdit(formData);
     }
-    userEdit(user);
 });
 
 function equar(a,b){
@@ -348,6 +359,18 @@ function changeButtonStatus(){
     }
 }
 
+
+//头像上传后显示
+$("input[type=file]").change(function(){
+    var img = $(".img-upload").find("img");
+    if(this.files[0]){
+        var path = window.URL.createObjectURL(this.files[0]);
+        $(this).siblings("input[type=text]").val(path);
+        img.attr('src',path);
+    }else{
+        img.attr('src',"../../../public/manager/assets/pages/img/head_img.png");
+    }
+});
 
 function slefDataGet(){
     var date = { userid : loginSucc.userid };
