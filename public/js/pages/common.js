@@ -86,7 +86,7 @@ function sexFormat(sexcode){
 }
 
 function dateTimeFormat(datetime){
-    if(datetime.length < 14) return datetime;
+    if(datetime == "" || datetime.length < 14) return datetime;
     return datetime.substr(0, 4) + "/" + datetime.substr(4, 2) + "/" +
         datetime.substr(6, 2) + " " + datetime.substr(8, 2) + ":" +
         datetime.substr(10, 2) + ":" + datetime.substr(12, 2);
@@ -94,7 +94,7 @@ function dateTimeFormat(datetime){
 
 
 function conferenceDateFormat(dateRange){
-    if(dateRange.length < 8) return dateRange;
+    if(datetime == "" || dateRange.length < 8) return dateRange;
     return dateRange.substr(0, 4) + "/" + dateRange.substr(4, 2) + "/" +
         dateRange.substr(6, 2);
 }

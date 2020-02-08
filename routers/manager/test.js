@@ -1489,4 +1489,46 @@ router.post('/routequery',function(req,res,next){
     )
 });
 
+router.post('/vehicedataquery',function(req,res,next){
+    var draw = req.query.currentpage;
+    var response = {
+        "response": {
+            "totalcount": "1",
+            "draw": "1",
+            "vehicleList": [
+                {
+                    "vehid": "001",
+                    "platenumber": "鲁GNA637",
+                    "platecolor": "01",
+                    "vehicletype": "43",
+                    "conductor": "5",
+                    "load": "3",
+                    "proprietor": "XXX",
+                    "transport_number": "20200102084603",
+                    "licensekey": "11111111",
+                    "license_img": "",
+                    "addtime": "20200103124540",
+                    "updatetime": "20200105031245",
+                    "vin": "12345",
+                    "energy_type": "01",
+                    "office": "山东省潍坊市",
+                    "issue_date": "20190516",
+                    "nature": "货运",
+                    "regdate": "20150214",
+                    "total_mass": "10",
+                    "transport_img": "",
+                    "driving_img": "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1151834211,158545213&fm=26&gp=0.jpg",
+                    "insurance_img": "",
+                    "group_photo": ""
+                }
+            ]
+        },
+        "retmsg": "调用成功",
+        "retcode": "0000"
+    };
+    res.send(
+        response
+    )
+});
+
 module.exports = router;

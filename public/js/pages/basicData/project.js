@@ -35,6 +35,7 @@ var ProjectTable = function () {
             "ajax":function (data, callback, settings) {
                 var formData = $(".inquiry-form").getFormData();
                 var da = {
+                    userid:loginSucc.userid,
                     proname: formData.projectname,
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
@@ -48,10 +49,10 @@ var ProjectTable = function () {
                 { "data": null},
                 { "data": "proid",visible: false },
                 { "data": "proname" },
-                { "data": "routelist" },
-                { "data": "create_time" },
-                { "data": "update_time" },
-                { "data": "status"},
+                { "data": "linelist" },
+                { "data": "addtime" },
+                { "data": "updatetime" },
+                { "data": "state"},
                 { "data": null }
             ],
             columnDefs: [
@@ -77,12 +78,12 @@ var ProjectTable = function () {
                 {
                     "targets": [5],
                     "render": function (data, type, row, meta) {
-                        return conferenceDateFormat(data);
+                        return dateTimeFormat(data);
                     }
                 },{
                     "targets": [6],
                     "render": function (data, type, row, meta) {
-                        return conferenceDateFormat(data);
+                        return dateTimeFormat(data);
                     }
                 },{
                     "targets": [7],
@@ -135,9 +136,8 @@ var ProjectTable = function () {
 
 }();
 
-
+//项目查询
 $("#pro_inquiry").on("click", function(){
-    //项目查询
     ProjectTable.init();
 });
 
@@ -147,7 +147,7 @@ function formatRoute(data){
     if(data.length != 0){
         var content = "";
         for(var i = 0; i<data.length;i++){
-            content += "<div><a href='javascript:;' id='route_detail' data-routeid='"+data[i].routeid+"'>"+data[i].route+"</a></div>";
+            content += "<div><a href='javascript:;' id='route_detail' data-routeid='"+data[i].lineid+"'>"+data[i].line+"</a></div>";
         }
         var main =
             "<div style='width: 100px;'>"+
@@ -183,8 +183,8 @@ function statusFormat(data){
             content =
                 "<div class='switch'>"+
                     "<div class='onoffswitch'>"+
-                    "<input type='checkbox' checked='' class='onoffswitch-checkbox' id='statusChange'>"+
-                        "<label class='onoffswitch-label' data-status='1' for='statusChange'>"+
+                    "<input type='checkbox' checked='' class='onoffswitch-checkbox'>"+
+                        "<label class='onoffswitch-label' data-status='1' id='statusChange'>"+
                             "<span class='inner on_inner' style='float: left'>启用</span>"+
                             "<span class='switch' style='float: right'></span>"+
                         "</label>"+
@@ -195,8 +195,8 @@ function statusFormat(data){
             content =
                 "<div class='switch'>"+
                     "<div class='onoffswitch'>"+
-                        "<input type='checkbox' checked='' class='onoffswitch-checkbox' id='statusChange'>"+
-                        "<label class='onoffswitch-label' style='border: 2px solid #ff0000;' data-status='0' for='statusChange'>"+
+                        "<input type='checkbox' checked='' class='onoffswitch-checkbox'>"+
+                        "<label class='onoffswitch-label' style='border: 2px solid #ff0000;' data-status='0' id='statusChange'>"+
                             "<span class='inner off_inner' style='float: right'>停用</span>"+
                             "<span class='switch' style='float: left'></span>"+
                         "</label>"+
@@ -215,13 +215,15 @@ var StatusChange = function(){
         var row = $(this).parents('tr')[0];
         var proid = $("#pro_table").dataTable().fnGetData(row).proid;
         project.proid = proid;
-        project.status = $(this).siblings('label').data('status');
+        project.proname = $("#pro_table").dataTable().fnGetData(row).proname;
+        project.state = $(this).data('status');
+        project.userid = loginSucc.userid;
         //先提示
         confirmDialog("您确定要更改该项目状态吗？", StatusChange.changeStatus);
     });
     return{
         changeStatus: function(){
-            projectEdit(project,PROJECTSTATUS);
+            projectState(project);
         }
     }
 }();
@@ -288,6 +290,7 @@ var ProjectEdit = function() {
             btnDisable($('#register-btn'));
             if ($('.register-form').validate().form()) {
                 var project = $('.register-form').getFormData();
+                project.userid = loginSucc.userid;
             }
             if($("input[name=edittype]").val() == PROJECTADD){
                 projectAdd(project);
