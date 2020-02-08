@@ -848,3 +848,28 @@ function routeDataGet(data){
         }
     });
 }
+
+
+//线路查询
+function lineDataGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {projectname: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: "linequery",    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("lineDataGet:" + JSON.stringify(result));
+            getlineDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("lineDataGet-error:" + JSON.stringify(errorMsg));
+            getlineDataEnd(false, "", callback);
+        }
+    });
+}
