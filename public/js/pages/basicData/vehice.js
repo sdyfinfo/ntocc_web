@@ -3,6 +3,7 @@
  */
 
 var vehicleList = [];
+var imgInit = "/public/img/img_upload.png";
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
@@ -32,6 +33,7 @@ function vehiceDataInit(){
     }
 }
 
+//时间控件初始化
 var ComponentsDateTimePickers = function () {
 
     var handleDatePickers = function () {
@@ -137,6 +139,13 @@ var VehiceTable = function () {
                     "targets": [5],
                     "render": function (data, type, row, meta) {
                         return dateTimeFormat(data);
+                    }
+                },
+                {
+                    "targets": [8],
+                    "render": function (data, type, row, meta) {
+                        //车长
+                        return conductorDisplay(data);
                     }
                 },{
                     "targets": [13],
@@ -288,6 +297,7 @@ var VehiceAdd = function() {
                 .removeAttr("selected");
             //清空文件
             clearFile();
+            $(".modal-footer").show();
             $('#add_vehice').modal('show');
         });
     };
@@ -313,7 +323,58 @@ var VehiceEdit = function() {
                 platecolor: {
                     required: true
                 },
+                conductor:{
+                    required: true
+                },
+                vehicletype:{
+                    required: true
+                },
+                vin:{
+                    required: true
+                },
+                energy_type:{
+                    required: true
+                },
+                proprietor:{
+                    required: true
+                },
+                nature:{
+                    required: true
+                },
+                office:{
+                    required: true
+                },
+                regdate:{
+                    required: true
+                },
+                issue_date:{
+                    required: true
+                },
+                load:{
+                    required: true
+                },
+                total_mass:{
+                    required: true
+                },
+                transport_number:{
+                    required: true
+                },
+                licensekey:{
+                    required: true
+                },
                 driving_img: {
+                    required: true
+                },
+                transport_img:{
+                    required: true
+                },
+                license_img:{
+                    required: true
+                },
+                insurance_img:{
+                    required: true
+                },
+                group_photo:{
                     required: true
                 }
             },
@@ -325,8 +386,59 @@ var VehiceEdit = function() {
                 platecolor: {
                     required: "车牌颜色必须选择"
                 },
+                conductor:{
+                    required: "车长必须选择"
+                },
+                vehicletype:{
+                    required: "车型必须选择"
+                },
+                vin:{
+                    required: "车架号必须输入"
+                },
+                energy_type:{
+                    required: "能源类型必须输入"
+                },
+                proprietor:{
+                    required: "车辆所有人必须输入"
+                },
+                nature:{
+                    required: "使用性质必须输入"
+                },
+                office:{
+                    required: "发证机关必须输入"
+                },
+                regdate:{
+                    required: "注册日期不能为空"
+                },
+                issue_date:{
+                    required: "发证日期不能为空"
+                },
+                load:{
+                    required: "核定载质量必须输入"
+                },
+                total_mass:{
+                    required: "总质量必须输入"
+                },
+                transport_number:{
+                    required: "道路运输证号必须输入"
+                },
+                licensekey:{
+                    required: "道路经营许可证号必须输入"
+                },
                 driving_img: {
                     required: "行驶证必须上传"
+                },
+                transport_img:{
+                    required: "道路运输证必须上传"
+                },
+                license_img:{
+                    required: "道路运输经营许可证必须上传"
+                },
+                insurance_img:{
+                    required: "保险卡必须上传"
+                },
+                group_photo:{
+                    required: "人车合影必须上传"
                 }
             },
 
@@ -359,29 +471,96 @@ var VehiceEdit = function() {
             }
         });
         //点击确定按钮
-        $('#add-btn').click(function() {
-            btnDisable($('#add-btn'));
-            if ($('.add-form').validate().form()) {
-                var vehice = $('.add-form').getFormData();
+        $('#edit-btn').click(function() {
+            btnDisable($('#edit-btn'));
+            if ($('.edit-form').validate().form()) {
+                var vehice = $('.edit-form').getFormData();
                 var formData = new FormData();
                 var data = sendMessageEdit(DEFAULT,vehice);
                 formData.append("body",new Blob([data],{type:"application/json"}));
-                formData.set("driving_img",$("#driving_img").get(0).files[0]);
-                vehiceAdd(formData);
+                var list = ["driving_img","transport_img","license_img","insurance_img","group_photo"];
+                for(var i in list){
+                    formData.append(list[i],null);
+                }
+                //判断是否上传文件
+                var photoList = [$("#driving_edit").get(0).files[0],$("#transport_img").get(0).files[0],$("#license_img").get(0).files[0],
+                    $("#insurance_img").get(0).files[0],$("#group_photo").get(0).files[0]];
+                for(var i in photoList){
+                    if(photoList[i]){
+                        formData.set(list[i],photoList[i]);
+                    }
+                }
+                vehiceEdit(formData);
             }
         });
-        //编辑车辆
+        //查看车辆信息
+        $('#vehice_table').on('click', '#vehice_detail', function (e) {
+            e.preventDefault();
+            //清除校验错误信息
+            validator.resetForm();
+            $(".edit-form").find(".has-error").removeClass("has-error");
+            $(".modal-title").text("查看车辆");
+            var exclude = [];
+            var row = $(this).parents('tr')[0];
+            var vehid = $("#vehice_table").dataTable().fnGetData(row).vehid;
+            var vehice = new Object();
+            for(var i=0; i < vehicleList.length; i++){
+                if(vehid == vehicleList[i].vehid){
+                    vehice = vehicleList[i];
+                }
+            }
+            var options = { jsonValue: vehice, exclude:exclude,isDebug: false};
+            $(".edit-form").initForm(options);
+            //日期框赋值
+            $("input[name=regdate]").datepicker("setDate",dateFormat(vehice.regdate, "-"));
+            $("input[name=issue_date]").datepicker("setDate",dateFormat(vehice.issue_date, "-"));
+            //清空文件
+            clearFile();
+            //显示图片
+            $("#driving_edit").siblings("label").find("img").attr("src",vehice.driving_img || imgInit);
+            $("#transport_img").siblings("label").find("img").attr("src",vehice.transport_img || imgInit);
+            $("#license_img").siblings("label").find("img").attr("src",vehice.license_img || imgInit);
+            $("#insurance_img").siblings("label").find("img").attr("src",vehice.insurance_img || imgInit);
+            $("#group_photo").siblings("label").find("img").attr("src",vehice.group_photo || imgInit);
+            //是否允许上传图片
+            fileUploadAllowed(0);
+            $(".modal-footer").hide();
+            $('#edit_vehice').modal('show');
+        });
+        //编辑车辆信息
         $('#vehice_table').on('click', '#op_edit', function (e) {
             e.preventDefault();
             //清除校验错误信息
             validator.resetForm();
             $(".edit-form").find(".has-error").removeClass("has-error");
             $(".modal-title").text("编辑车辆");
-            $(":input",".edit-form").not(":button,:reset,:submit,:radio,#evaluationneed").val("")
-                .removeAttr("checked")
-                .removeAttr("selected");
+            var exclude = [];
+            var row = $(this).parents('tr')[0];
+            var vehid = $("#vehice_table").dataTable().fnGetData(row).vehid;
+            var vehice = new Object();
+            for(var i=0; i < vehicleList.length; i++){
+                if(vehid == vehicleList[i].vehid){
+                    vehice = vehicleList[i];
+                }
+            }
+            var options = { jsonValue: vehice, exclude:exclude,isDebug: false};
+            $(".edit-form").initForm(options);
+            //日期框赋值
+            $("input[name=regdate]").datepicker("setDate",dateFormat(vehice.regdate, "-"));
+            $("input[name=issue_date]").datepicker("setDate",dateFormat(vehice.issue_date, "-"));
             //清空文件
             clearFile();
+            //显示图片
+            $("#driving_edit").siblings("label").find("img").attr("src",vehice.driving_img || imgInit);
+            $("#transport_img").siblings("label").find("img").attr("src",vehice.transport_img || imgInit);
+            $("#license_img").siblings("label").find("img").attr("src",vehice.license_img || imgInit);
+            $("#insurance_img").siblings("label").find("img").attr("src",vehice.insurance_img || imgInit);
+            $("#group_photo").siblings("label").find("img").attr("src",vehice.group_photo || imgInit);
+            //是否允许上传图片
+            fileUploadAllowed(1);
+            //车牌号只读
+            $("#platenumber_edit").attr("disabled",true);
+            $(".modal-footer").show();
             $('#edit_vehice').modal('show');
         });
     };
@@ -412,6 +591,89 @@ $("input[type=file]").change(function(){
         img.attr('src','/public/img/img_upload.png');
     }
 });
+
+//车辆删除
+var VehiceDelete = function() {
+    $('#op_del').click(function() {
+        var len = $(".checkboxes:checked").length;
+        if(len < 1){
+            alertDialog("至少选中一项！");
+        }else{
+            confirmDialog("数据删除后将不可恢复，您确定要删除吗？", VehiceDelete.deletePro)
+        }
+    });
+    return{
+        deletePro: function(){
+            var vehice = {vehidlist:[]};
+            $(".checkboxes:checked").parents("td").each(function () {
+                var row = $(this).parents('tr')[0];
+                vehice.vehidlist.push($("#vehice_table").dataTable().fnGetData(row).vehid);
+            });
+            vehiceDelete(vehice);
+        }
+    }
+}();
+
+//导入车辆
+$("#vehice_import").on("click",function(){
+    $(".vehice_upload").find("input[type=file]").value = "";
+    $("#upload_name").hide();
+    $("#vehice_upload").modal('show');
+});
+
+//车辆文件点击上传
+$("#vehice_file").change(function(){
+    var img = $(this).siblings("label").find("img");
+    if(this.files[0]){
+        //显示上传文件名
+        $("#upload_name").show();
+        $("#upload_name").html("文件名："+this.files[0].name+"   文件大小："+((Number(this.files[0].size))/1024).toFixed(1)+"KB");
+        var formData = new FormData();
+        formData.append("file",this.files[0]);
+        var userid = {
+            "userid":loginSucc.userid
+        }
+        var data = sendMessageEdit(DEFAULT,userid);
+        formData.append("body",new Blob([data],{type:"application/json"}));
+        vehiceUpload(formData);
+    }else{
+        $("#upload_name").html("");
+    }
+});
+
+//车辆文件拖拽上传
+function allowDrop(ev) {
+    //阻止浏览器默认打开文件的操作
+    ev.preventDefault();
+};
+function drop(ev) {
+    ev.preventDefault();
+    var files = ev.dataTransfer.files;
+    var len = files.length;
+    if(len!=0){
+        var filesName=files[0].name;
+        var extStart=filesName.lastIndexOf(".");
+        var ext=filesName.substring(extStart,filesName.length).toUpperCase();
+        if(ext ==".xlsx" || ext ==".XLSX"){ //判断是否是需要的问件类型
+            //显示上传文件名
+            $("#upload_name").show();
+            $("#upload_name").html("文件名："+filesName+"   文件大小："+((Number(files[0].size))/1024).toFixed(1)+"KB");
+            var formData = new FormData();
+            formData.append("file",files[0]);
+            var userid = {
+                "userid":loginSucc.userid
+            }
+            var data = sendMessageEdit(DEFAULT,userid);
+            formData.append("body",new Blob([data],{type:"application/json"}));
+            vehiceUpload(formData);
+        }else{
+            alertDialog("请选择.xlsx类型的文件上传！");
+            return false;
+        }
+    }else{
+        $("#upload_name").html("");
+    }
+};
 
 //车辆查询结果返回
 function getVehiceDataEnd(flg, result, callback){
@@ -462,20 +724,34 @@ function vehiceTypeDisplay(data){
     return type;
 }
 
+//显示车长
+function conductorDisplay(data){
+    var conductor = "";
+    for(var i = 0; i < VehiceConductor.length; i++){
+        if(data == VehiceConductor[i].value){
+            conductor = VehiceConductor[i].name;
+        }
+    }
+    return conductor;
+}
+
 //车辆信息操作返回结果
 function vehiceEditEnd(flg, result, type){
     var res = "失败";
     var text = "";
     var alert = "";
     switch (type){
-        case PROJECTADD:
+        case VEHICEADD:
             text = "新增";
             break;
-        case PROJECTEDIT:
+        case VEHICEEDIT:
             text = "编辑";
             break;
-        case PROJECTDELETE:
+        case VEHICEDELETE:
             text = "删除";
+            break;
+        case VEHICEUPLOAD:
+            text = "导入";
             break;
     }
     if(flg){
@@ -486,6 +762,8 @@ function vehiceEditEnd(flg, result, type){
             res = "成功";
             VehiceTable.init();
             $('#add_vehice').modal('hide');
+            $('#edit_vehice').modal('hide');
+            $('#vehice_upload').modal('hide');
         }
     }
     if(alert == "") alert = text + "车辆信息" + res + "！";
@@ -496,5 +774,24 @@ function vehiceEditEnd(flg, result, type){
 //清空文件
 function clearFile(){
     $(".add-form").find("input[type=file]").value = "";
-    $("#driving_img").siblings("label").find("img").attr('src','/public/img/img_upload.png');
+    $("#driving_img").siblings("label").find("img").attr('src',imgInit);
+    $(".edit-form").find("input[type=file]").value = "";
+}
+
+//是否允许上传图片
+function fileUploadAllowed(id){
+    var list = $(".edit-form").find("input[type=file]");
+    for(var i = 0; i<list.length;i++){
+        var fid = "#"+list[i].id;
+        if(id == 0){ //不允许
+            $(fid).attr("disabled",true);
+            //全部只读
+            $(".edit-form").find("select").attr("disabled", true);
+            $(".edit-form").find("input").attr("disabled", true);
+        }else{
+            $(fid).attr("disabled",false);
+            $(".edit-form").find("select").attr("disabled", false);
+            $(".edit-form").find("input").attr("disabled", false);
+        }
+    }
 }

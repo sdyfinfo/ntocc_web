@@ -86,6 +86,7 @@ const PROJECTSTATUS = 54;
 const VEHICEADD = 55;
 const VEHICEEDIT = 56;
 const VEHICEDELETE = 57;
+const VEHICEUPLOAD = 58;
 
 
 const TableLanguage = {

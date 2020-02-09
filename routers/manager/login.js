@@ -174,6 +174,25 @@ router.get('/vehice',function(req,res,next){
     }
 });
 
+//车辆模板下载
+var fs = require('fs');
+var path = require('path');
+router.get('/downloadvehicefile', function (req, res, next) {
+    var filename = 'vehiceTemplate.xlsx';
+    var filepath = path.join(__dirname, '../upload/' + filename);
+    var stats = fs.statSync(filepath);
+    if (stats.isFile()) {
+        res.set({
+            'Content-Type': 'application/octet-stream',
+            'Content-Disposition': 'attachment; filename=' + filename,
+            "Content-Length": stats.size
+        });
+        fs.createReadStream(filepath).pipe(res);
+    } else {
+        res.end(404);
+    }
+});
+
 router.get('/feature',function(req,res,next){
     console.info(req.url);
     var uname = req.query.username;

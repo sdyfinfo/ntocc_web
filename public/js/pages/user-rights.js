@@ -752,7 +752,8 @@ function projectDataGet(data,callback){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "projectquery"                 ,    //请求发送到TestServlet处  "http://127.0.0.1:8007/ywt/web/front/projectdataquery"
+        url:"http://127.0.0.1:8007/ywt/web/front/projectdataquery",
+        //url: businessUrl + "projectquery",                    //请求发送到TestServlet处
         data: sendMessageEdit(DEFAULT, data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -928,7 +929,7 @@ function vehiceAdd(data){
         contentType: false,
         processData:false,
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: userRightUrl + "vehiceadd",    //请求发送到TestServlet处
+        url: businessUrl + "vehiceadd",    //请求发送到TestServlet处
         data: data,
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -938,6 +939,71 @@ function vehiceAdd(data){
         error: function (errorMsg) {
             console.info("vehiceAdd-error:" + JSON.stringify(errorMsg));
             vehiceEditEnd(false, "", VEHICEADD);
+        }
+    });
+}
+
+//车辆编辑
+function vehiceEdit(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: false,
+        processData:false,
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "vehiceedit",    //请求发送到TestServlet处
+        data: data,
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("vehiceEdit:" + JSON.stringify(result));
+            vehiceEditEnd(true, result, VEHICEEDIT);
+        },
+        error: function (errorMsg) {
+            console.info("vehiceEdit-error:" + JSON.stringify(errorMsg));
+            vehiceEditEnd(false, "", VEHICEEDIT);
+        }
+    });
+}
+
+//车辆删除
+function vehiceDelete(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "vehicedelete",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("vehiceDelete:" + JSON.stringify(result));
+            vehiceEditEnd(true, result, VEHICEDELETE);
+        },
+        error: function (errorMsg) {
+            console.info("vehiceDelete-error:" + JSON.stringify(errorMsg));
+            vehiceEditEnd(false, "", VEHICEDELETE);
+        }
+    });
+}
+
+//车辆导入
+function vehiceUpload(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: false,
+        processData:false,
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "vehiceupload",    //请求发送到TestServlet处
+        data: data,
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("vehiceUpload:" + JSON.stringify(result));
+            vehiceEditEnd(true, result, VEHICEUPLOAD);
+        },
+        error: function (errorMsg) {
+            console.info("vehiceEdit-error:" + JSON.stringify(errorMsg));
+            vehiceEditEnd(false, "", VEHICEUPLOAD);
         }
     });
 }
