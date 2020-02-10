@@ -193,6 +193,56 @@ router.get('/downloadvehicefile', function (req, res, next) {
     }
 });
 
+//司机模板下载
+var fs = require('fs');
+var path = require('path');
+router.get('/downloaddriverfile', function (req, res, next) {
+    var filename = 'driverTemplate.xlsx';
+    var filepath = path.join(__dirname, '../upload/' + filename);
+    var stats = fs.statSync(filepath);
+    if (stats.isFile()) {
+        res.set({
+            'Content-Type': 'application/octet-stream',
+            'Content-Disposition': 'attachment; filename=' + filename,
+            "Content-Length": stats.size
+        });
+        fs.createReadStream(filepath).pipe(res);
+    } else {
+        res.end(404);
+    }
+});
+
+//司机管理
+router.get('/driver',function(req,res,next){
+    console.info(req.url);
+    var uname = req.query.username;
+    if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
+        res.render('basicData/driver', {
+            menu: req.url.substr(1),
+            loginsucc: req.session["ywtLogin" + uname]
+        });
+    }else{
+        res.redirect('/');
+    }
+});
+
+router.get('/receivables',function(req,res,next){
+    console.info(req.url);
+    var uname = req.query.username;
+    var receivables = req.query.receivables;
+    var bank = req.query.bank;
+    if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
+        res.render('basicData/receivables', {
+            menu: req.url.substr(1),
+            loginsucc: req.session["ywtLogin" + uname],
+            receivables:receivables,
+            bank:bank
+        });
+    }else{
+        res.redirect('/');
+    }
+});
+
 router.get('/feature',function(req,res,next){
     console.info(req.url);
     var uname = req.query.username;

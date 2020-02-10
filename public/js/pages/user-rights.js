@@ -1002,12 +1002,11 @@ function vehiceUpload(data){
             vehiceEditEnd(true, result, VEHICEUPLOAD);
         },
         error: function (errorMsg) {
-            console.info("vehiceEdit-error:" + JSON.stringify(errorMsg));
+            console.info("vehiceUpload-error:" + JSON.stringify(errorMsg));
             vehiceEditEnd(false, "", VEHICEUPLOAD);
         }
     });
 }
-
 
 //线路新增
 function lineAdd(data){
@@ -1047,6 +1046,138 @@ function lineEdit(data,type){
         error: function (errorMsg) {
             console.info("lineEdit-error:" + JSON.stringify(errorMsg));
             lineEditEnd(false, "", type);
+        }
+    });
+}
+
+//司机查询
+function deiverDataGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {platenumber: "", name:"",id_number:"",receivables:"",currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: "http://127.0.0.1:8007/ywt/web/front/driverdataquery",    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("deiverDataGet:" + JSON.stringify(result));
+            getDriverDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("deiverDataGet-error:" + JSON.stringify(errorMsg));
+            getDriverDataEnd(false, "", callback);
+        }
+    });
+}
+
+//司机新增
+function driverAdd(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: false,
+        processData:false,
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "driveradd",    //请求发送到TestServlet处
+        data: data,
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("driverAdd:" + JSON.stringify(result));
+            driverEditEnd(true, result, DRIVERADD);
+        },
+        error: function (errorMsg) {
+            console.info("driverAdd-error:" + JSON.stringify(errorMsg));
+            driverEditEnd(false, "", DRIVERADD);
+        }
+    });
+}
+
+//司机编辑
+function driverEdit(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: false,
+        processData:false,
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "driveredit",    //请求发送到TestServlet处
+        data: data,
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("driverEdit:" + JSON.stringify(result));
+            driverEditEnd(true, result, DRIVEREDIT);
+        },
+        error: function (errorMsg) {
+            console.info("driverEdit-error:" + JSON.stringify(errorMsg));
+            driverEditEnd(false, "", DRIVEREDIT);
+        }
+    });
+}
+
+//司机删除
+function driverDelete(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "driverdelete",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("driverDelete:" + JSON.stringify(result));
+            driverEditEnd(true, result, DRIVERDELETE);
+        },
+        error: function (errorMsg) {
+            console.info("driverDelete-error:" + JSON.stringify(errorMsg));
+            driverEditEnd(false, "", DRIVERDELETE);
+        }
+    });
+}
+
+//司机状态修改
+function driverState(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "driverprohibit",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("driverState:" + JSON.stringify(result));
+            driverEditEnd(true, result, DRIVERSTATUS);
+        },
+        error: function (errorMsg) {
+            console.info("driverState-error:" + JSON.stringify(errorMsg));
+            driverEditEnd(false, "", DRIVERSTATUS);
+        }
+    });
+}
+
+//司机导入
+function driverUpload(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: false,
+        processData:false,
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "driverupload",    //请求发送到TestServlet处
+        data: data,
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("driverUpload:" + JSON.stringify(result));
+            driverEditEnd(true, result, DRIVERUPLOAD);
+        },
+        error: function (errorMsg) {
+            console.info("driverUpload-error:" + JSON.stringify(errorMsg));
+            driverEditEnd(false, "", DRIVERUPLOAD);
         }
     });
 }

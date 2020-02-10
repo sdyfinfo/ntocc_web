@@ -1556,4 +1556,69 @@ router.post('/vehicedataquery',function(req,res,next){
     )
 });
 
+router.post('/driverdataquery',function(req,res,next){
+    var draw = req.query.currentpage;
+    var response = {
+        retcode:"0000",
+        response:{
+            draw: draw,
+            totalcount:"2",
+            filtercount:"2",
+            driverlist:[
+                {
+                    "did":"001",
+                    "vehicle_id":"0001",
+                    "receivables_id":"111",
+                    "receivables":"收款人甲",
+                    "name":"司机1",
+                    "id_number":"370784199503228622",
+                    "phone":"15166666666",
+                    "quasi_driving":"1",
+                    "qualification":"111",
+                    "qualification_img":"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1581343495798&di=84d8ee32efa208e27240c00e43143c72&imgtype=0&src=http%3A%2F%2Fc.hiphotos.baidu.com%2Fbaike%2Fw%3D268%2Fsign%3Dea7afa8367380cd7e61ea5eb9944ad14%2Fe61190ef76c6a7ef941fad15fffaaf51f3de66c3.jpg",
+                    "id_front":"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1581343421522&di=0beb0c051fcc2bb402334c7c464b508b&imgtype=0&src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20171103%2Fac2da7fba0d447ff8565b81694b4da5d.jpeg",
+                    "id_back":"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1581343459038&di=600089548b1739e40c9329e398e207bd&imgtype=0&src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fq_70%2Cc_zoom%2Cw_640%2Fimages%2F20190219%2F57cd8413da3c45989c1521e45becf277.jpeg",
+                    "driving_license":"https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3375234518,3242156892&fm=26&gp=0.jpg",
+                    "driving_license_starttime":"20190516",
+                    "driving_license_endtime":"20191203",
+                    "state":"0",
+                    "certification_authority":"济南市公安局",
+                    "addTime":"20190515142315",
+                    "updateTime":"20200112035644",
+                    "operator":"操作人1",
+                    "platenumber":"鲁ANA637",
+                    "bank":"111111111111"
+                },
+                {
+                    "did":"002",
+                    "vehicle_id":"0002",
+                    "receivables_id":"222",
+                    "receivables":"收款人乙",
+                    "name":"司机2",
+                    "id_number":"370784199503228644",
+                    "phone":"15166662221",
+                    "quasi_driving":"3",
+                    "qualification":"222",
+                    "qualification_img":"",
+                    "id_front":"",
+                    "id_back":"",
+                    "driving_license":"",
+                    "driving_license_starttime":"20190516",
+                    "driving_license_endtime":"20191203",
+                    "state":"1",
+                    "certification_authority":"安丘市公安局",
+                    "addTime":"20190515142315",
+                    "updateTime":"20200112035644",
+                    "operator":"操作人2",
+                    "platenumber":"鲁ANA637",
+                    "bank":"22222222222222"
+                }
+            ]
+        }
+    };
+    res.send(
+        response
+    )
+});
+
 module.exports = router;
