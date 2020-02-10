@@ -87,6 +87,10 @@ const VEHICEADD = 55;
 const VEHICEEDIT = 56;
 const VEHICEDELETE = 57;
 const VEHICEUPLOAD = 58;
+const LINEADD = 70;
+const LINEEDIT = 71;
+const LINEDELETE =72;
+const LINESTATUS =73;
 
 
 const TableLanguage = {

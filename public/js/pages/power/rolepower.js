@@ -220,7 +220,7 @@ var FunctionTable = function () {
             showRefresh : false,//刷新按钮
             idField: 'functionid',
             checkboxHeader: false,//取消全部选中
-            height: 300,
+            //height: 300,
             ajax :function (e) {
                 //因为需要做成菜单选择的树形菜单，所以一次获取所有数据，前端分页
                 var callback = e.success;

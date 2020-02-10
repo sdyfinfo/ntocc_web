@@ -30,7 +30,8 @@ function msgHeadMake(type){
         "timestamp": getTimeStamp(),
         "token": loginSucc.token || '',
         "userid": loginSucc.userid || '',
-        "termid": ""
+        "termid": "",
+        "orid": loginSucc.organid || ''
     };
 }
 
