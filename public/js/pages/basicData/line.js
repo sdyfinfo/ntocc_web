@@ -252,6 +252,12 @@ var LineEdit = function(){
                 },
                 numbers:{
                     required: true
+                },
+                loading_countycode:{
+                    required: true
+                },
+                unloading_countycode:{
+                    required: true
                 }
 
             },
@@ -260,10 +266,10 @@ var LineEdit = function(){
                 project_name: {
                     required: "请输入项目名称"
                 },
-                loading_place:{
+                loading_countycode:{
                     required: "请选择装货地名称"
                 },
-                unloading_name:{
+                unloading_countycode:{
                     required: "请选择卸货地名称"
                 },
                 loading_address:{

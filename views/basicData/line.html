@@ -234,16 +234,42 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="form-group col-md-6">
-                                    <label class="col-md-4 control-label">装货地名称<span class="required"> * </span></label>
-                                    <div class="col-md-8">
-                                        <div class="pick-area4" name="loading_place" id="loading_place"></div>
+                                <div class="form-group col-md-12">
+                                    <label class="col-md-2 control-label">装货地名称<span class="required"> * </span></label>
+                                    <div class="col-md-3">
+                                        <select class="form-control" name="loading_provincecode" id="loading_provincecode">
+                                            <option value="">请选择省</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-control" name="loading_citycode" id="loading_citycode">
+                                            <option value="">请选择市</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-control" name="loading_countycode" id="loading_countycode">
+                                            <option value="">请选择区/县</option>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="form-group col-md-6">
-                                    <label class="col-md-4 control-label">卸货地名称<span class="required"> * </span></label>
-                                    <div class="col-md-8">
-                                        <div class="pick-area4" name="unloading_name" id="unloading_name"></div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label class="col-md-2 control-label">卸货地名称<span class="required"> * </span></label>
+                                    <div class="col-md-3">
+                                        <select class="form-control" name="unloading_provincecode" id="unloading_provincecode">
+                                            <option value="">请选择省</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-control" name="unloading_citycode" id="unloading_citycode">
+                                            <option value="">请选择市</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-control" name="unloading_countycode" id="unloading_countycode">
+                                            <option value="">请选择区/县</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -356,7 +382,8 @@
     <script type="text/javascript" src="/public/js/pages/common.js"></script>
     <script type="text/javascript" src="/public/js/pages/data.js"></script>
     <script type="text/javascript" src="/public/js/pages/user-rights.js"></script>
-    <!--<script type="text/javascript" src="/public/js/pages/areaCode.js"></script>-->
+    <script type="text/javascript" src="/public/js/pages/areaCode.js"></script>
+    <script type="text/javascript" src="/public/js/pages/basicData/areaCodeDisplay.js"></script>
     <!--<script type="text/javascript" src="/routers/manager/test.js"></script>-->
 
     <script src="/public/js/pages/basicData/line.js"></script>

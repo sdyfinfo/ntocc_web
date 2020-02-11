@@ -103,7 +103,7 @@ var VehiceTable = function () {
                 { "data": "conductor"},
                 { "data": "vin"},
                 { "data": "transport_number"},
-                { "data": "licensekey"},
+                { "data": "license_key"},
                 { "data": "driving_img"},
                 { "data": "updatetime"},
                 { "data": null}
@@ -380,6 +380,9 @@ var VehiceEdit = function() {
             btnDisable($('#edit-btn'));
             if ($('.edit-form').validate().form()) {
                 var vehice = $('.edit-form').getFormData();
+                vehice.regdate = vehice.regdate.replace(/-/g,'');
+                vehice.issue_date = vehice.issue_date.replace(/-/g,'');
+                vehice.organid = loginSucc.organid;
                 var formData = new FormData();
                 var data = sendMessageEdit(DEFAULT,vehice);
                 formData.append("body",new Blob([data],{type:"application/json"}));
@@ -555,7 +558,8 @@ $("#vehice_file").change(function(){
         var formData = new FormData();
         formData.append("file",this.files[0]);
         var userid = {
-            "userid":loginSucc.userid
+            "userid":loginSucc.userid,
+            "organid":loginSucc.organid
         }
         var data = sendMessageEdit(DEFAULT,userid);
         formData.append("body",new Blob([data],{type:"application/json"}));
@@ -585,7 +589,8 @@ function drop(ev) {
             var formData = new FormData();
             formData.append("file",files[0]);
             var userid = {
-                "userid":loginSucc.userid
+                "userid":loginSucc.userid,
+                "organid":loginSucc.organid
             }
             var data = sendMessageEdit(DEFAULT,userid);
             formData.append("body",new Blob([data],{type:"application/json"}));

@@ -907,7 +907,7 @@ function vehiceDataGet(data,callback){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: "http://127.0.0.1:8007/ywt/web/front/vehicedataquery",    //请求发送到TestServlet处
+        url: businessUrl + "vehiclequery",    //请求发送到TestServlet处
         data: sendMessageEdit(DEFAULT, data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -929,7 +929,7 @@ function vehiceAdd(data){
         contentType: false,
         processData:false,
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "vehiceadd",    //请求发送到TestServlet处
+        url: businessUrl + "vehicleadd",    //请求发送到TestServlet处
         data: data,
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -951,7 +951,7 @@ function vehiceEdit(data){
         contentType: false,
         processData:false,
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "vehiceedit",    //请求发送到TestServlet处
+        url: businessUrl + "vehicleedit",    //请求发送到TestServlet处
         data: data,
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -972,7 +972,7 @@ function vehiceDelete(data){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "vehicedelete",    //请求发送到TestServlet处
+        url: businessUrl + "vehicledelete",    //请求发送到TestServlet处
         data: sendMessageEdit('', data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -994,7 +994,7 @@ function vehiceUpload(data){
         contentType: false,
         processData:false,
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "vehiceupload",    //请求发送到TestServlet处
+        url: businessUrl + "vehicleimport",    //请求发送到TestServlet处
         data: data,
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -1217,7 +1217,7 @@ function deiverDataGet(data,callback){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: "http://127.0.0.1:8007/ywt/web/front/driverdataquery",    //请求发送到TestServlet处
+        url: businessUrl + "driverdataquery",    //请求发送到TestServlet处
         data: sendMessageEdit(DEFAULT, data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {

@@ -156,7 +156,7 @@ var DriverTable = function () {
                     }
                 },
                 {
-                    "targets": [14],
+                    "targets": [16],
                     "render": function (data, type, row, meta) {
                         var edit = '<a href="javascript:;" id="op_edit">编辑</a>';
 //                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
