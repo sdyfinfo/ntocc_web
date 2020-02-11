@@ -7,6 +7,7 @@ var imgInit = "/public/img/img_upload.png";
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
+        fun_power();
         //时间控件初始化
         ComponentsDateTimePickers.init();
         //初始化相关信息
@@ -165,12 +166,12 @@ var VehiceTable = function () {
                 },{
                     "targets": [14],
                     "render": function (data, type, row, meta) {
-                        var edit = '<a href="javascript:;" id="op_edit">编辑</a>';
-//                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
-//                            edit = '-';
-//                        }else{
-//                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
-//                        }
+                        var edit = '';
+                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
+                            edit = '-';
+                        }else{
+                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
+                        }
                         return edit;
                     }
                 }

@@ -4,6 +4,7 @@
 var organList = [];
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
+        fun_power();
         OrganTable.init();
         //新增和编辑
         OrganEdit.init();

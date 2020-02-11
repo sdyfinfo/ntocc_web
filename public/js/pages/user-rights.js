@@ -1217,7 +1217,7 @@ function deiverDataGet(data,callback){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "driverdataquery",    //请求发送到TestServlet处
+        url: businessUrl + "driverquery",    //请求发送到TestServlet处
         data: sendMessageEdit(DEFAULT, data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -1335,6 +1335,27 @@ function driverUpload(data){
         error: function (errorMsg) {
             console.info("driverUpload-error:" + JSON.stringify(errorMsg));
             driverEditEnd(false, "", DRIVERUPLOAD);
+        }
+    });
+}
+
+//字典获取
+function dictQuery(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: userRightUrl + "dictquery",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("dictQuery:" + JSON.stringify(result));
+            getDictDataEnd(true, result);
+        },
+        error: function (errorMsg) {
+            console.info("dictQuery-error:" + JSON.stringify(errorMsg));
+            getDictDataEnd(false, "");
         }
     });
 }

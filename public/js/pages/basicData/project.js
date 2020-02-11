@@ -7,7 +7,7 @@ var routeInfo = {};
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
-
+        fun_power();
         //项目表格
         ProjectTable.init();
         //项目表操作
@@ -93,12 +93,12 @@ var ProjectTable = function () {
                 },{
                     "targets": [8],
                     "render": function (data, type, row, meta) {
-                        var edit = '<a href="javascript:;" id="op_edit">编辑</a>';
-//                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
-//                            edit = '-';
-//                        }else{
-//                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
-//                        }
+                        var edit = "";
+                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
+                            edit = '-';
+                        }else{
+                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
+                        }
                         return edit;
                     }
                 }

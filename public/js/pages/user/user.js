@@ -5,6 +5,7 @@ var userList = [];
 var responseComplete = [0, 0];   //用户信息和机构全部返回
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
+        fun_power();
         //时间控件初始化
         ComponentsDateTimePickers.init();
         //多选控件初始化

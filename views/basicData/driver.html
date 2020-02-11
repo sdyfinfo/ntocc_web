@@ -247,15 +247,8 @@
                                     <div class="form-group col-md-6">
                                         <label class="col-md-4 control-label">准驾车型<span class="required"> * </span></label>
                                         <div class="col-md-8">
-                                            <select class="form-control" name="quasi_driving">
+                                            <select class="form-control" name="quasi_driving" id="quasi_driving">
                                                 <option value="">请选择</option>
-                                                <option value="1">C1</option>
-                                                <option value="2">C2</option>
-                                                <option value="3">B1</option>
-                                                <option value="4">B2</option>
-                                                <option value="5">A1</option>
-                                                <option value="6">A2</option>
-                                                <option value="7">A3</option>
                                             </select>
                                         </div>
                                     </div>
@@ -342,7 +335,7 @@
                                     <div class="form-group col-md-6">
                                         <label class="col-md-4 control-label">关联车辆</label>
                                         <div class="col-md-8">
-                                            <input type="text" class="form-control" placeholder="请选择" name="platenumber" list="vehiceList" autocomplete="off">
+                                            <input type="text" class="form-control" placeholder="请选择" name="plate_number" list="vehiceList" autocomplete="off">
                                             <datalist id="vehiceList">
                                             </datalist>
                                         </div>
@@ -395,6 +388,7 @@
     <script src="/public/js/bootstrap.min.js?v=3.3.6"></script>
     <script src="/public/js/plugins/app.min.js" type="text/javascript"></script>
     <script src="/public/js/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+    <script src="/public/js/pages/menu.js" type="text/javascript"></script>
     <script src="/public/js/plugins/validate/jquery.validate.min.js"></script>
     <script src="/public/js/plugins/validate/messages_zh.min.js"></script>
     <script src="/public/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>

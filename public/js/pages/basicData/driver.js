@@ -9,8 +9,12 @@ var imgInit = "/public/img/img_upload.png";
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
+        fun_power();
         //获取车辆信息
         vehiceDataGet();
+        //获取字典信息
+        var data = {"lx":"10007"};
+        dictQuery(data);
         //获取收款人信息
         //payeeDataGet();
         //时间控件初始化
@@ -95,7 +99,7 @@ var DriverTable = function () {
                 { "data": "id_front"},
                 { "data": "driving_license"},
                 { "data": "receivables"},
-                { "data": "platenumber"},
+                { "data": "plate_number"},
                 { "data": "state"},
                 { "data": "updateTime"},
                 { "data": "receivables_id",visible: false},
@@ -158,12 +162,12 @@ var DriverTable = function () {
                 {
                     "targets": [16],
                     "render": function (data, type, row, meta) {
-                        var edit = '<a href="javascript:;" id="op_edit">编辑</a>';
-//                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
-//                            edit = '-';
-//                        }else{
-//                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
-//                        }
+                        var edit = "";
+                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
+                            edit = '-';
+                        }else{
+                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
+                        }
                         return edit;
                     }
                 }
@@ -414,8 +418,8 @@ var DriverEdit = function() {
             fileUploadAllowed(1);
             //只读
             $("#id_front,#id_back").attr("disabled",true);
-            $("input[name=name]").attr("disabled",true);
-            $("input[name=id_number]").attr("disabled",true);
+            $(".edit-form").find("input[name=name]").attr("disabled",true);
+            $(".edit-form").find("input[name=id_number]").attr("disabled",true);
             $("input[name=edittype]").val(VEHICEEDIT);
             $(".modal-footer").show();
             $('#edit_driver').modal('show');
@@ -669,8 +673,8 @@ function getDriverDataEnd(flg, result, callback){
     if(flg){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
-            driverList = res.driverlist;
-            tableDataSet(res.draw, res.totalcount, res.totalcount, res.driverlist, callback);
+            driverList = res.list;
+            tableDataSet(res.draw, res.totalcount, res.totalcount, driverList, callback);
         }else{
             tableDataSet(0, 0, 0, [], callback);
             alertDialog("司机信息获取失败！");
@@ -687,7 +691,7 @@ function getVehiceDataEnd(flg, result, callback){
     if(flg){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
-            vehicleList = res.vehicleList;
+            vehicleList = res.vehiclelist;
             //给关联车辆datalist赋值
             for(var i = 0;i<vehicleList.length;i++){
                 $("#vehiceList").append("<option>"+vehicleList[i].platenumber+"</option>");
@@ -745,4 +749,23 @@ function quasiDisplay(data){
             break;
     }
     return value;
+}
+
+//获取字典信息返回
+function getDictDataEnd(flg,result){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+            var res = result.response;
+            var dictlist = res.dictlist;
+            //给准驾车型赋值
+            for(var i = 0;i<dictlist.length;i++){
+                $("#quasi_driving").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
+            }
+        }else{
+            alertDialog("准驾车型信息获取失败！");
+        }
+    }else{
+        alertDialog("准驾车型信息获取失败！");
+    }
 }

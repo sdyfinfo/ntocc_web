@@ -7,6 +7,7 @@
 var roleList = [];
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
+        fun_power();
         RoleTable.init();
         RoleEdit.init();
     });

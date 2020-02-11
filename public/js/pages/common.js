@@ -608,3 +608,14 @@ function discountNumber(data) {
     }
     return Number(data / 10);
 }
+
+//判断按钮权限
+function fun_power(){
+    var list = ["#op_add","#op_del","#user_inquiry","#password_reset","#role_inquiry","#organ_inquiry",
+        "#vehice_inquiry","#vehice_import","#pro_inquiry","#driver_inquiry","#driver_import"];
+    for(var i in list){
+        if(!makeEdit(menu,loginSucc.functionlist,list[i])){
+            $(list[i]).hide();
+        }
+    }
+}
