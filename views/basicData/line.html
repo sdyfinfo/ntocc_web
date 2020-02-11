@@ -57,7 +57,7 @@
                         <form class="inquiry-form form-horizontal" role="form">
                             <div class="form-body">
                                 <div class="row">
-                                    <div class="col-lg-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="col-md-4 control-label">项目名称</label>
                                             <div class="col-md-8">
@@ -65,7 +65,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="col-md-4 control-label">线路名称</label>
                                             <div class="col-md-8">
@@ -73,9 +73,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="col-md-4 control-label">装货地点</label>
                                             <div class="col-md-8">
@@ -83,7 +81,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="col-md-4 control-label">卸货地点</label>
                                             <div class="col-md-8">
@@ -91,7 +91,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="col-md-4 control-label">货物名称</label>
                                             <div class="col-md-8">
@@ -99,7 +99,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="col-md-4 control-label">状态</label>
                                             <div class="col-md-8">
@@ -265,16 +265,16 @@
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label">发货人<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <select id="consignorid" class="form-control select2-multiple" name="consignorid">
-                                            <option>测试</option>
+                                        <select class="form-control" id="consignorid" name="consignorid">
+                                            <option value="">请选择</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label">收货人<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <select id="consigneeid" class="form-control select2-multiple" name="consigneeid">
-                                            <option>测试</option>
+                                        <select class="form-control" id="consigneeid" name="consigneeid">
+                                            <option value="">请选择</option>
                                         </select>
                                     </div>
                                 </div>
@@ -298,8 +298,8 @@
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label" style="padding-right: 20px">货物类型<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <select id="goods_type" class="form-control select2-multiple"  name="goods_type">
-                                            <option>测试</option>
+                                        <select id="goods_type" class="form-control"  name="goods_type">
+                                            <option value="">请选择</option>
                                         </select>
                                     </div>
                                 </div>
@@ -308,8 +308,7 @@
                                 <div class="form-group col-md-12">
                                     <label class="col-md-2 control-label" style="padding-right: 20px">货物名称<span class="required"> * </span></label>
                                     <div class="col-md-10" style="padding-left: 10px;width: 80% ">
-                                        <select id="goodsname" class="form-control select2-multiple"  name="goods">
-                                            <option>测试</option>
+                                        <select id="goodsname" class="form-control select2-multiple" multiple name="goods">
                                         </select>
                                     </div>
                                 </div>

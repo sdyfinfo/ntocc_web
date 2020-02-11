@@ -10,11 +10,43 @@ if(App.isAngularJsApp() == false){
         //线路表
         LineEdit.init();
         //获取项目名称列表，用来做成项目选择框
-        proDataGet();
+        //proDataGet();
+        projectDataGet();
         //多控件初始化
         //LineSelect2.init();
+        goodsDateGet();
+        //货物名称多控件初始化
+        GoodsSelect2.init();
+        //初始化相关信息
+        //lineDateInit();
     });
 }
+
+
+var GoodsSelect2 = function(){
+    var intSelect2 = function (data){
+        $.fn.select2.defaults.set("theme", "bootstrap");
+        $(".select2, .select2-multiple").select2({
+            placeholder: "货物名称",
+            width:null
+        });
+        $(".select2, .select2-multiple, .select2-allow-clear, .js-data-example-ajax").on("select2:open", function() {
+            if ($(this).parents("[class*='has-']").length) {
+                var classNames = $(this).parents("[class*='has-']")[0].className.split(/\s+/);
+                for (var i = 0; i < classNames.length; ++i) {
+                    if (classNames[i].match("has-")) {
+                        $("body > .select2-container").addClass(classNames[i]);
+                    }
+                }
+            }
+        });
+    };
+    return {
+        init: function(){
+            intSelect2();
+        }
+    }
+}();
 
 
 
@@ -83,7 +115,7 @@ var LineTable = function(){
                 {
                     "targets":[1],
                     "render":function (data, type, row, meta) {
-                        return '<input type="checkbox" class="checkbox" value="1" />'
+                        return '<input type="checkbox" class="checkboxes" value="1" />';
                     }
                 },
                 {
@@ -123,7 +155,6 @@ var LineTable = function(){
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
                 $('td:eq(0),td:eq(1),td:eq(4),td:eq(5),td:eq(6),td:eq(7)', nRow).attr('style', 'text-align: center;');
-                $('td:eq(1)').attr('style','text-align: center');
             }
         });
         //table.draw( false );
@@ -337,12 +368,16 @@ var LineEdit = function(){
             $(":input",".register-form").not(":button,:reset,:submit,:radio,:input[name=birthday],#evaluationneed").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
-            //情况项目名称输入框
+            //项目名称输入框
             $("#projtct_name").val(null).select2({
                 placeholder: "项目名称",
                 width:null
+            });
+            //货物名称输入框
+            $("#goodname").val(null).select2({
+                placeholder:"货物名称",
+                width:null
             })
-
             $(".register-form").find("input[name=pid]").attr("readonly", false);
             $("input[name=edittype]").val(LINEADD);
             $('#edit_lin').modal('show');
@@ -437,18 +472,8 @@ function proDataGetEnd(flg, result, callback){
     }
 }
 
-function procjectNameSelectBuild(projectList){
-    var data = [];
-    for (var i = 0; i < projectList.length; i++){
-        data.push({id:projectList[i].project_id, text: projectList[i].projectname});
-    }
-    $("#project_name").select2({
-        placeholder: "项目名称",
-        data: data,
-        width:null
-    })
-}
 
+//删除
 var LineDelete = function() {
     $('#op_del').click(function() {
         var len = $(".checkboxes:checked").length;
@@ -468,3 +493,46 @@ var LineDelete = function() {
         }
     }
 }();
+
+//货物货物名称
+function getGoodsDataEnd(flg, result, callback){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+            var lineList = result.response.linelist;
+            goodsNameSelectBuild(lineList);
+        }
+    }
+}
+
+
+function goodsNameSelectBuild(lineList){
+    var data = [];
+    for (var i = 0;  i < lineList.length ; i++) {
+        data.push({ id:lineList[i].lid, text: lineList[i].goods });
+    }
+    $("#goodsname").select2({
+        placeholder: "货物名称",
+        data: data,
+        width:null
+    })
+}
+
+//项目查询返回结果
+function getProjectDataEnd(flg, result, callback){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+
+            var res = result.response;
+            projectList = res.projectlist;
+            tableDataSet(res.draw, res.totalcount, res.totalcount, res.projectlist, callback);
+        }else{
+            tableDataSet(0, 0, 0, [], callback);
+            alertDialog("项目信息获取失败！");
+        }
+    }else{
+        tableDataSet(0, 0, 0, [], callback);
+        alertDialog("项目信息获取失败！");
+    }
+}

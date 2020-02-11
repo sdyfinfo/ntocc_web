@@ -96,7 +96,9 @@ const LINEADD = 70;
 const LINEEDIT = 71;
 const LINEDELETE =72;
 const LINESTATUS =73;
-
+const ADDRADD = 74;
+const ADDRSEDIT = 75;
+const ADDRDELETE = 76;
 
 const TableLanguage = {
         "aria": {

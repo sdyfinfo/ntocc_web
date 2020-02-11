@@ -1050,6 +1050,163 @@ function lineEdit(data,type){
     });
 }
 
+//项目名称查询
+/*function proDataGet(data, callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {project_id: "", project_name: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "projectdataquery",    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("proDataGet:" + JSON.stringify(result));
+            proDataGetEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("proDataGet-error:" + JSON.stringify(errorMsg));
+            proDataGetEnd(false, "", callback);
+        }
+    });
+}*/
+
+//货物名称查询
+function goodsDateGet(data, callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {lid: "", goods: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url:"http://127.0.0.1:8007/ywt/web/front/googsquery",    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("goodsDateGet:" + JSON.stringify(result));
+            getGoodsDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("goodsDateGet-error:" + JSON.stringify(errorMsg));
+            getGoodsDataEnd(false, "", callback);
+        }
+    });
+}
+
+//删除线路信息
+function lineDelete(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "linedelete",    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("lineDelete:" + JSON.stringify(result));
+            lineEditEnd(true, result, LINEDELETE);
+        },
+        error: function (errorMsg) {
+            console.info("lineDelete-error:" + JSON.stringify(errorMsg));
+            lineEditEnd(false, "", LINEDELETE);
+        }
+    });
+}
+
+
+//地址管理查询列表
+function addressDataGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {aid: "", mailing_address:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: "http://127.0.0.1:8007/ywt/web/front/addressquery",    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("addressDataGet:" + JSON.stringify(result));
+            getaddressDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("addressDataGet-error:" + JSON.stringify(errorMsg));
+            getaddressDataEnd(false, "", callback);
+        }
+    });
+}
+//地址管理新增
+function addrsAdd(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "addressadd",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("addrsAdd:" + JSON.stringify(result));
+            addrEditEnd(true, result, ADDRADD);
+        },
+        error: function (errorMsg) {
+            console.info("addrsAdd-error:" + JSON.stringify(errorMsg));
+            addrEditEnd(false, "", ADDRADD);
+        }
+    });
+}
+
+//地址管理修改
+function addrsEdit(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "addressedit",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("addrsEdit:" + JSON.stringify(result));
+            addrEditEnd(true, result, ADDRSEDIT);
+        },
+        error: function (errorMsg) {
+            console.info("addrsEdit-error:" + JSON.stringify(errorMsg));
+            addrEditEnd(false, "", ADDRSEDIT);
+        }
+    });
+}
+
+//地址管理删除
+function addrDelete(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "addressdelete",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("addrDelete:" + JSON.stringify(result));
+            addrEditEnd(true, result, ADDRDELETE);
+        },
+        error: function (errorMsg) {
+            console.info("addrDelete-error:" + JSON.stringify(errorMsg));
+            addrEditEnd(false, "", ADDRDELETE);
+        }
+    });
+}
+
+
 //司机查询
 function deiverDataGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});

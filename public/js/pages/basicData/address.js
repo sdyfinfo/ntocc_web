@@ -2,7 +2,7 @@
  * Created by Lenovo on 2020/2/10.
  */
 
-var addsList = [];
+var addressidList = [];
 if(App.isAngularJsApp() == false){
     jQuery(document).ready(function(){
         //地址列表
@@ -32,6 +32,7 @@ var addressTable = function(){
             "ajax":function (data, callback, settings) {
                 var formData = $(".inquiry-form").getFormData();
                 var da = {
+                    aid:formData.aid,
                     mailing_address: formData.mailing_address,
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
@@ -43,12 +44,13 @@ var addressTable = function(){
             columns:[ //返回的json 数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 {"data":null},
                 {"data":null},
-                {"data":"addid", visible: false},
+                {"data":"aid", visible: false},
                 {"data":"mailing_address"},
-                {"data":"detailed_address"},
-                {"data":"consigneeid"},
-                {"data":"consigneeTel"},
-                {"data":"consigneeid_mailbox"},
+                {"data":"address"},
+                {"data":"addressee"},
+                {"data":"addresseeTel"},
+                {"data":"email"},
+                {"data":"updateTime"},
                 {"data":null}
             ],
             columnDefs:[
@@ -62,11 +64,11 @@ var addressTable = function(){
                 {
                     "targets":[1],
                     "render":function (data, type, row, meta) {
-                        return '<input type="checkbox" class="checkbox" value="1" />'
+                        return '<input type="checkbox" class="checkboxes" value="1" />';
                     }
                 },
                 {
-                    "targets":[8],
+                    "targets":[9],
                     "render": function (data, type, row, meta) {
                         var edit = '<a href="javascript:;" id="op_edit">编辑</a>';
 //                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
@@ -79,8 +81,7 @@ var addressTable = function(){
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(4),td:eq(5),td:eq(6),td:eq(7)', nRow).attr('style', 'text-align: center;');
-                $('td:eq(1)').attr('style','text-align: center');
+                $('td:eq(0),td:eq(1),td:eq(2),td:eq(4),td:eq(5),td:eq(6),td:eq(7)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );
@@ -123,16 +124,19 @@ var addressEdit = function(){
                 mailing_address: {
                     required: true
                 },
-                detailed_address:{
+                address:{
                     required: true
                 },
-                consigneeid:{
+                addressee:{
+                    required: true
+                },
+                addresseeTel:{
                     required: true
                 },
                 consigneeTel:{
                     required: true
                 },
-                consigneeid_mailbox:{
+                email:{
                     required: true
                 }
 
@@ -140,18 +144,18 @@ var addressEdit = function(){
 
             messages: {
                 mailing_address: {
-                    required: "请选择邮箱地址"
+                    required: "请选择邮寄地址"
                 },
-                detailed_address:{
+                address:{
                     required: "请输入详细地址"
                 },
-                consigneeid:{
+                addressee:{
                     required: "请输入收件人姓名"
                 },
-                consigneeTel:{
+                addresseeTel:{
                     required: "请输入收件人电话"
                 },
-                consigneeid_mailbox:{
+                email:{
                     required: "请输入收件人邮箱"
                 }
             },
@@ -205,15 +209,12 @@ var addressEdit = function(){
                 addrsAdd(addr);
             }else {
                 var data;
-                for(var i = 0; i < addsList.length; i++) {
-                    if(addr.addid == addsList[i].addid){
-                        data = addsList[i];
+                for(var i = 0; i < addressidList.length; i++) {
+                    if(addr.aid == addressidList[i].aid){
+                        data = addressidList[i];
                     }
                 }
-                if(equar(line.project_name, (data.project_id || "").split(","))){
-                    line.project_name = [];
-                }
-                addrsEdit(line,ADDRSEDIT);
+                addrsEdit(addr,ADDRSEDIT);
             }
         });
         //新增项目
@@ -226,7 +227,7 @@ var addressEdit = function(){
                 .removeAttr("checked")
                 .removeAttr("selected");
 
-            $(".register-form").find("input[name=addid]").attr("readonly", false);
+            $(".register-form").find("input[name=aid]").attr("readonly", false);
             $("input[name=edittype]").val(ADDRADD);
             $('#edit_adds').modal('show');
         });
@@ -239,11 +240,11 @@ var addressEdit = function(){
             $(".modal-title").text("编辑项目");
             var exclude = [];
             var row = $(this).parents('tr')[0];
-            var addid = $("#line_table").dataTable().fnGetData(row).addid;
+            var aid = $("#add_table").dataTable().fnGetData(row).aid;
             var address = new Object();
-            for(var i=0; i < addsList.length; i++){
-                if(addid == addsList[i].addid){
-                    address = addsList[i];
+            for(var i=0; i < addressidList.length; i++){
+                if(aid == addressidList[i].aid){
+                    address = addressidList[i];
                 }
             }
             var options = { jsonValue: address, exclude:exclude,isDebug: false};
@@ -266,8 +267,8 @@ function getaddressDataEnd(flg, result, callback){
     if(flg){
         if(result && result.retcode == SUCCESS){
             var res = result.response;
-            addsList = res.list;
-            tableDataSet(res.draw, res.totalcount, res.totalcount, res.list, callback);
+            addressidList = res.addressidlist;
+            tableDataSet(res.draw, res.totalcount, res.totalcount, res.addressidlist, callback);
         }else {
             tableDataSet(0, 0, 0, [], callback);
             alertDialog("地址信息获取失败！");
@@ -276,4 +277,58 @@ function getaddressDataEnd(flg, result, callback){
         tableDataSet(0, 0, 0, [], callback);
         alertDialog("地址信息获取失败！");
     }
+}
+
+
+//删除
+var AddrDelete = function() {
+    $('#op_del').click(function() {
+        var len = $(".checkboxes:checked").length;
+        if(len < 1){
+            alertDialog("至少选中一项！");
+        }else{
+            confirmDialog("数据删除后将不可恢复，您确定要删除吗？", AddrDelete.deleteAddr)
+        }
+    });
+    return{
+        deleteAddr: function(){
+            var addr = {addressidlist:[]};
+            $(".checkboxes:checked").parents("td").each(function () {
+                var row = $(this).parents('tr')[0];
+                addr.addressidlist.push($("#add_table").dataTable().fnGetData(row).aid);
+            });
+            addrDelete(addr);
+        }
+    }
+}();
+
+
+//新增
+function addrEditEnd(flg, result, type){
+    var res = "失败";
+    var text = "";
+    var alert = "";
+    switch (type){
+        case ADDRADD:
+            text = "新增";
+            break;
+        case ADDRSEDIT:
+            text = "编辑";
+            break;
+        case ADDRDELETE:
+            text = "删除";
+            break;
+    }
+    if(flg){
+        if(result && result.retcode != SUCCESS){
+            alert = result.retmsg;
+        }
+        if (result && result.retcode == SUCCESS) {
+            res = "成功";
+            ProjectTable.init();
+            $('#edit_adds').modal('hide');
+        }
+    }
+    App.unblockUI('#lay-out');
+    alertDialog(alert);
 }

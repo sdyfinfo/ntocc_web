@@ -1668,12 +1668,9 @@ router.post('/linequery',function(req,res,next){
 
 
 
-router.post('/proquery',function(req,res,next){
+router.post('/dictquery',function(req,res,next){
     var draw = req.query.currentpage;
     var response = {
-        head:{
-            retcode:"0000"
-        },
         response:{
             draw: draw,
             totalcount:"6",
@@ -1686,7 +1683,9 @@ router.post('/proquery',function(req,res,next){
                 {"lid":"00004","project_name":"项目5"},
                 {"lid":"00005","project_name":"项目6"}
             ]
-        }
+        },
+        "retmsg": "调用成功",
+        "retcode": "0000"
     };
     res.send(
         response
@@ -1694,7 +1693,49 @@ router.post('/proquery',function(req,res,next){
 });
 
 
+router.post('/addressquery',function(req,res,next){
+    var draw = req.query.currentpage;
+    var response = {
+        response:{
+            draw: draw,
+            totalcount:"5",
+            filtercount:"5",
+            addressidlist:[
+                {"aid":"001","mailing_address":"济南","address":"山东省济南市历城区","addressee":"张三","addresseeTel":"13468042332","updateTime":"20200102084603","email":"zhang@qq.com"},
+                {"aid":"002","mailing_address":"济南","address":"山东省济南市市中区","addressee":"李四","addresseeTel":"13468042332","updateTime":"20200102084603","email":"li@qq.com"},
+                {"aid":"003","mailing_address":"济南","address":"山东省济南市高新区","addressee":"王五","addresseeTel":"13468042332","updateTime":"20200102084603","email":"wang@qq.com"},
+                {"aid":"004","mailing_address":"济南","address":"山东省济南市历下区","addressee":"赵六","addresseeTel":"13468042332","updateTime":"20200102084603","email":"zhao@qq.com"},
+                {"aid":"005","mailing_address":"金娜","address":"山东省济南市天桥区","addressee":"刘七","addresseeTel":"13468042332","updateTime":"20200102084603","email":"liu@qq.com"}
+            ]
+        },
+        "retmsg": "调用成功",
+        "retcode": "0000"
+    };
+    res.send(
+        response
+    )
+});
 
+router.post('/googsquery',function(req,res,next){
+    var draw = req.query.currentpage;
+    var response = {
+        response:{
+            draw: draw,
+            totalcount:"3",
+            filtercount:"3",
+            linelist:[
+                {"lid":"00000","goods":"吨"},
+                {"lid":"00001","goods":"公斤"},
+                {"lid":"00002","goods":"千进"}
+            ]
+        },
+        "retmsg": "调用成功",
+        "retcode": "0000"
+    };
+    res.send(
+        response
+    )
+});
 
 
 module.exports = router;
