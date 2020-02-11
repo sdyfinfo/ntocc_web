@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,6 +21,8 @@
     <link href="/public/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
     <link href="/public/plugins/jstree/dist/themes/default/style.min.css" rel="stylesheet" type="text/css" />
     <link href="/public/css/plugins/iconfont/iconfont_z.css" rel="stylesheet" type="text/css"/>
+    <link href="/public/css/plugins/jquery.editable/pick-pcc.css" rel="stylesheet" type="text/css" />
+    <link href="/public/css/plugins/jquery.editable/pick-pcc.min.1.0.4.css" rel="stylesheet" type="text/css" />
 
     <script>
         //获取nodejs session中和localStorage中保存的菜单信息、权限信息。配置信息
@@ -27,6 +30,18 @@
         var loginSucc = '{{ loginsucc }}';
         loginSucc = JSON.parse(loginSucc.replace(/&quot;/g, "\""));
     </script>
+    <style>
+        body{padding:10px;}
+        .pick-area{margin:10px;}
+        .a{float:left;width:100%;margin:10px;}
+        .a input{width:400px;padding:10px;margin:10px;outline-color: greenyellow;}
+        h1{text-align: center;}
+        h3{margin:5px;color:#333;}
+        h4{margin:5px;color:#666;padding:0 20px;font-weight: 100;}
+        .blank{float:left;width:50%;height:400px;background:cyan;border-top:1px solid #333;margin-top:50px;}
+        .blank2{float:left;width:50%;height:400px;background:lightpink;border-top:1px solid #333;padding-top:50px;}
+        .box{width:100%;overflow: hidden;background:lightgreen;}
+    </style>
 </head>
 
 <body class="gray-bg">
@@ -145,11 +160,17 @@
                                     <th> 状态 </th>
                                     <th> 创建时间 </th>
                                     <th> 修改时间 </th>
+                                    <th>货物类型</th>
+                                    <th>货物明称</th>
+                                    <th>总发运数量</th>
                                     <th style="width: 30px"> 操作 </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="odd gradeX">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -199,12 +220,16 @@
                         <div  class="form-body">
                             <!-- 操作类型隐藏（用来区分新增还是编辑） -->
                             <input type="hidden" name="edittype">
-                            <h4 class="modal-title">线路新增</h4>
+                            <input type="hidden" name="lid">
+                            <h4>线路新增</h4>
                             <div class="row">
                                 <div class="form-group col-md-12">
                                     <label class="col-md-2 control-label" style="padding-right: 20px">项目名称<span class="required"> * </span></label>
+
                                     <div class="col-md-10" style="padding-left: 10px;width: 80% ">
-                                        <select id="project_name" class="form-control select2-multiple" multiple name="project_name"></select>
+                                        <select id="project_name" class="form-control  num_select"  name="project_name">
+                                            <option value="">项目名称</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -212,13 +237,13 @@
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label">装货地名称<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <select id="loading_name" class="form-control select2-multiple" multiple name="loading_name"></select>
+                                        <div class="pick-area4" name="loading_place" id="loading_place"></div>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label">卸货地名称<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <select id="unloading_name" class="form-control select2-multiple" multiple name="unloading_name"></select>
+                                        <div class="pick-area4" name="unloading_name" id="unloading_name"></div>
                                     </div>
                                 </div>
                             </div>
@@ -226,13 +251,13 @@
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label">装货地址<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <select id="loadingadd" class="form-control select2-multiple" multiple name="loading_address"></select>
+                                        <div class="pick-area4" name="loading_address" id="loadingadd"></div>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label">卸货地址<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <select id="unloading_place" class="form-control select2-multiple" multiple name="unloading_place"></select>
+                                        <div class="pick-area4" name="unloading_place" id="unloading_place"></div>
                                     </div>
                                 </div>
                             </div>
@@ -240,13 +265,17 @@
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label">发货人<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <select id="consignorid" class="form-control select2-multiple" multiple name="consignorid"></select>
+                                        <select id="consignorid" class="form-control select2-multiple" name="consignorid">
+                                            <option>测试</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label">收货人<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <select id="consigneeid" class="form-control select2-multiple" multiple name="consigneeid"></select>
+                                        <select id="consigneeid" class="form-control select2-multiple" name="consigneeid">
+                                            <option>测试</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -264,12 +293,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <h4 class="modal-title">货物信息</h4>
+                            <h4>货物信息</h4>
                             <div class="row" id="goodstype">
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label" style="padding-right: 20px">货物类型<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <select id="goods_type" class="form-control select2-multiple" multiple name="goods_type"></select>
+                                        <select id="goods_type" class="form-control select2-multiple"  name="goods_type">
+                                            <option>测试</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -277,16 +308,19 @@
                                 <div class="form-group col-md-12">
                                     <label class="col-md-2 control-label" style="padding-right: 20px">货物名称<span class="required"> * </span></label>
                                     <div class="col-md-10" style="padding-left: 10px;width: 80% ">
-                                        <select id="goodsname" class="form-control select2-multiple" multiple name="goods"></select>
+                                        <select id="goodsname" class="form-control select2-multiple"  name="goods">
+                                            <option>测试</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label">总发运数量<span class="required"> * </span></label>
-                                    <div class="col-md-8">
-                                        <input type="text" class="form-control" placeholder="请输入" name="phone">
+                                    <div class="col-md-7">
+                                        <input type="text" class="form-control" placeholder="请输入" name="number">
                                     </div>
+                                    <label class="col-md-1">吨</label>
                                 </div>
                             </div>
                         </div>
@@ -314,17 +348,44 @@
     <script src="/public/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>
     <script src="/public/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js" type="text/javascript"></script>
     <script src="/public/plugins/jstree/dist/jstree.min.js" type="text/javascript"></script>
-    <script src="/public/js/pages/md5.js" type="text/javascript"></script>
+    <script src="/public/js/pages/md5.js" type="text/javascript" type="text/javascript"></script>
+    <script src="/public/js/plugins/jquery.editable/pick-pcc.js" type="text/javascript"></script>
+    <script src="/public/js/plugins/jquery.editable/pick-pcc.min.1.0.4.js" type="text/javascript"></script>
     <!--本页面用到的JS-->
     <script type="text/javascript" src="/public/js/pages/form.js"></script>
     <script type="text/javascript" src="/public/js/pages/const.js"></script>
     <script type="text/javascript" src="/public/js/pages/common.js"></script>
     <script type="text/javascript" src="/public/js/pages/data.js"></script>
     <script type="text/javascript" src="/public/js/pages/user-rights.js"></script>
-    <script type="text/javascript" src="/public/js/pages/areaCode.js"></script>
+    <!--<script type="text/javascript" src="/public/js/pages/areaCode.js"></script>-->
+    <!--<script type="text/javascript" src="/routers/manager/test.js"></script>-->
 
     <script src="/public/js/pages/basicData/line.js"></script>
 
+    <script type="text/javascript">
+        $(".pick-area4").pickArea({
+            "format":"province/city/county", //格式
+            "display":"block",
+            "width":"235",//设置“省市县”文本边框的宽度
+            "height":"34",//设置“省市县”文本边框的高度
+            "borderColor":"#e5e7e8",//设置“省市县”文本边框的色值
+            "arrowColor":"#e5e7e8",//设置下拉箭头颜色
+            "listBdColor":"#e5e7e8",//设置下拉框父元素ul的border色值
+            "color":"#a598b3",//设置“省市县”字体颜色
+            "fontSize":"12px",//设置字体大小
+            "hoverColor":"#435abd",
+            "paddingLeft":"5px",//设置“省”位置处的span相较于边框的距离
+            "arrowRight":"5px",//设置下拉箭头距离边框右侧的距离
+            "maxHeight":"200px",
+            //"preSet":"",//数据初始化 ；这里的数据初始化有两种方式，第一种是用preSet属性设置，第二种是在a标签里使用name属性设置
+            "getVal":function(){//这个方法是每次选中一个省、市或者县之后，执行的方法
+                //console.log($(".pick-area-hidden").val())
+                //console.log($(".pick-area-dom").val())
+                var thisdom = $("."+$(".pick-area-dom").val());//返回的是调用这个插件的元素pick-area，$(".pick-area-dom").val()的值是该元素的另一个class名，这个class名在dom结构中是唯一的，不会有重复，可以通过这个class名来识别这个pick-area
+                thisdom.next().val($(".pick-area-hidden").val());//$(".pick-area-hidden").val()是页面中隐藏域的值，存放着每次选中一个省、市或者县的时候，当前文本存放的省市县的最新值，每点击一次下拉框里的li，这个值就会立即更新
+            }
+        });
+    </script>
 </body>
 
 </html>

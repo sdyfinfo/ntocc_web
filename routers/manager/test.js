@@ -1621,4 +1621,80 @@ router.post('/driverdataquery',function(req,res,next){
     )
 });
 
+
+router.post('/linequery',function(req,res,next){
+    var draw = req.query.currentpage;
+    var response = {
+        "response": {
+            "totalcount": "1",
+            "draw": "1",
+            "list": [
+                {
+                    "loading_address": "花园路23号",
+                    "consigneeid": "小红",
+                    "addTime": "20200102084425",
+                    "consigneeTel": "15288877732",
+                    "lid": "70c2cabf02af425da02d4d12447cfdb1",
+                    "univalence": "10000",
+                    "goods": "煤炭",
+                    "updateTime": "20200102084603",
+                    "project_name": "测试",
+                    "unloading_place": "山东省威海市文登区",
+                    "operator": "admin",
+                    "number": "10",
+                    "unit": "吨",
+                    "project_id": "6c747281f9dc46c2b2475bffd6a76a85",
+                    "consignorTel": "15288877732",
+                    "phone": "15288877732",
+                    "loading_place": "山东省济南市平阴县",
+                    "unloading_address": "文登路12号",
+                    "organid": "6c747281f9dc46c2b2475bffd6a75b89",
+                    "linename": "平阴→文登",
+                    "goods_type": "煤炭及制品",
+                    "state": "0",
+                    "consignorid": "小明",
+                    "contacts": "线路人"
+                }
+            ]
+        },
+        "retmsg": "调用成功",
+        "retcode": "0000"
+    };
+    res.send(
+        response
+    )
+});
+
+
+
+
+router.post('/proquery',function(req,res,next){
+    var draw = req.query.currentpage;
+    var response = {
+        head:{
+            retcode:"0000"
+        },
+        response:{
+            draw: draw,
+            totalcount:"6",
+            filtercount:"6",
+            projectlist:[
+                {"lid":"00000","project_name":"项目1"},
+                {"lid":"00001","project_name":"项目2"},
+                {"lid":"00002","project_name":"项目3"},
+                {"lid":"00003","project_name":"项目4"},
+                {"lid":"00004","project_name":"项目5"},
+                {"lid":"00005","project_name":"项目6"}
+            ]
+        }
+    };
+    res.send(
+        response
+    )
+});
+
+
+
+
+
 module.exports = router;

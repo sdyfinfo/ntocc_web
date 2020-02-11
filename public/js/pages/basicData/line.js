@@ -3,15 +3,20 @@
  */
 
 var lineList = [];
-
 if(App.isAngularJsApp() == false){
     jQuery(document).ready(function(){
         //线路列表
         LineTable.init();
         //线路表
         LineEdit.init();
+        //获取项目名称列表，用来做成项目选择框
+        proDataGet();
+        //多控件初始化
+        //LineSelect2.init();
     });
 }
+
+
 
 //项目列表
 var LineTable = function(){
@@ -33,7 +38,7 @@ var LineTable = function(){
             "ajax":function (data, callback, settings) {
                 var formData = $(".inquiry-form").getFormData();
                 var da = {
-                    projectname: formData.projectname,
+                    projectname: formData.project_name,
                     linename: formData.linename,
                     loading_address:formData.loading_address,
                     unloading_address:formData.unloading_address,
@@ -62,6 +67,9 @@ var LineTable = function(){
                 {"data":"state"},
                 {"data":"addTime"},
                 {"data":"updateTime"},
+                {"data":"goods_type"},
+                {"data":"goods"},
+                {"data":"number"},
                 {"data":null}
             ],
             columnDefs:[
@@ -101,7 +109,7 @@ var LineTable = function(){
                     }
                 },
                 {
-                    "targets":[16],
+                    "targets":[19],
                     "render": function (data, type, row, meta) {
                         var edit = '<a href="javascript:;" id="op_edit">编辑</a>';
 //                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
@@ -181,7 +189,7 @@ var LineEdit = function(){
                 project_name: {
                     required: true
                 },
-                loading_name:{
+                loading_place:{
                     required: true
                 },
                 unloading_name:{
@@ -204,14 +212,24 @@ var LineEdit = function(){
                 },
                 phone:{
                     required: true
+                },
+                goods_type:{
+                    required: true
+                },
+                goods:{
+                    required: true
+                },
+                numbers:{
+                    required: true
                 }
+
             },
 
             messages: {
-                proname: {
+                project_name: {
                     required: "请输入项目名称"
                 },
-                loading_name:{
+                loading_place:{
                     required: "请选择装货地名称"
                 },
                 unloading_name:{
@@ -234,6 +252,15 @@ var LineEdit = function(){
                 },
                 phone:{
                     required: "请输入联系电话"
+                },
+                goods_type:{
+                    required: "请选择货物类型"
+                },
+                goods:{
+                    required: "请选择货物名称"
+                },
+                numbers:{
+                    required: "请输入总发运数量"
                 }
             },
 
@@ -277,7 +304,7 @@ var LineEdit = function(){
             if ($('.register-form').validate().form()) {
                 var line = $('.register-form').getFormData();
                 line.project_name = $("#project_name").val();
-                line.loading_name = $("#loading_name").val();
+                line.loading_place = $("#loading_place").val();
                 line.unloading_name = $('#unloading_name').val();
                 line.loading_address = $('#loading_address').val();
                 line.unloading_place = $('#unloading_place').val();
@@ -289,6 +316,15 @@ var LineEdit = function(){
             if($("input[name=edittype]").val() == LINEADD){
                 lineAdd(line);
             }else {
+                var data;
+                for(var i = 0; i < lineList.length; i++) {
+                    if(line.lid == lineList[i].lid){
+                        data = lineList[i];
+                    }
+                }
+                if(equar(line.project_name, (data.project_id || "").split(","))){
+                    line.project_name = [];
+                }
                 lineEdit(line,LINEEDIT);
             }
         });
@@ -301,10 +337,15 @@ var LineEdit = function(){
             $(":input",".register-form").not(":button,:reset,:submit,:radio,:input[name=birthday],#evaluationneed").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
+            //情况项目名称输入框
+            $("#projtct_name").val(null).select2({
+                placeholder: "项目名称",
+                width:null
+            })
+
+            $(".register-form").find("input[name=pid]").attr("readonly", false);
             $("input[name=edittype]").val(LINEADD);
             $('#edit_lin').modal('show');
-
-            console.log("222");
         });
         //编辑项目
         $('#line_table').on('click', '#op_edit', function (e) {
@@ -322,10 +363,17 @@ var LineEdit = function(){
                     line = lineList[i];
                 }
             }
-            var options = { jsonValue: project, exclude:exclude,isDebug: false};
+            var options = { jsonValue: line, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
             //项目名称赋值
-            var project_name = $("#project_name").dataTable().fnGetData(row).lid;
+            $("#project_name").find("option:selected").text();
+            $("#loading_place").val(line.loading_place);
+            $("#unloading_name").val(line.unloading_address);
+            $("#loadingadd").val(line.unloading_place);
+           /* var project_name = $("#line_table").dataTable().fnGetData(row).project_name;
+            var loading_place = $("#line_table").dataTable().fnGetData(row).loading_place;
+            var unloading_address = $("#line_table").dataTable().fnGetData(row).unloading_address;
+            var unloading_place = $("#line_table").dataTable().fnGetData(row).unloading_place;*/
             $("input[name=edittype]").val(LINEEDIT);
             $('#edit_lin').modal('show');
         });
@@ -376,3 +424,47 @@ function lineEditEnd (flg, result, type){
     App.unblockUI('#lay-out');
     alertDialog(alert);
 }
+
+
+//获取项目名称
+function proDataGetEnd(flg, result, callback){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+            var projectList = result.response.project_name;
+            procjectNameSelectBuild(projectList);
+        }
+    }
+}
+
+function procjectNameSelectBuild(projectList){
+    var data = [];
+    for (var i = 0; i < projectList.length; i++){
+        data.push({id:projectList[i].project_id, text: projectList[i].projectname});
+    }
+    $("#project_name").select2({
+        placeholder: "项目名称",
+        data: data,
+        width:null
+    })
+}
+
+var LineDelete = function() {
+    $('#op_del').click(function() {
+        var len = $(".checkboxes:checked").length;
+        if(len < 1){
+            alertDialog("至少选中一项！");
+        }else{
+            confirmDialog("数据删除后将不可恢复，您确定要删除吗？", LineDelete.deleteline)
+        }
+    });
+    return{
+        deleteline: function(){
+            var linelist = {lineidlist:[]};
+            $(".checkboxes:checked").parents("td").each(function () {
+                linelist.lineidlist.push($(this).siblings().eq(1).text());
+            });
+            lineDelete(linelist);
+        }
+    }
+}();
