@@ -322,6 +322,7 @@ var UserEdit = function() {
             if($("input[name=edittype]").val() == USERADD){
                 userAdd(user);
             }else {
+
                 var data;
                 for (var i = 0; i < userList.length; i++) {
                     if (user.userid == userList[i].userid) {
@@ -331,7 +332,12 @@ var UserEdit = function() {
                 if (equar(user.rolelist, (data.roleid || "").split(","))) {
                     user.rolelist = [];
                 }
-                userEdit(user);
+                var formData = new FormData();
+                formData.append("img_head",null);
+                var data1 = sendMessageEdit(DEFAULT, user);
+                formData.append("body",new Blob([data1],{type:"application/json"}));
+                formData.append("rolelist",user.rolelist);
+                userEdit(formData);
             }
         });
         //新增用户

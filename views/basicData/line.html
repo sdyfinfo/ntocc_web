@@ -41,6 +41,7 @@
         .blank{float:left;width:50%;height:400px;background:cyan;border-top:1px solid #333;margin-top:50px;}
         .blank2{float:left;width:50%;height:400px;background:lightpink;border-top:1px solid #333;padding-top:50px;}
         .box{width:100%;overflow: hidden;background:lightgreen;}
+
     </style>
 </head>
 
@@ -221,6 +222,7 @@
                             <!-- 操作类型隐藏（用来区分新增还是编辑） -->
                             <input type="hidden" name="edittype">
                             <input type="hidden" name="lid">
+                            <input type="hidden" name="pid">
                             <h4>线路新增</h4>
                             <div class="row">
                                 <div class="form-group col-md-12">
@@ -228,14 +230,28 @@
 
                                     <div class="col-md-10" style="padding-left: 10px;width: 80% ">
                                         <select id="project_name" class="form-control  num_select"  name="project_name">
-                                            <option value="">项目名称</option>
+                                            <option value="">请选择</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">装货地名称<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text"  class="form-control" name="loading_place" id="loading_place" placeholder="装货地址"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">卸货地名称<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" name="unloading_name" id="unloading_name" placeholder="卸货地址"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="form-group col-md-12">
-                                    <label class="col-md-2 control-label">装货地名称<span class="required"> * </span></label>
+                                    <label class="col-md-2 control-label">装货地址<span class="required"> * </span></label>
                                     <div class="col-md-3">
                                         <select class="form-control" name="loading_provincecode" id="loading_provincecode">
                                             <option value="">请选择省</option>
@@ -255,7 +271,7 @@
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-12">
-                                    <label class="col-md-2 control-label">卸货地名称<span class="required"> * </span></label>
+                                    <label class="col-md-2 control-label">卸货地址<span class="required"> * </span></label>
                                     <div class="col-md-3">
                                         <select class="form-control" name="unloading_provincecode" id="unloading_provincecode">
                                             <option value="">请选择省</option>
@@ -273,7 +289,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <!--<div class="row">
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label">装货地址<span class="required"> * </span></label>
                                     <div class="col-md-8">
@@ -286,22 +302,36 @@
                                         <div class="pick-area4" name="unloading_place" id="unloading_place"></div>
                                     </div>
                                 </div>
-                            </div>
+                            </div>-->
                             <div class="row">
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label">发货人<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <select class="form-control" id="consignorid" name="consignorid">
+                                        <select class="form-control" id="consignor" name="consignor">
                                             <option value="">请选择</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">发货人联系电话<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="发货人联系电话" name="consignorTel">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label">收货人<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <select class="form-control" id="consigneeid" name="consigneeid">
+                                        <select class="form-control" id="consignee" name="consignee">
                                             <option value="">请选择</option>
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">收货人联系电话<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="收货人联系电话" name="consigneeTel">
                                     </div>
                                 </div>
                             </div>
@@ -330,12 +360,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" id="linegoods">
+                            <div class="row">
                                 <div class="form-group col-md-12">
-                                    <label class="col-md-2 control-label" style="padding-right: 20px">货物名称<span class="required"> * </span></label>
-                                    <div class="col-md-10" style="padding-left: 10px;width: 80% ">
-                                        <select id="goodsname" class="form-control select2-multiple" multiple name="goods">
-                                        </select>
+                                    <label class="col-md-2 control-label">货物名称<span class="required"> * </span></label>
+                                    <div class="col-md-10">
+                                        <input name="goods" id="goodsname" value="" data-role="tagsinput" placeholder="输入后回车" style="width: 95%;height: 30px"/>
                                     </div>
                                 </div>
                             </div>
@@ -375,16 +404,18 @@
     <script src="/public/plugins/jstree/dist/jstree.min.js" type="text/javascript"></script>
     <script src="/public/js/pages/md5.js" type="text/javascript" type="text/javascript"></script>
     <script src="/public/js/plugins/jquery.editable/pick-pcc.js" type="text/javascript"></script>
-    <script src="/public/js/plugins/jquery.editable/pick-pcc.min.1.0.4.js" type="text/javascript"></script>
+    <script src="/public/js/plugins/jquery.editable/tagsinput.js" type="text/javascript"></script>
+    <!--<script src="/public/js/plugins/jquery.editable/pick-pcc.min.1.0.4.js" type="text/javascript"></script>-->
     <!--本页面用到的JS-->
     <script type="text/javascript" src="/public/js/pages/form.js"></script>
     <script type="text/javascript" src="/public/js/pages/const.js"></script>
     <script type="text/javascript" src="/public/js/pages/common.js"></script>
     <script type="text/javascript" src="/public/js/pages/data.js"></script>
     <script type="text/javascript" src="/public/js/pages/user-rights.js"></script>
+    <!--<script type="text/javascript" src="/public/js/pages/areaCode.js"></script>-->
+    <!--<script type="text/javascript" src="/routers/manager/test.js"></script>-->
     <script type="text/javascript" src="/public/js/pages/areaCode.js"></script>
     <script type="text/javascript" src="/public/js/pages/basicData/areaCodeDisplay.js"></script>
-    <!--<script type="text/javascript" src="/routers/manager/test.js"></script>-->
 
     <script src="/public/js/pages/basicData/line.js"></script>
 
@@ -411,6 +442,9 @@
                 thisdom.next().val($(".pick-area-hidden").val());//$(".pick-area-hidden").val()是页面中隐藏域的值，存放着每次选中一个省、市或者县的时候，当前文本存放的省市县的最新值，每点击一次下拉框里的li，这个值就会立即更新
             }
         });
+        function getinput(){
+            alert($('#goodsname').val());
+        }
     </script>
 </body>
 

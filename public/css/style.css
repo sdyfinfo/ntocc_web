@@ -7924,7 +7924,7 @@ body.skin-3 {
 .tree-under-input{
     position:absolute;
     background-color: white;
-    z-index:1010;
+    z-index:10000;
     width: 91%;
     height: 200px;
     overflow: auto;

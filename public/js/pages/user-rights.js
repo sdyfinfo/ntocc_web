@@ -3,6 +3,7 @@
  */
 var userRightUrl = regulateSucc.userHostUrl;
 var businessUrl = regulateSucc.businessUrl;
+//var dictqueryUrl = regulateSucc.dictqueryUrl;
 function userDataGet(data, callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
@@ -767,6 +768,79 @@ function projectDataGet(data,callback){
     });
 }
 
+//发货人
+function consignoridDateGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {conid: "",consignor:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "consignorquery",               //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("consignoridDateGet:" + JSON.stringify(result));
+            getconsignoridDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("consignoridDateGet-error:" + JSON.stringify(errorMsg));
+            getconsignoridDataEnd(false, "", callback);
+        }
+    });
+}
+
+//收货人
+function consigneeidDateGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {conid: "", consignee:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "consigneequery",               //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("consigneeidDateGet:" + JSON.stringify(result));
+            getconsigneeidDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("consigneeidDateGet-error:" + JSON.stringify(errorMsg));
+            getconsigneeidDataEnd(false, "", callback);
+        }
+    });
+}
+
+//货物类型
+function didDateGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {did: "", lx:"10005", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: userHostUrl + "dictquery",               //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("didDateGet:" + JSON.stringify(result));
+            getdidDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("didDateGet-error:" + JSON.stringify(errorMsg));
+            getdidDataEnd(false, "", callback);
+        }
+    });
+}
+
+
 //项目新增
 function projectAdd(data){
     App.blockUI({target:'#lay-out',boxed: true});
@@ -883,7 +957,7 @@ function lineDataGet(data,callback){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: "linequery",    //请求发送到TestServlet处
+        url: businessUrl + "linequery",    //请求发送到TestServlet处
         data: sendMessageEdit(DEFAULT, data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -1075,7 +1149,7 @@ function lineEdit(data,type){
 }*/
 
 //货物名称查询
-function goodsDateGet(data, callback){
+/*function goodsDateGet(data, callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
         data = {lid: "", goods: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
@@ -1096,7 +1170,7 @@ function goodsDateGet(data, callback){
             getGoodsDataEnd(false, "", callback);
         }
     });
-}
+}*/
 
 //删除线路信息
 function lineDelete(data){

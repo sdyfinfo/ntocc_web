@@ -226,7 +226,6 @@ var addressEdit = function(){
             $(":input",".register-form").not(":button,:reset,:submit,:radio,:input[name=birthday],#evaluationneed").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
-
             $(".register-form").find("input[name=aid]").attr("readonly", false);
             $("input[name=edittype]").val(ADDRADD);
             $('#edit_adds').modal('show');
@@ -332,3 +331,8 @@ function addrEditEnd(flg, result, type){
     App.unblockUI('#lay-out');
     alertDialog(alert);
 }
+
+//项目名称查询
+$("#addr_inquiry").on("click", function(){
+    addressTable.init();
+});
