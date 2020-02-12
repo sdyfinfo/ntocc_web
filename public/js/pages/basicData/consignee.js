@@ -1,22 +1,22 @@
 /**
- * Created by Lenovo on 2020/2/10.
+ * Created by Lenovo on 2020/2/12.
  */
-
-var addressidList = [];
+var conList = [];
 if(App.isAngularJsApp() == false){
     jQuery(document).ready(function(){
         fun_power();
-        //地址列表
-        addressTable.init();
-        //线路表
-        addressEdit.init();
+        //收货人信息列表
+        ConsTable.init();
+        //收货人信息
+        ConsEdit.init();
     });
 }
 
-//项目列表
-var addressTable = function(){
+
+//收货人信息列表
+var ConsTable = function(){
     var initTable = function(){
-        var table = $('#add_table');
+        var table = $('#gnee_table');
         pageLengthInit(table);
         table.dataTable({
             "language": TableLanguage,
@@ -33,25 +33,24 @@ var addressTable = function(){
             "ajax":function (data, callback, settings) {
                 var formData = $(".inquiry-form").getFormData();
                 var da = {
-                    aid:formData.aid,
-                    mailing_address: formData.mailing_address,
+                    conid: formData.conid,
+                    consignee: formData.consignee,
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
                     draw: data.draw
                 };
-                addressDataGet(da, callback);
+                consigneeidDateGet(da, callback);
             },
             columns:[ //返回的json 数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 {"data":null},
                 {"data":null},
-                {"data":"aid", visible: false},
-                {"data":"mailing_address"},
-                {"data":"address"},
-                {"data":"addressee"},
-                {"data":"addresseeTel"},
-                {"data":"email"},
-                {"data":"updateTime"},
+                {"data":"conid", visible: false},
+                {"data":"consignee"},
+                {"data":"mobile"},
+                {"data":"credit_code"},
+                {"data":"addtime"},
+                {"data":"updatetime"},
                 {"data":null}
             ],
             columnDefs:[
@@ -69,7 +68,7 @@ var addressTable = function(){
                     }
                 },
                 {
-                    "targets":[9],
+                    "targets":[8],
                     "render": function (data, type, row, meta) {
                         var edit = '<a href="javascript:;" id="op_edit">编辑</a>';
 //                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
@@ -82,7 +81,7 @@ var addressTable = function(){
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(2),td:eq(4),td:eq(5),td:eq(6),td:eq(7)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(2),td:eq(3),td:eq(4),td:eq(5),td:eq(6),td:eq(7)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );
@@ -114,7 +113,7 @@ var addressTable = function(){
 }();
 
 
-var addressEdit = function(){
+var ConsEdit = function(){
     var handleRegister = function() {
         var validator = $('.register-form').validate({
             errorElement: 'span', //default input error message container
@@ -122,42 +121,27 @@ var addressEdit = function(){
             focusInvalid: false, // do not focus the last invalid input
             ignore: "",
             rules: {
-                mailing_address: {
+                consignee: {
                     required: true
                 },
-                address:{
+                mobile:{
                     required: true
                 },
-                addressee:{
-                    required: true
-                },
-                addresseeTel:{
-                    required: true
-                },
-                consigneeTel:{
-                    required: true
-                },
-                email:{
+                credit_code:{
                     required: true
                 }
 
             },
 
             messages: {
-                mailing_address: {
-                    required: "请选择邮寄地址"
+                consignee: {
+                    required: "请输入收货人"
                 },
-                address:{
-                    required: "请输入详细地址"
+                mobile:{
+                    required: "请输入收货人电话"
                 },
-                addressee:{
-                    required: "请输入收件人姓名"
-                },
-                addresseeTel:{
-                    required: "请输入收件人电话"
-                },
-                email:{
-                    required: "请输入收件人邮箱"
+                credit_code:{
+                    required: "请输入社会信用代码(或身份证号)"
                 }
             },
 
@@ -190,35 +174,32 @@ var addressEdit = function(){
             }
         });
         // 手机号码验证
-        jQuery.validator.addMethod("consigneeTel", function(value, element) {
+        jQuery.validator.addMethod("mobile", function(value, element) {
             var tel = /^1[3456789]\d{9}$/;
             return this.optional(element) || (tel.test(value));
         }, "请正确填写您的联系电话");
 
-        jQuery.validator.addMethod("consigneeid_mailbox", function(value, element) {
-            var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+        jQuery.validator.addMethod("credit_code", function(value, element) {
+            var reg =/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
             return this.optional(element) || (reg.test(value));
-        }, "请正确填写您的收件邮箱");
+        }, "请正确填写您的社会信用代码(或身份证号)");
 
         //点击确定按钮
         $('#register-btn').click(function() {
             btnDisable($('#register-btn'));
             if ($('.register-form').validate().form()) {
-                var addr = $('.register-form').getFormData();
-                var province = $("#provincecode").find("option:selected").text();
-                var city = $("#city").find("option:selected").text();
-                var county = $("#countycode").find("option:selected").text();
+                var genn = $('.register-form').getFormData();
             }
-            if($("input[name=edittype]").val() == ADDRADD){
-                addrsAdd(addr);
+            if($("input[name=edittype]").val() == GENNADD){
+                gennAdd(genn);
             }else {
                 var data;
-                for(var i = 0; i < addressidList.length; i++) {
-                    if(addr.aid == addressidList[i].aid){
-                        data = addressidList[i];
+                for(var i = 0; i < conList.length; i++) {
+                    if(genn.conid == conList[i].conid){
+                        data = conList[i];
                     }
                 }
-                addrsEdit(addr,ADDRSEDIT);
+                geenEdit(genn,GENNEDIT);
             }
         });
         //新增项目
@@ -230,12 +211,12 @@ var addressEdit = function(){
             $(":input",".register-form").not(":button,:reset,:submit,:radio,:input[name=birthday],#evaluationneed").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
-            $(".register-form").find("input[name=aid]").attr("readonly", false);
+            $(".register-form").find("input[name=conid]").attr("readonly", false);
             $("input[name=edittype]").val(ADDRADD);
-            $('#edit_adds').modal('show');
+            $('#edit_gnee').modal('show');
         });
         //编辑项目
-        $('#add_table').on('click', '#op_edit', function (e) {
+        $('#gnee_table').on('click', '#op_edit', function (e) {
             e.preventDefault();
             //清除校验错误信息
             validator.resetForm();
@@ -243,17 +224,17 @@ var addressEdit = function(){
             $(".modal-title").text("编辑项目");
             var exclude = [];
             var row = $(this).parents('tr')[0];
-            var aid = $("#add_table").dataTable().fnGetData(row).aid;
-            var address = new Object();
-            for(var i=0; i < addressidList.length; i++){
-                if(aid == addressidList[i].aid){
-                    address = addressidList[i];
+            var conid = $("#gnee_table").dataTable().fnGetData(row).conid;
+            var cons = new Object();
+            for(var i=0; i < conList.length; i++){
+                if(conid == conList[i].conid){
+                    cons = conList[i];
                 }
             }
-            var options = { jsonValue: address, exclude:exclude,isDebug: false};
+            var options = { jsonValue: cons, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
-            $("input[name=edittype]").val(LINEEDIT);
-            $('#edit_adds').modal('show');
+            $("input[name=edittype]").val(GENNEDIT);
+            $('#edit_gnee').modal('show');
         });
     };
     return {
@@ -264,61 +245,64 @@ var addressEdit = function(){
 }();
 
 
-//返回地址管理列表查询结果
-function getaddressDataEnd(flg, result, callback){
-    App.unblockUI("#lay-out");
-    if(flg){
-        if(result && result.retcode == SUCCESS){
-            var res = result.response;
-            addressidList = res.addressidlist;
-            tableDataSet(res.draw, res.totalcount, res.totalcount, res.addressidlist, callback);
-        }else {
-            tableDataSet(0, 0, 0, [], callback);
-            alertDialog("地址信息获取失败！");
-        }
-    }else{
-        tableDataSet(0, 0, 0, [], callback);
-        alertDialog("地址信息获取失败！");
-    }
-}
-
+//查询
+$("#cons_inquiry").on("click",function(){
+    //发货人查询
+    ConsTable.init();
+})
 
 //删除
-var AddrDelete = function() {
+var GennDelete = function() {
     $('#op_del').click(function() {
         var len = $(".checkboxes:checked").length;
         if(len < 1){
             alertDialog("至少选中一项！");
         }else{
-            confirmDialog("数据删除后将不可恢复，您确定要删除吗？", AddrDelete.deleteAddr)
+            confirmDialog("数据删除后将不可恢复，您确定要删除吗？", GennDelete.deletegenn)
         }
     });
     return{
-        deleteAddr: function(){
-            var addr = {addressidlist:[]};
+        deletegenn: function(){
+            var conlist = {conList:[]};
             $(".checkboxes:checked").parents("td").each(function () {
-                var row = $(this).parents('tr')[0];
-                addr.addressidlist.push($("#add_table").dataTable().fnGetData(row).aid);
+                conlist.conList.push($(this).siblings().eq(1).text());
             });
-            addrDelete(addr);
+            gennDelete(conlist);
         }
     }
 }();
 
+//查询返回结果
+function getconsigneeidDataEnd(flg, result, callback){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if(result && result.retcode == SUCCESS){
+            var res = result.response;
+            conList = res.conlist;
+            tableDataSet(res.draw, res.totalcount, res.totalcount, res.conlist, callback);
+        }else {
+            tableDataSet(0, 0, 0, [], callback);
+            alertDialog("发货人信息获取失败！");
+        }
+    }else{
+        tableDataSet(0, 0, 0, [], callback);
+        alertDialog("发货人信息获取失败！");
+    }
+}
 
-//新增
-function addrEditEnd(flg, result, type){
+
+function gennEditEnd(flg, result, type){
     var res = "失败";
     var text = "";
     var alert = "";
     switch (type){
-        case ADDRADD:
+        case GENNADD:
             text = "新增";
             break;
-        case ADDRSEDIT:
+        case GENNEDIT:
             text = "编辑";
             break;
-        case ADDRDELETE:
+        case GENNDELETE:
             text = "删除";
             break;
     }
@@ -328,15 +312,10 @@ function addrEditEnd(flg, result, type){
         }
         if (result && result.retcode == SUCCESS) {
             res = "成功";
-            ProjectTable.init();
-            $('#edit_adds').modal('hide');
+            ConsTable.init();
+            $('#edit_gnee').modal('hide');
         }
     }
     App.unblockUI('#lay-out');
     alertDialog(alert);
 }
-
-//项目名称查询
-$("#addr_inquiry").on("click", function(){
-    addressTable.init();
-});

@@ -816,6 +816,49 @@ function consigneeidDateGet(data,callback){
     });
 }
 
+//收货人信息新增
+function gennAdd(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "consigneeadd",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("consigeenEdit:" + JSON.stringify(result));
+            gennEditEnd(true, result, GEENADD);
+        },
+        error: function (errorMsg) {
+            console.info("consigeenEdit-error:" + JSON.stringify(errorMsg));
+            gennEditEnd(false, "", GEENADD);
+        }
+    });
+}
+
+//收货人信息修改
+function geenEdit(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "consigneeedit",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("geenEdit:" + JSON.stringify(result));
+            gennEditEnd(true, result, GENNEDIT);
+        },
+        error: function (errorMsg) {
+            console.info("geenEdit-error:" + JSON.stringify(errorMsg));
+            gennEditEnd(false, "", GENNEDIT);
+        }
+    });
+}
+
+
 //货物类型
 function didDateGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});

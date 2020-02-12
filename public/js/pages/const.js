@@ -99,6 +99,9 @@ const LINESTATUS =73;
 const ADDRADD = 74;
 const ADDRSEDIT = 75;
 const ADDRDELETE = 76;
+const GENNADD = 77;
+const GENNEDIT = 78;
+const GENNDELETE =79;
 
 const TableLanguage = {
         "aria": {

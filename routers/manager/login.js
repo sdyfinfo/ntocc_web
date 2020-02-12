@@ -284,6 +284,20 @@ router.get('/address',function(req,res,next){
     }
 });
 
+//收货人信息
+router.get('/consignee',function(req,res,next){
+    console.info(req.url);
+    var uname = req.query.username;
+    if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
+        res.render('basicData/consignee', {
+            menu: req.url.substr(1),
+            loginsucc: req.session["ywtLogin" + uname]
+        });
+    }else{
+        res.redirect('/');
+    }
+});
+
 router.get('/template',function(req,res,next){
     console.info(req.url);
     var artid = req.query.artid || '';
