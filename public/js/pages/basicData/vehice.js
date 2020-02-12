@@ -3,6 +3,8 @@
  */
 
 var vehicleList = [];
+var plateColor,ve_conductor,vehicleType,energy_Type = [];
+var dictTrue = [];
 var imgInit = "/public/img/img_upload.png";
 
 if (App.isAngularJsApp() === false) {
@@ -10,26 +12,16 @@ if (App.isAngularJsApp() === false) {
         fun_power();
         //时间控件初始化
         ComponentsDateTimePickers.init();
-        //初始化相关信息
-        vehiceDataInit();
-        //车辆表格
-        VehiceTable.init();
+        //获取字典相关信息
+        var data = {};
+        var list = ["10001","10002","10003","10004"];
+        for(var i in list){
+            data.lx = list[i];
+            dictQuery(data);
+        }
         //车辆操作和查看
         VehiceEdit.init();
     });
-}
-
-//初始化相关信息
-function vehiceDataInit(){
-    //车型
-    for(var i = 0;i < VehiceType.length; i++){
-        $("#vehicletype").append("<option value='"+VehiceType[i].value+"'>"+VehiceType[i].name+"</option>");
-        $("#vehicletype_edit").append("<option value='"+VehiceType[i].value+"'>"+VehiceType[i].name+"</option>");
-    }
-    //车长
-    for(var i =0; i< VehiceConductor.length; i++){
-        $("#conductor").append("<option value='"+VehiceConductor[i].value+"'>"+VehiceConductor[i].name+"</option>");
-    }
 }
 
 //时间控件初始化
@@ -161,7 +153,11 @@ var VehiceTable = function () {
                 },{
                     "targets": [12],
                     "render": function (data, type, row, meta) {
-                        return '<a href="javascript:;" class="imgCheck">查看图片<span hidden="hidden">'+data+'</span></a>';
+                        if(data == ""){
+                            return "暂无图片";
+                        }else{
+                            return '<a href="javascript:;" class="imgCheck">查看图片<span hidden="hidden">'+data+'</span></a>';
+                        }
                     }
                 },{
                     "targets": [14],
@@ -626,19 +622,10 @@ function getVehiceDataEnd(flg, result, callback){
 //显示车辆颜色
 function plateColorDisplay(data){
     var color = "";
-    switch (data){
-        case "01":
-            color = "黄色";
-            break;
-        case "02":
-            color = "蓝色";
-            break;
-        case "03":
-            color = "绿色";
-            break;
-        case "04":
-            color = "黄绿色";
-            break;
+    for(var i in plateColor){
+        if(data == plateColor[i].code){
+            color = plateColor[i].value;
+        }
     }
     return color;
 }
@@ -646,9 +633,9 @@ function plateColorDisplay(data){
 //显示车型
 function vehiceTypeDisplay(data){
     var type = "";
-    for(var i = 0; i < VehiceType.length; i++){
-        if(data == VehiceType[i].value){
-            type = VehiceType[i].name;
+    for(var i = 0; i < vehicleType.length; i++){
+        if(data == vehicleType[i].code){
+            type = vehicleType[i].value;
         }
     }
     return type;
@@ -656,13 +643,13 @@ function vehiceTypeDisplay(data){
 
 //显示车长
 function conductorDisplay(data){
-    var conductor = "";
-    for(var i = 0; i < VehiceConductor.length; i++){
-        if(data == VehiceConductor[i].value){
-            conductor = VehiceConductor[i].name;
+    var value = "";
+    for(var i = 0; i < ve_conductor.length; i++){
+        if(data == ve_conductor[i].code){
+            value = ve_conductor[i].value;
         }
     }
-    return conductor;
+    return value;
 }
 
 //车辆信息操作返回结果
@@ -725,5 +712,60 @@ function fileUploadAllowed(id){
             $(".edit-form").find("select").attr("disabled", false);
             $(".edit-form").find("input").attr("disabled", false);
         }
+    }
+}
+
+//获取字典信息返回
+function getDictDataEnd(flg,result){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+            var res = result.response;
+            var dictlist = res.dictlist;
+            //给准驾车型赋值
+            for(var i = 0;i<dictlist.length;i++){
+                switch (dictlist[i].lx){
+                    case "10001":
+                        dictTrue.push("1");
+                        plateColor = dictlist;
+                        $("#platecolor").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
+                        $("#platecolor_edit").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
+                        break;
+                    case "10002":
+                        dictTrue.push("1");
+                        ve_conductor = dictlist;
+                        $("#conductor").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
+                        break;
+                    case "10003":
+                        dictTrue.push("1");
+                        vehicleType = dictlist;
+                        $("#vehicletype").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
+                        $("#vehicletype_edit").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
+                        break;
+                    case "10004":
+                        dictTrue.push("1");
+                        energy_Type = dictlist;
+                        $("#energy_type").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
+                        break;
+                }
+                vehiceInfoRequest();
+            }
+        }else{
+            alertDialog("获取字典信息获取失败！");
+            dictTrue.push("0");
+            vehiceInfoRequest();
+        }
+    }else{
+        alertDialog("获取字典信息获取失败！");
+        dictTrue.push("0");
+        vehiceInfoRequest();
+    }
+}
+
+//判断是否可以请求车辆信息
+function vehiceInfoRequest(){
+    if(dictTrue.length ==  4){
+        //车辆表格
+        VehiceTable.init();
     }
 }

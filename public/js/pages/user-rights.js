@@ -3,7 +3,6 @@
  */
 var userRightUrl = regulateSucc.userHostUrl;
 var businessUrl = regulateSucc.businessUrl;
-//var dictqueryUrl = regulateSucc.dictqueryUrl;
 function userDataGet(data, callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
@@ -743,55 +742,6 @@ function regDelete(data){
     });
 }
 
-//项目查询
-function projectDataGet(data,callback){
-    App.blockUI({target: '#lay-out',boxed: true});
-    if(data == null){
-        data = {proname: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
-    }
-    $.ajax({
-        type: "post",
-        contentType: "application/json",
-        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url:"http://127.0.0.1:8007/ywt/web/front/projectdataquery",
-        //url: businessUrl + "projectquery",                    //请求发送到TestServlet处
-        data: sendMessageEdit(DEFAULT, data),
-        dataType: "json",        //返回数据形式为json
-        success: function (result) {
-            console.info("projectDataGet:" + JSON.stringify(result));
-            getProjectDataEnd(true, result, callback);
-        },
-        error: function (errorMsg) {
-            console.info("projectDataGet-error:" + JSON.stringify(errorMsg));
-            getProjectDataEnd(false, "", callback);
-        }
-    });
-}
-
-//发货人
-function consignoridDateGet(data,callback){
-    App.blockUI({target: '#lay-out',boxed: true});
-    if(data == null){
-        data = {conid: "",consignor:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
-    }
-    $.ajax({
-        type: "post",
-        contentType: "application/json",
-        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "consignorquery",               //请求发送到TestServlet处
-        data: sendMessageEdit(DEFAULT, data),
-        dataType: "json",        //返回数据形式为json
-        success: function (result) {
-            console.info("consignoridDateGet:" + JSON.stringify(result));
-            getconsignoridDataEnd(true, result, callback);
-        },
-        error: function (errorMsg) {
-            console.info("consignoridDateGet-error:" + JSON.stringify(errorMsg));
-            getconsignoridDataEnd(false, "", callback);
-        }
-    });
-}
-
 //收货人
 function consigneeidDateGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
@@ -883,6 +833,29 @@ function didDateGet(data,callback){
     });
 }
 
+//项目查询
+function projectDataGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {proname: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "projectquery",                    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("projectDataGet:" + JSON.stringify(result));
+            getProjectDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("projectDataGet-error:" + JSON.stringify(errorMsg));
+            getProjectDataEnd(false, "", callback);
+        }
+    });
+}
 
 //项目新增
 function projectAdd(data){
@@ -1167,54 +1140,6 @@ function lineEdit(data,type){
     });
 }
 
-//项目名称查询
-/*function proDataGet(data, callback){
-    App.blockUI({target: '#lay-out',boxed: true});
-    if(data == null){
-        data = {project_id: "", project_name: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
-    }
-    $.ajax({
-        type: "post",
-        contentType: "application/json",
-        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "projectdataquery",    //请求发送到TestServlet处
-        data: sendMessageEdit(DEFAULT, data),
-        dataType: "json",        //返回数据形式为json
-        success: function (result) {
-            console.info("proDataGet:" + JSON.stringify(result));
-            proDataGetEnd(true, result, callback);
-        },
-        error: function (errorMsg) {
-            console.info("proDataGet-error:" + JSON.stringify(errorMsg));
-            proDataGetEnd(false, "", callback);
-        }
-    });
-}*/
-
-//货物名称查询
-/*function goodsDateGet(data, callback){
-    App.blockUI({target: '#lay-out',boxed: true});
-    if(data == null){
-        data = {lid: "", goods: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
-    }
-    $.ajax({
-        type: "post",
-        contentType: "application/json",
-        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url:"http://127.0.0.1:8007/ywt/web/front/googsquery",    //请求发送到TestServlet处
-        data: sendMessageEdit(DEFAULT, data),
-        dataType: "json",        //返回数据形式为json
-        success: function (result) {
-            console.info("goodsDateGet:" + JSON.stringify(result));
-            getGoodsDataEnd(true, result, callback);
-        },
-        error: function (errorMsg) {
-            console.info("goodsDateGet-error:" + JSON.stringify(errorMsg));
-            getGoodsDataEnd(false, "", callback);
-        }
-    });
-}*/
-
 //删除线路信息
 function lineDelete(data){
     App.blockUI({target:'#lay-out',boxed: true});
@@ -1420,7 +1345,7 @@ function driverState(data){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "driverprohibit",    //请求发送到TestServlet处
+        url: businessUrl + "driverStateUpdate",    //请求发送到TestServlet处
         data: sendMessageEdit('', data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -1442,7 +1367,7 @@ function driverUpload(data){
         contentType: false,
         processData:false,
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "driverupload",    //请求发送到TestServlet处
+        url: businessUrl + "driverimport",    //请求发送到TestServlet处
         data: data,
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -1473,6 +1398,141 @@ function dictQuery(data){
         error: function (errorMsg) {
             console.info("dictQuery-error:" + JSON.stringify(errorMsg));
             getDictDataEnd(false, "");
+        }
+    });
+}
+
+//发货人信息查询
+function consignorDataGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {consignor: "",invoice_rise:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "consignorquery",    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("consignorDataGet:" + JSON.stringify(result));
+            getConsignorDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("consignorDataGet-error:" + JSON.stringify(errorMsg));
+            getConsignorDataEnd(false, "", callback);
+        }
+    });
+}
+
+//发货人新增
+function consignorAdd(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "consignoradd",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("consignorAdd:" + JSON.stringify(result));
+            consignorEditEnd(true, result, CONSIGNORADD);
+        },
+        error: function (errorMsg) {
+            console.info("consignorAdd-error:" + JSON.stringify(errorMsg));
+            consignorEditEnd(false, "", CONSIGNORADD);
+        }
+    });
+}
+
+//发货人编辑
+function consignorEdit(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "consignoredit",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("consignorEdit:" + JSON.stringify(result));
+            consignorEditEnd(true, result, CONSIGNOREDIT);
+        },
+        error: function (errorMsg) {
+            console.info("consignorEdit-error:" + JSON.stringify(errorMsg));
+            consignorEditEnd(false, "", CONSIGNOREDIT);
+        }
+    });
+}
+
+//发货人删除
+function consignorDelete(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "consignordelete",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("consignorDelete:" + JSON.stringify(result));
+            consignorEditEnd(true, result, CONSIGNORDELETE);
+        },
+        error: function (errorMsg) {
+            console.info("consignorDelete-error:" + JSON.stringify(errorMsg));
+            consignorEditEnd(false, "", CONSIGNORDELETE);
+        }
+    });
+}
+
+//获取发票抬头信息
+function invoiceDataGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {invoice_rise: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "invoicequery",    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("invoiceDataGet:" + JSON.stringify(result));
+            getInvoiceDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("invoiceDataGet-error:" + JSON.stringify(errorMsg));
+            getInvoiceDataEnd(false, "", callback);
+        }
+    });
+}
+
+//获取收款人信息
+function payeeDataGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {consignor: "",invoice_rise:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "payeequery",    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("payeeDataGet:" + JSON.stringify(result));
+            getPayeeDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("payeeDataGet-error:" + JSON.stringify(errorMsg));
+            getPayeeDataEnd(false, "", callback);
         }
     });
 }

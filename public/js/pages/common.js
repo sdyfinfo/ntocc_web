@@ -612,7 +612,7 @@ function discountNumber(data) {
 //判断按钮权限
 function fun_power(){
     var list = ["#op_add","#op_del","#user_inquiry","#password_reset","#role_inquiry","#organ_inquiry",
-        "#vehice_inquiry","#vehice_import","#pro_inquiry","#driver_inquiry","#driver_import","#addr_inquiry",
+        "#vehice_inquiry","#vehice_import","#pro_inquiry","#driver_inquiry","#driver_import","#consignor_inquiry","#addr_inquiry",
         "#lin_inquiry","#cons_inquiry"];
     for(var i in list){
         if(!makeEdit(menu,loginSucc.functionlist,list[i])){

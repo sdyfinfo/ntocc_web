@@ -113,7 +113,7 @@ function loginCheckEnd(flg, result){
         }
     }else{
         App.unblockUI('.login-container');
-        userPowerDataGet();
+        //userPowerDataGet();
         $('.alert-danger', $('.login-form')).show();
         $('.alert-danger span', $('.login-form')).text("登录失败");
     }

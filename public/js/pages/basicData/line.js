@@ -3,6 +3,7 @@
  */
 
 var lineList = [];
+var projectList,dictList = [];
 if(App.isAngularJsApp() == false){
     jQuery(document).ready(function(){
         //线路列表
@@ -17,7 +18,7 @@ if(App.isAngularJsApp() == false){
         //LineSelect2.init();
         //goodsDateGet();
         //发货人
-        consignoridDateGet();
+        consignorDataGet();
         //收货人
         consigneeidDateGet();
         //货物类型
@@ -75,8 +76,6 @@ var LineTable = function(){
                 {"data":"state"},
                 {"data":"addTime"},
                 {"data":"updateTime"},
-                {"data":"goods_type"},
-                {"data":"goods"},
                 {"data":"number"},
                 {"data":null}
             ],
@@ -122,7 +121,7 @@ var LineTable = function(){
                     }
                 },
                 {
-                    "targets":[19],
+                    "targets":[17],
                     "render": function (data, type, row, meta) {
                         var edit = '<a href="javascript:;" id="op_edit">编辑</a>';
 //                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
@@ -546,11 +545,10 @@ function getProjectDataEnd(flg, result, callback){
 }
 
 //发货人
-function getconsignoridDataEnd(flg, result, callback){
+function getConsignorDataEnd(flg, result){
     App.unblockUI('#lay-out');
     if(flg){
         if (result && result.retcode == SUCCESS) {
-
             var res = result.response;
             conList = res.conlist;
             for(var i = 0; i < conList.length; i++){
