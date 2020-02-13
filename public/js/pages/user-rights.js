@@ -742,6 +742,55 @@ function regDelete(data){
     });
 }
 
+//项目查询
+function projectDataGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {proname: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url:"http://127.0.0.1:8007/ywt/web/front/projectdataquery",
+        //url: businessUrl + "projectquery",                    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("projectDataGet:" + JSON.stringify(result));
+            getProjectDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("projectDataGet-error:" + JSON.stringify(errorMsg));
+            getProjectDataEnd(false, "", callback);
+        }
+    });
+}
+
+//发货人
+function consignoridDateGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {conid: "",consignor:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "consignorquery",               //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("consignoridDateGet:" + JSON.stringify(result));
+            getconsignoridDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("consignoridDateGet-error:" + JSON.stringify(errorMsg));
+            getconsignoridDataEnd(false, "", callback);
+        }
+    });
+}
+
 //收货人
 function consigneeidDateGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
@@ -1286,6 +1335,164 @@ function addrDelete(data){
         error: function (errorMsg) {
             console.info("addrDelete-error:" + JSON.stringify(errorMsg));
             addrEditEnd(false, "", ADDRDELETE);
+        }
+    });
+}
+
+//收款人查询
+function PDataGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {payname: "",bankid:"", banknumber:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "payeequery",    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("PDataGet:" + JSON.stringify(result));
+            getPDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("PDataGet-error:" + JSON.stringify(errorMsg));
+            getPDataEnd(false, "", callback);
+        }
+    });
+}
+
+
+//收款人状态修改
+function payeeState(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "payeeprohibit",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("driverState:" + JSON.stringify(result));
+            payeeEditEnd(true, result, PAYEESTATUS);
+        },
+        error: function (errorMsg) {
+            console.info("driverState-error:" + JSON.stringify(errorMsg));
+            payeeEditEnd(false, "", PAYEESTATUS);
+        }
+    });
+}
+
+
+//收款人新增
+function payeeAdd(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "payeeadd",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("payeeAdd:" + JSON.stringify(result));
+            payeeEditEnd(true, result, PAYEEADD);
+        },
+        error: function (errorMsg) {
+            console.info("payeeAdd-error:" + JSON.stringify(errorMsg));
+            payeeEditEnd(false, "", PAYEEADD);
+        }
+    });
+}
+
+
+//收款人编辑
+function payeEdit(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行
+        url: businessUrl + "payeeedit",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("payeEdit:" + JSON.stringify(result));
+            payeeEditEnd(true, result, PAYEEEDIT);
+        },
+        error: function (errorMsg) {
+            console.info("payeEdit-error:" + JSON.stringify(errorMsg));
+            payeeEditEnd(false, "", PAYEEEDIT);
+        }
+    });
+}
+
+//获取所有开户行
+function bankNameDataGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {bankid: "", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "bankquery",    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("bankNameDataGet:" + JSON.stringify(result));
+            getbankNameDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("bankNameDataGet-error:" + JSON.stringify(errorMsg));
+            getbankNameDataEnd(false, "", callback);
+        }
+    });
+}
+
+//收款人行删除
+function payeeDelete(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "payeedelete",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("payeeDelete:" + JSON.stringify(result));
+            payeeEditEnd(true, result, PAYEEDELETE);
+        },
+        error: function (errorMsg) {
+            console.info("payeeDelete-error:" + JSON.stringify(errorMsg));
+            payeeEditEnd(false, "", PAYEEDELETE);
+        }
+    });
+}
+
+
+//收款人导入
+function payeeUpload(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: false,
+        processData:false,
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "payeeimport",    //请求发送到TestServlet处
+        data: data,
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("payeeUpload:" + JSON.stringify(result));
+            payeeEditEnd(true, result, GENNUPLOAD);
+        },
+        error: function (errorMsg) {
+            console.info("payeeUpload-error:" + JSON.stringify(errorMsg));
+            payeeEditEnd(false, "", GENNUPLOAD);
         }
     });
 }

@@ -327,6 +327,25 @@ router.get('/payee',function(req,res,next){
     }
 });
 
+//收款人模板下载
+var fs = require('fs');
+var path = require('path');
+router.get('/downloadpayeefile', function (req, res, next) {
+    var filename = 'driverTemplate.xlsx';
+    var filepath = path.join(__dirname, '../upload/' + filename);
+    var stats = fs.statSync(filepath);
+    if (stats.isFile()) {
+        res.set({
+            'Content-Type': 'application/octet-stream',
+            'Content-Disposition': 'attachment; filename=' + filename,
+            "Content-Length": stats.size
+        });
+        fs.createReadStream(filepath).pipe(res);
+    } else {
+        res.end(404);
+    }
+});
+
 
 router.get('/template',function(req,res,next){
     console.info(req.url);

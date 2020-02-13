@@ -106,7 +106,15 @@ const ADDRSEDIT = 75;
 const ADDRDELETE = 76;
 const GENNADD = 77;
 const GENNEDIT = 78;
-const GENNDELETE =79;
+const GENNDELETE = 79;
+const PAYEEADD = 80;
+const PAYEEEDIT = 81;
+const PAYEEDELETE = 82;
+const PAYEESTATUS =82;
+const GENNUPLOAD =83;
+
+
+
 
 const TableLanguage = {
         "aria": {
