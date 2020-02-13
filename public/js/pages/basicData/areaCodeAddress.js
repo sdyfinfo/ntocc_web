@@ -7,11 +7,11 @@ var citylist = [];
 
 if(App.isAngularJsApp() == false){
     //省赋值
-    provinceDispaly();
+    addressDispaly();
 }
 
 //省赋值
-function provinceDispaly(){
+function addressDispaly(){
     for(var i in areaCode){
         $("#provincecode,#loading_provincecode").append("<option value='"+areaCode[i].code+"'>"+areaCode[i].name+"</option>");
     }

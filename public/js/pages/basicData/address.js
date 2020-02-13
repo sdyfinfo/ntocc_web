@@ -233,6 +233,7 @@ var addressEdit = function(){
             $(":input",".register-form").not(":button,:reset,:submit,:radio,:input[name=birthday],#evaluationneed").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
+            addressDispaly();
             $(".register-form").find("input[name=aid]").attr("readonly", false);
             $("input[name=edittype]").val(ADDRADD);
             $('#edit_adds').modal('show');
@@ -253,16 +254,20 @@ var addressEdit = function(){
                     address = addressidList[i];
                 }
             }
-            var province = $("#provincecode").find("option:selected").text();
-            var city = $("#citycode").find("option:selected").text();
-            var county = $("#countycode").find("option:selected").text();
-            address.province = province;
-            address.city = city;
-            address.county = county;
+           // $("#provincecode").attr(address.province);
+           // $("#citycode").attr(address.city);
+            //$("#countycode").attr(address.county);
+
+
+//            $("#provincecode").find("option:selected").attr(address.province);
+//            $("#citycode").find("option:selected").attr(address.city);
+//            $("#countycode").find("option:selected").attr(address.county);
+            addressDispaly();
+            
 
             var options = { jsonValue: address, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
-            $("input[name=edittype]").val(LINEEDIT);
+            $("input[name=edittype]").val(ADDRSEDIT);
             $('#edit_adds').modal('show');
         });
     };
