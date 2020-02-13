@@ -742,11 +742,60 @@ function regDelete(data){
     });
 }
 
+//项目查询
+function projectDataGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {proname: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url:"http://127.0.0.1:8007/ywt/web/front/projectdataquery",
+        //url: businessUrl + "projectquery",                    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("projectDataGet:" + JSON.stringify(result));
+            getProjectDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("projectDataGet-error:" + JSON.stringify(errorMsg));
+            getProjectDataEnd(false, "", callback);
+        }
+    });
+}
+
+//发货人
+function consignoridDateGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {conid: "",consignor:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "consignorquery",               //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("consignoridDateGet:" + JSON.stringify(result));
+            getconsignoridDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("consignoridDateGet-error:" + JSON.stringify(errorMsg));
+            getconsignoridDataEnd(false, "", callback);
+        }
+    });
+}
+
 //收货人
 function consigneeidDateGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
-        data = {conid: "", consignee:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+        data = {conid: "", consignee:"", mobile:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",
@@ -778,11 +827,11 @@ function gennAdd(data){
         dataType: "json",        //返回数据形式为json
         success: function (result) {
             console.info("consigeenEdit:" + JSON.stringify(result));
-            gennEditEnd(true, result, GEENADD);
+            gennEditEnd(true, result, GENNADD);
         },
         error: function (errorMsg) {
             console.info("consigeenEdit-error:" + JSON.stringify(errorMsg));
-            gennEditEnd(false, "", GEENADD);
+            gennEditEnd(false, "", GENNADD);
         }
     });
 }
@@ -804,6 +853,27 @@ function geenEdit(data){
         error: function (errorMsg) {
             console.info("geenEdit-error:" + JSON.stringify(errorMsg));
             gennEditEnd(false, "", GENNEDIT);
+        }
+    });
+}
+
+//删除收货人
+function gennDelete(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "consigneedelete",    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("gennDelete:" + JSON.stringify(result));
+            gennEditEnd(true, result, GENNDELETE);
+        },
+        error: function (errorMsg) {
+            console.info("gennDelete-error:" + JSON.stringify(errorMsg));
+            gennEditEnd(false, "", GENNDELETE);
         }
     });
 }
@@ -1166,13 +1236,13 @@ function lineDelete(data){
 function addressDataGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
-        data = {aid: "", mailing_address:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+        data = {aid: "", addressee:"", addresseeTel:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: "http://127.0.0.1:8007/ywt/web/front/addressquery",    //请求发送到TestServlet处
+        url: businessUrl + "addressquery",    //请求发送到TestServlet处
         data: sendMessageEdit(DEFAULT, data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {

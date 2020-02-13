@@ -35,6 +35,7 @@ var ConsTable = function(){
                 var da = {
                     conid: formData.conid,
                     consignee: formData.consignee,
+                    mobile: formData.mobile,
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
@@ -68,14 +69,26 @@ var ConsTable = function(){
                     }
                 },
                 {
+                    "targets":[6],
+                    "render": function (data, type, row ,meta) {
+                        return dateTimeFormat(data);
+                    }
+                },
+                {
+                    "targets":[7],
+                    "render": function (data, type, row ,meta) {
+                        return dateTimeFormat(data);
+                    }
+                },
+                {
                     "targets":[8],
                     "render": function (data, type, row, meta) {
-                        var edit = '<a href="javascript:;" id="op_edit">编辑</a>';
-//                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
-//                            edit = '-';
-//                        }else{
-//                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
-//                        }
+                        var edit = "";
+                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
+                            edit = '-';
+                        }else{
+                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
+                        }
                         return edit;
                     }
                 }
@@ -212,7 +225,7 @@ var ConsEdit = function(){
                 .removeAttr("checked")
                 .removeAttr("selected");
             $(".register-form").find("input[name=conid]").attr("readonly", false);
-            $("input[name=edittype]").val(ADDRADD);
+            $("input[name=edittype]").val(GENNADD);
             $('#edit_gnee').modal('show');
         });
         //编辑项目
@@ -263,11 +276,12 @@ var GennDelete = function() {
     });
     return{
         deletegenn: function(){
-            var conlist = {conList:[]};
+            var geen = {conidlist:[]};
             $(".checkboxes:checked").parents("td").each(function () {
-                conlist.conList.push($(this).siblings().eq(1).text());
+                var row = $(this).parents('tr')[0];
+                geen.conidlist.push($("#gnee_table").dataTable().fnGetData(row).conid);
             });
-            gennDelete(conlist);
+            gennDelete(geen);
         }
     }
 }();

@@ -34,7 +34,8 @@ var addressTable = function(){
                 var formData = $(".inquiry-form").getFormData();
                 var da = {
                     aid:formData.aid,
-                    mailing_address: formData.mailing_address,
+                    addressee:formData.addressee,
+                    addresseeTel:formData.addresseeTel,
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
@@ -45,9 +46,8 @@ var addressTable = function(){
             columns:[ //返回的json 数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 {"data":null},
                 {"data":null},
-                {"data":"aid", visible: false},
-                {"data":"mailing_address"},
-                {"data":"address"},
+                {"data":"aid",visible: false},
+                {"data":"ress"},
                 {"data":"addressee"},
                 {"data":"addresseeTel"},
                 {"data":"email"},
@@ -69,14 +69,20 @@ var addressTable = function(){
                     }
                 },
                 {
-                    "targets":[9],
+                    "targets":[7],
+                    "render": function (data, type, row ,meta) {
+                        return dateTimeFormat(data);
+                    }
+                },
+                {
+                    "targets":[8],
                     "render": function (data, type, row, meta) {
-                        var edit = '<a href="javascript:;" id="op_edit">编辑</a>';
-//                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
-//                            edit = '-';
-//                        }else{
-//                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
-//                        }
+                        var edit = "";
+                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
+                            edit = '-';
+                        }else{
+                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
+                        }
                         return edit;
                     }
                 }
@@ -122,9 +128,6 @@ var addressEdit = function(){
             focusInvalid: false, // do not focus the last invalid input
             ignore: "",
             rules: {
-                mailing_address: {
-                    required: true
-                },
                 address:{
                     required: true
                 },
@@ -144,11 +147,8 @@ var addressEdit = function(){
             },
 
             messages: {
-                mailing_address: {
-                    required: "请选择邮寄地址"
-                },
                 address:{
-                    required: "请输入详细地址"
+                    required: "请选择邮寄地址"
                 },
                 addressee:{
                     required: "请输入收件人姓名"
@@ -206,8 +206,11 @@ var addressEdit = function(){
             if ($('.register-form').validate().form()) {
                 var addr = $('.register-form').getFormData();
                 var province = $("#provincecode").find("option:selected").text();
-                var city = $("#city").find("option:selected").text();
+                var city = $("#citycode").find("option:selected").text();
                 var county = $("#countycode").find("option:selected").text();
+                addr.province = province;
+                addr.city = city;
+                addr.county = county;
             }
             if($("input[name=edittype]").val() == ADDRADD){
                 addrsAdd(addr);
@@ -250,6 +253,13 @@ var addressEdit = function(){
                     address = addressidList[i];
                 }
             }
+            var province = $("#provincecode").find("option:selected").text();
+            var city = $("#citycode").find("option:selected").text();
+            var county = $("#countycode").find("option:selected").text();
+            address.province = province;
+            address.city = city;
+            address.county = county;
+
             var options = { jsonValue: address, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
             $("input[name=edittype]").val(LINEEDIT);
@@ -270,8 +280,8 @@ function getaddressDataEnd(flg, result, callback){
     if(flg){
         if(result && result.retcode == SUCCESS){
             var res = result.response;
-            addressidList = res.addressidlist;
-            tableDataSet(res.draw, res.totalcount, res.totalcount, res.addressidlist, callback);
+            addressidList = res.list;
+            tableDataSet(res.draw, res.totalcount, res.totalcount, res.list, callback);
         }else {
             tableDataSet(0, 0, 0, [], callback);
             alertDialog("地址信息获取失败！");
@@ -328,7 +338,7 @@ function addrEditEnd(flg, result, type){
         }
         if (result && result.retcode == SUCCESS) {
             res = "成功";
-            ProjectTable.init();
+            addressTable.init();
             $('#edit_adds').modal('hide');
         }
     }
