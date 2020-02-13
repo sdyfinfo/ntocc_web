@@ -6,6 +6,8 @@ var addressidList = [];
 if(App.isAngularJsApp() == false){
     jQuery(document).ready(function(){
         fun_power();
+        //省市区三级联动
+        addressDispaly("#provincecode");
         //地址列表
         addressTable.init();
         //线路表
@@ -254,17 +256,8 @@ var addressEdit = function(){
                     address = addressidList[i];
                 }
             }
-           // $("#provincecode").attr(address.province);
-           // $("#citycode").attr(address.city);
-            //$("#countycode").attr(address.county);
-
-
-//            $("#provincecode").find("option:selected").attr(address.province);
-//            $("#citycode").find("option:selected").attr(address.city);
-//            $("#countycode").find("option:selected").attr(address.county);
-            addressDispaly();
-            
-
+            //省市区显示
+            areaNameDisplay(address);
             var options = { jsonValue: address, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
             $("input[name=edittype]").val(ADDRSEDIT);
@@ -355,3 +348,27 @@ function addrEditEnd(flg, result, type){
 $("#addr_inquiry").on("click", function(){
     addressTable.init();
 });
+
+//省市区显示
+function areaNameDisplay(data){
+    for(var i in areaCode){
+        if(data.provincecode == areaCode[i].code){
+            var city = areaCode[i].city;
+            for(var j in city){
+                $("#citycode").append('<option value="'+city[j].code+'">'+city[j].name+'</option>');
+            }
+            //显示县
+            countyNameDisplay(city,data.citycode);
+        }
+    }
+}
+function countyNameDisplay(city,code){
+    for(var i in city){
+        if(code == city[i].code){
+            var county = city[i].county;
+            for(var j in county){
+                $("#countycode").append('<option value="'+county[j].code+'">'+county[j].name+'</option>');
+            }
+        }
+    }
+}

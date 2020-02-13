@@ -5,81 +5,74 @@
 var countylist = [];
 var citylist = [];
 
-if(App.isAngularJsApp() == false){
-    //省赋值
-    addressDispaly();
-}
-
 //省赋值
-function addressDispaly(){
+function addressDispaly(province){
     for(var i in areaCode){
-        $("#provincecode,#loading_provincecode").append("<option value='"+areaCode[i].code+"'>"+areaCode[i].name+"</option>");
+        $(province).append("<option value='"+areaCode[i].code+"'>"+areaCode[i].name+"</option>");
     }
 }
 
-//省联动市
+//省
 $("#loading_provincecode").change(function(){
     var province = $(this).val();
-    $("#loading_citycode,#loading_countycode").empty();
-    $("#loading_citycode").append("<option value=''>请选择市</option>");
-    $("#loading_countycode").append("<option value=''>请选择区/县</option>");
-    if(province != ""){
-        for(var i in areaCode){
-            if(province == areaCode[i].code){
-                citylist = areaCode[i].city;
-                for(var j in citylist){
-                    $("#loading_citycode").append("<option value='"+citylist[j].code+"'>"+citylist[j].name+"</option>");
-                }
-            }
-        }
-    }
+    cityDisplay(province,"#loading_citycode","#loading_countycode");
+});
+$("#unloading_provincecode").change(function(){
+    var province = $(this).val();
+    cityDisplay(province,"#unloading_citycode","#unloading_countycode");
 });
 $("#provincecode").change(function(){
     var province = $(this).val();
-    $("#citycode,#countycode").empty();
-    $("#citycode").append("<option value=''>请选择市</option>");
-    $("#countycode").append("<option value=''>请选择区/县</option>");
+    cityDisplay(province,"#citycode","#countycode");
+});
+
+
+//市
+$("#loading_citycode").change(function(){
+    var city = $(this).val();
+    countyDisplay(city,"#loading_countycode");
+});
+$("#unloading_citycode").change(function(){
+    var city = $(this).val();
+    countyDisplay(city,"#unloading_countycode");
+});
+$("#citycode").change(function(){
+    var city = $(this).val();
+    countyDisplay(city,"#countycode");
+});
+
+
+
+//省联动市
+function cityDisplay(province,city,county){
+    $(city).empty();
+    $(county).empty();
+    $(city).append("<option value=''>请选择市</option>");
+    $(county).append("<option value=''>请选择区/县</option>");
     if(province != ""){
         for(var i in areaCode){
             if(province == areaCode[i].code){
                 citylist = areaCode[i].city;
                 for(var j in citylist){
-                    $("#citycode").append("<option value='"+citylist[j].code+"'>"+citylist[j].name+"</option>");
+                    $(city).append("<option value='"+citylist[j].code+"'>"+citylist[j].name+"</option>");
                 }
             }
         }
     }
-});
-
+}
 
 //市联动县
-$("#loading_citycode").change(function(){
-    var city = $(this).val();
-    $("#loading_countycode").empty();
-    $("#loading_countycode").append("<option value=''>请选择区/县</option>");
+function countyDisplay(city,county){
+    $(county).empty();
+    $(county).append("<option value=''>请选择区/县</option>");
     if(city!=""){
         for(var i in citylist){
             if(city == citylist[i].code){
                 countylist = citylist[i].county;
                 for(var j in countylist){
-                    $("#loading_countycode").append("<option value='"+countylist[j].code+"'>"+countylist[j].name+"</option>");
+                    $(county).append("<option value='"+countylist[j].code+"'>"+countylist[j].name+"</option>");
                 }
             }
         }
     }
-});
-$("#citycode").change(function(){
-    var city = $(this).val();
-    $("#countycode").empty();
-    $("#countycode").append("<option value=''>请选择区/县</option>");
-    if(city!=""){
-        for(var i in citylist){
-            if(city == citylist[i].code){
-                countylist = citylist[i].county;
-                for(var j in countylist){
-                    $("#countycode").append("<option value='"+countylist[j].code+"'>"+countylist[j].name+"</option>");
-                }
-            }
-        }
-    }
-});
+}

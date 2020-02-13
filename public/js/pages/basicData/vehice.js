@@ -4,7 +4,7 @@
 
 var vehicleList = [];
 var plateColor,ve_conductor,vehicleType,energy_Type = [];
-var dictTrue = [];
+var dictTrue = [];   //获取字典结果
 var imgInit = "/public/img/img_upload.png";
 
 if (App.isAngularJsApp() === false) {
@@ -723,27 +723,24 @@ function getDictDataEnd(flg,result){
             var res = result.response;
             var dictlist = res.dictlist;
             //给准驾车型赋值
+            dictTrue.push("1");
             for(var i = 0;i<dictlist.length;i++){
                 switch (dictlist[i].lx){
                     case "10001":
-                        dictTrue.push("1");
                         plateColor = dictlist;
                         $("#platecolor").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
                         $("#platecolor_edit").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
                         break;
                     case "10002":
-                        dictTrue.push("1");
                         ve_conductor = dictlist;
                         $("#conductor").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
                         break;
                     case "10003":
-                        dictTrue.push("1");
                         vehicleType = dictlist;
                         $("#vehicletype").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
                         $("#vehicletype_edit").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
                         break;
                     case "10004":
-                        dictTrue.push("1");
                         energy_Type = dictlist;
                         $("#energy_type").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
                         break;

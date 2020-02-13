@@ -3,27 +3,18 @@
  */
 
 var lineList = [];
-var projectList,dictList = [];
+var projectList,dictList,consigneeList,consignorList,goodsTypeList,unitList = [];
+var goodsList = [];   //货物名称列表
+var dictTrue = [];   //获取字典结果
 if(App.isAngularJsApp() == false){
     jQuery(document).ready(function(){
-        fun_power();
-        //线路列表
-        LineTable.init();
-        //线路表
+        //省市区三级联动
+        addressDispaly("#loading_provincecode");
+        addressDispaly("#unloading_provincecode");
+        //线路表操作
         LineEdit.init();
-        //获取项目名称列表，用来做成项目选择框
-        //proDataGet();
-        //项目名称
+        //项目名称获取
         projectDataGet();
-        //多控件初始化
-        //LineSelect2.init();
-        //goodsDateGet();
-        //发货人
-        consignorDataGet();
-        //收货人
-        consigneeidDateGet();
-        //货物类型
-        didDateGet();
     });
 }
 
@@ -48,11 +39,12 @@ var LineTable = function(){
             "ajax":function (data, callback, settings) {
                 var formData = $(".inquiry-form").getFormData();
                 var da = {
-                    projectname: formData.project_name,
+                    project_id: formData.projec_tname,
                     linename: formData.linename,
-                    loading_address:formData.loading_address,
-                    unloading_address:formData.unloading_address,
+                    loading_place:formData.loading_place,
+                    unloading_place:formData.unloading_place,
                     goods:formData.goods,
+                    state:formData.state,
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
@@ -66,8 +58,8 @@ var LineTable = function(){
                 {"data":"lid", visible: false},
                 {"data":"project_name"},
                 {"data":"linename"},
-                {"data":"loading_address"},
-                {"data":"unloading_address"},
+                {"data":"loading_place"},
+                {"data":"unloading_place"},
                 {"data":"consignor"},
                 {"data":"consignee"},
                 {"data":"goods_type"},
@@ -100,13 +92,22 @@ var LineTable = function(){
                     }
                 },
                 {
+                    "targets":[9],
+                    "render":function (data, type, row, meta) {
+                        //显示货物类型
+                        return typeDisplay(data);
+                    }
+                },{
+                    "targets":[11],
+                    "render":function (data, type, row, meta) {
+                        //显示单位
+                        return unitDisplay(data);
+                    }
+                },
+                {
                     "targets":[13],
                     "render":function (data, type, row, meta) {
-                        var state = '启动';
-                        if (data == "1") {
-                            state = '禁用'
-                        }
-                        return state;
+                        return statusFormat(data);
                     }
                 },
                 {
@@ -124,12 +125,12 @@ var LineTable = function(){
                 {
                     "targets":[17],
                     "render": function (data, type, row, meta) {
-                        var edit = "";
-                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
-                            edit = '-';
-                        }else{
-                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
-                        }
+                        var edit = '<a href="javascript:;" id="op_edit">编辑</a>';
+//                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
+//                            edit = '-';
+//                        }else{
+//                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
+//                        }
                         return edit;
                     }
                 }
@@ -184,12 +185,12 @@ function getlineDataEnd(flg, result, callback){
     }
 }
 
-$("#lin_inquiry").on("click",function(){
+$("#pro_inquiry").on("click",function(){
     //线路查询
     LineTable.init();
 });
 
-//线路表
+//线路操作表
 var LineEdit = function(){
     var handleRegister = function() {
         var validator = $('.register-form').validate({
@@ -198,7 +199,13 @@ var LineEdit = function(){
             focusInvalid: false, // do not focus the last invalid input
             ignore: "",
             rules: {
-                project_name: {
+                project_id: {
+                    required: true
+                },
+                loading_countycode:{
+                    required: true
+                },
+                unloading_countycode:{
                     required: true
                 },
                 loading_name:{
@@ -207,23 +214,18 @@ var LineEdit = function(){
                 unloading_name:{
                     required: true
                 },
-                loading_address:{
+                consignorid:{
                     required: true
                 },
-                unloading_place:{
-                    required: true
-                },
-                consignor:{
-                    required: true
-                },
-                consignee:{
+                consigneeid:{
                     required: true
                 },
                 contacts:{
                     required: true
                 },
                 phone:{
-                    required: true
+                    required: true,
+                    phone:true
                 },
                 goods_type:{
                     required: true
@@ -240,47 +242,41 @@ var LineEdit = function(){
                 consigneeTel:{
                     required: true
                 },
-                loading_provincecode:{
+                unit:{
                     required: true
                 },
-                loading_citycode:{
+                univalence:{
                     required: true
                 },
-                loading_countycode:{
+                loading_address:{
                     required: true
                 },
-                unloading_provincecode:{
-                    required: true
-                },
-                unloading_citycode:{
-                    required: true
-                },
-                unloading_countycode:{
+                unloading_address:{
                     required: true
                 }
 
             },
 
             messages: {
-                project_name: {
+                project_id: {
                     required: "请输入项目名称"
                 },
+                loading_countycode:{
+                    required: "请选择完整装货地地址"
+                },
+                unloading_countycode:{
+                    required: "请选择完整卸货地地址"
+                },
                 loading_name:{
-                    required: "请输入装货地名称"
+                    required: "请选择装货名称"
                 },
                 unloading_name:{
-                    required: "请输入卸货地名称"
+                    required: "请选择卸货名称"
                 },
-                loading_address:{
-                    required: "请选择装货地址"
-                },
-                unloading_place:{
-                    required: "请选择卸货地址"
-                },
-                consignor:{
+                consignorid:{
                     required: "请选择发货人"
                 },
-                consignee:{
+                consigneeid:{
                     required: "请选择收货人"
                 },
                 contacts:{
@@ -304,23 +300,17 @@ var LineEdit = function(){
                 consigneeTel:{
                     required: "请输入收货人电话"
                 },
-                loading_provincecode:{
-                    required: "请选择省"
+                unit:{
+                    required: "请选择货运单位"
                 },
-                loading_citycode:{
-                    required: "请选择市"
+                univalence:{
+                    required: "请输入货物单价"
                 },
-                loading_countycode:{
-                    required: "请选择区"
+                loading_address:{
+                    required: "请输入发货详细地址"
                 },
-                unloading_provincecode:{
-                    required: "请选择省"
-                },
-                unloading_citycode:{
-                    required: "请选择市"
-                },
-                unloading_countycode:{
-                    required: "请选择区"
+                unloading_address:{
+                    required: "请输入卸货详细地址"
                 }
             },
 
@@ -358,80 +348,102 @@ var LineEdit = function(){
             return this.optional(element) || (tel.test(value));
         }, "请正确填写您的联系电话");
 
+        //货物名称回车键监听
+        $("#goodsname").keypress(function (e) {
+            if (e.which == 13) {
+                //重复的不添加
+                var value = $(this).val();
+                for(var i in goodsList){
+                    if(value == goodsList[i]){
+                        alertDialog("货物名称不可重复");
+                        return;
+                    }
+                }
+                //将输入内容添加到右方div中
+                goodsList.push(value);
+                var div = "<div class='goods_div'><span>×</span>"+value+"</div>";
+                $("#goods").append(div);
+                $("#goodsname").val("");
+            }
+        });
+
+        //点击删除货物名称
+        $("#goods").on('click','.goods_div',function(){
+            var value = $(this).text().replace('×','');
+            var index = goodsList.indexOf(value);
+            if (index > -1) {
+                goodsList.splice(index, 1);
+            }
+            $(this).remove();
+        });
+
+        //选择发货人或收货人显示联系方式
+        $("#consignor").change(function(){
+            var id = $(this).val();
+            for(var i in consignorList){
+                if(id == consignorList[i].conid){
+                    $("input[name=consignorTel]").val(consignorList[i].mobile);
+                }
+            }
+        });
+        $("#consignee").change(function(){
+            var id = $(this).val();
+            for(var i in consigneeList){
+                if(id == consigneeList[i].conid){
+                    $("input[name=consigneeTel]").val(consigneeList[i].mobile);
+                }
+            }
+        });
+        //货物单位联动
+        $("#unit").change(function(){
+            var value = $(this).val();
+            if(value != ""){
+                var text = $(this).find("option:selected").text();
+                $("#unit_text").html(text);
+            }else{
+                $("#unit_text").html("吨");
+            }
+        });
+
         //点击确定按钮
         $('#register-btn').click(function() {
             btnDisable($('#register-btn'));
             if ($('.register-form').validate().form()) {
-                var line = $('.register-form').getFormData();
-               /* var data;
-                for(var i = 0; i <lineList.length; i++){
-                    if(line.lid == lineList[i].lid ){
-                        data = lineList;
-                    }
-                }*/
-                //装货
-                var loading_province = $("#loading_provincecode").find("option:selected").text();
-                var loading_city = $("#loading_citycode").find("option:selected").text();
-                var loading_county = $("#loading_countycode").find("option:selected").text();
-                line.loading_province = loading_province;
-                line.loading_city = loading_city;
-                line.loading_county = loading_county;
-                //卸货
-                var unloading_province = $("#unloading_provincecode").find("option:selected").text();
-                var unloading_city = $("#unloading_citycode").find("option:selected").text();
-                var unloading_county = $("#unloading_countycode").find("option:selected").text();
-                line.unloading_province = unloading_province;
-                line.unloading_city = unloading_city;
-                line.unloading_county = unloading_county;
-                //数量
-                line.number = $("input[name=number]").val();
-                //字典
-                var lx = 10005;
-                //var code = $("#goods_type").find("select:selected").text();
-                var code = $('.register-form').getFormData();
-                var goods_type = lx + "," + code;
-                line.goods_type = goods_type;
-
-                var project_name = $("#project_name").find("option:selected").text();
-                line.project_name = project_name;
-                line.loading_name = $("input[name=loading_name]").val();
-                line.unloading_name=$("input[name=unloading_name]").val();
-                /*line.project_name = $("input[name=project_name]").val();
-                line.loading_place = $("#loading_place").val();
-                line.unloading_name = $('#unloading_name').val();
-                line.loading_address = $('#loading_address').val();
-                line.unloading_place = $('#unloading_place').val();
-                line.consignor = $('#consignorid').val();
-                line.consignee = $('#consigneeid').val();
-                line.goods_type = $('#goods_type').val();
-                line.goods = $('#goods').val();*/
-            }
-            if($("input[name=edittype]").val() == LINEADD){
-                lineAdd(line);
-            }else {
-                var data;
-                for(var i = 0; i < lineList.length; i++) {
-                    if(line.lid == lineList[i].lid){
-                        data = lineList[i];
-                    }
+                if(goodsList.length == 0){
+                    alertDialog("货物名称必须输入！");
+                    return;
                 }
-                /*if(equar(line.project_name, (data.project_id || "").split(","))){
-                    line.project_name = [];
-                }*/
-                lineEdit(line,LINEEDIT);
+                var line = $('.register-form').getFormData();
+                //装货省市区
+                line.loading_province = $("#loading_provincecode").find("option:selected").text();
+                line.loading_city = $("#loading_citycode").find("option:selected").text();
+                line.loading_county = $("#loading_countycode").find("option:selected").text();
+                //卸货省市区
+                line.unloading_province = $("#unloading_provincecode").find("option:selected").text();
+                line.unloading_city = $("#unloading_citycode").find("option:selected").text();
+                line.unloading_county = $("#unloading_countycode").find("option:selected").text();
+                //收货人，发货人
+                line.goods_type = "10005,"+line.goods_type;
+                line.unit = "10006,"+line.unit;
+                line.goods = goodsList.toString();
+                if($("input[name=edittype]").val() == LINEADD){
+                    lineAdd(line);
+                }else {
+                    lineEdit(line);
+                }
             }
         });
-        //新增项目
+        //新增线路
         $('#op_add').click(function() {
             //清除校验错误信息
             validator.resetForm();
             $(".register-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("新增项目");
+            $(".modal-title").text("新增线路");
             $(":input",".register-form").not(":button,:reset,:submit,:radio,:input[name=birthday],#evaluationneed").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
-            $(".register-form").find("input[name=pid]").attr("readonly", false);
             $("input[name=edittype]").val(LINEADD);
+            fileUploadAllowed(1);
             $('#edit_lin').modal('show');
         });
         //查看
@@ -440,7 +452,7 @@ var LineEdit = function(){
             //清除校验错误信息
             validator.resetForm();
             $(".register-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("编辑项目");
+            $(".modal-title").text("查看线路");
             var exclude = [];
             var row = $(this).parents('tr')[0];
             var lid = $("#line_table").dataTable().fnGetData(row).lid;
@@ -450,17 +462,17 @@ var LineEdit = function(){
                     line = lineList[i];
                 }
             }
+            //省市区显示
+            areaNameDisplay(line);
             var options = { jsonValue: line, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
+            //显示货物名称
+            goodsList = line.goods.split(",");
+            for(var i in goodsList){
+                var div = "<div class='goods_div'><span>×</span>"+goodsList[i]+"</div>";
+                $("#goods").append(div);
+            }
             //项目名称赋值
-            $("#project_name").find("option:selected").text();
-            $("#loading_name").val(line.loading_name);
-            $("#unloading_name").val(line.unloading_address);
-            $("#loadingadd").val(line.unloading_place);
-            /* var project_name = $("#line_table").dataTable().fnGetData(row).project_name;
-             var loading_place = $("#line_table").dataTable().fnGetData(row).loading_place;
-             var unloading_address = $("#line_table").dataTable().fnGetData(row).unloading_address;
-             var unloading_place = $("#line_table").dataTable().fnGetData(row).unloading_place;*/
             fileUploadAllowed(0);
             $("input[name=edittype]").val(LINEEDIT);
             $('#edit_lin').modal('show');
@@ -472,7 +484,7 @@ var LineEdit = function(){
             //清除校验错误信息
             validator.resetForm();
             $(".register-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("编辑项目");
+            $(".modal-title").text("编辑线路");
             var exclude = [];
             var row = $(this).parents('tr')[0];
             var lid = $("#line_table").dataTable().fnGetData(row).lid;
@@ -482,17 +494,16 @@ var LineEdit = function(){
                     line = lineList[i];
                 }
             }
+            //省市区显示
+            areaNameDisplay(line);
             var options = { jsonValue: line, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
-            //项目名称赋值
-            $("#project_name").find("option:selected").text();
-            $("#loading_name").val(line.loading_name);
-            $("#unloading_name").val(line.unloading_address);
-            $("#loadingadd").val(line.unloading_place);
-           /* var project_name = $("#line_table").dataTable().fnGetData(row).project_name;
-            var loading_place = $("#line_table").dataTable().fnGetData(row).loading_place;
-            var unloading_address = $("#line_table").dataTable().fnGetData(row).unloading_address;
-            var unloading_place = $("#line_table").dataTable().fnGetData(row).unloading_place;*/
+            //显示货物名称
+            goodsList = line.goods.split(",");
+            for(var i in goodsList){
+                var div = "<div class='goods_div'><span>×</span>"+goodsList[i]+"</div>";
+                $("#goods").append(div);
+            }
             fileUploadAllowed(1);
             $("input[name=edittype]").val(LINEEDIT);
             $('#edit_lin').modal('show');
@@ -503,6 +514,58 @@ var LineEdit = function(){
             handleRegister();
         }
     };
+}();
+
+//项目状态显示
+function statusFormat(data){
+    var content;
+    switch (data){
+        case "0":  //启用
+            content =
+                "<div class='switch'>"+
+                "<div class='onoffswitch'>"+
+                "<input type='checkbox' checked='' class='onoffswitch-checkbox'>"+
+                "<label class='onoffswitch-label' data-status='1' id='statusChange'>"+
+                "<span class='inner on_inner' style='float: left'>启用</span>"+
+                "<span class='switch' style='float: right'></span>"+
+                "</label>"+
+                "</div>"+
+                "</div>";
+            break;
+        case "1":  //启用
+            content =
+                "<div class='switch'>"+
+                "<div class='onoffswitch'>"+
+                "<input type='checkbox' checked='' class='onoffswitch-checkbox'>"+
+                "<label class='onoffswitch-label' style='border: 2px solid #ff0000;' data-status='0' id='statusChange'>"+
+                "<span class='inner off_inner' style='float: right'>停用</span>"+
+                "<span class='switch' style='float: left'></span>"+
+                "</label>"+
+                "</div>"+
+                "</div>";
+            break;
+    }
+    return content;
+}
+
+//线路状态更改
+var StatusChange = function(){
+    var line = {};
+    $("#line_table").on('click','#statusChange',function(){
+        //获取id和status
+        var row = $(this).parents('tr')[0];
+        var lid = $("#line_table").dataTable().fnGetData(row).lid;
+        line.lid = lid;
+        line.state = $(this).data('status');
+        line.userid = loginSucc.userid;
+        //先提示
+        confirmDialog("您确定要更改该线路状态吗？", StatusChange.changeStatus);
+    });
+    return{
+        changeStatus: function(){
+            lineState(line);
+        }
+    }
 }();
 
 //线路操作返回结果
@@ -532,6 +595,8 @@ function lineEditEnd (flg, result, type){
             res = "成功";
             LineTable.init();
             $('#edit_lin').modal('hide');
+            goodsList = [];
+            $("#goods").empty();
         }
     }
     if(alert == ""){
@@ -544,7 +609,6 @@ function lineEditEnd (flg, result, type){
     App.unblockUI('#lay-out');
     alertDialog(alert);
 }
-
 
 //删除
 var LineDelete = function() {
@@ -560,17 +624,16 @@ var LineDelete = function() {
         deleteline: function(){
             var linelist = {lineidlist:[]};
             $(".checkboxes:checked").parents("td").each(function () {
-                linelist.lineidlist.push($(this).siblings().eq(1).text());
+                var row = $(this).parents('tr')[0];
+                linelist.lineidlist.push($("#line_table").dataTable().fnGetData(row).lid);
             });
             lineDelete(linelist);
         }
     }
 }();
 
-
-
 //项目查询返回结果
-function getProjectDataEnd(flg, result, callback){
+function getProjectDataEnd(flg, result){
     App.unblockUI('#lay-out');
     if(flg){
         if (result && result.retcode == SUCCESS) {
@@ -578,13 +641,20 @@ function getProjectDataEnd(flg, result, callback){
             var res = result.response;
             projectList = res.projectlist;
             for(var i = 0; i < projectList.length; i++){
-                $("#project_name").append("<option>"+ projectList[i].proname +"</option>");
+                $("#project_name").append("<option value='"+projectList[i].proid+"'>"+ projectList[i].proname +"</option>");
+                $("#projectname").append("<option value='"+projectList[i].proid+"'>"+ projectList[i].proname +"</option>");
             }
+            //发货人信息获取
+            consignorDataGet();
         }else{
             alertDialog("项目名称获取失败！");
+            //发货人信息获取
+            consignorDataGet();
         }
     }else{
         alertDialog("项目名称获取失败！");
+        //发货人信息获取
+        consignorDataGet();
     }
 }
 
@@ -594,70 +664,179 @@ function getConsignorDataEnd(flg, result){
     if(flg){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
-            conList = res.conlist;
-            for(var i = 0; i < conList.length; i++){
-                $("#consignor").append("<option>"+ conList[i].consignor +"</option>");
+            consignorList = res.conlist;
+            for(var i = 0; i < consignorList.length; i++){
+                $("#consignor").append("<option value='"+consignorList[i].conid+"'>"+ consignorList[i].consignor +"</option>");
             }
+            //收货人信息获取
+            consigneeidDateGet();
         }else{
             alertDialog("发货人名称获取失败！");
+            //收货人信息获取
+            consigneeidDateGet();
         }
     }else{
         alertDialog("发货人名称获取失败！");
+        //收货人信息获取
+        consigneeidDateGet();
     }
 }
 
 
-//发货人
+//收货人
 function getconsigneeidDataEnd(flg, result, callback){
     App.unblockUI('#lay-out');
     if(flg){
         if (result && result.retcode == SUCCESS) {
-
             var res = result.response;
-            conList = res.conlist;
-            for(var i = 0; i < conList.length; i++){
-                $("#consignee").append("<option>"+ conList[i].consignee +"</option>");
+            consigneeList = res.conlist;
+            for(var i = 0; i < consigneeList.length; i++){
+                $("#consignee").append("<option value='"+consigneeList[i].conid+"'>"+ consigneeList[i].consignee +"</option>");
+            }
+            //货物类型获取
+            var list = ["10005","10006"];
+            for(var i in list){
+                var data = {lx:list[i]};
+                dictQuery(data);
             }
         }else{
+            //货物类型获取
+            var list = ["10005","10006"];
+            for(var i in list){
+                var data = {lx:list[i]};
+                dictQuery(data);
+            }
             alertDialog("收货人名称获取失败！");
         }
     }else{
+        //货物类型获取
+        var list = ["10005","10006"];
+        for(var i in list){
+            var data = {lx:list[i]};
+            dictQuery(data);
+        }
         alertDialog("收货人名称获取失败！");
     }
 }
 
-//货物类型
-function getdidDataEnd(flg, result, callback){
+//字典获取
+function getDictDataEnd(flg, result){
     App.unblockUI('#lay-out');
     if(flg){
         if (result && result.retcode == SUCCESS) {
-
             var res = result.response;
             dictList = res.dictlist;
+            dictTrue.push("1");
             for(var i = 0; i < dictList.length; i++){
-                $("#goods_type").append("<option>"+ dictList[i].value +"</option>");
+                switch (dictList[i].lx){
+                    case "10005":
+                        goodsTypeList = dictList;
+                        $("#goods_type").append("<option value='"+dictList[i].code+"'>"+ dictList[i].value +"</option>");
+                        break;
+                    case "10006":
+                        unitList = dictList;
+                        $("#unit").append("<option value='"+dictList[i].code+"'>"+ dictList[i].value +"</option>");
+                        break;
+                }
             }
+            LineInfoRequest();
         }else{
-            alertDialog("货物类型获取失败！");
+            dictTrue.push("0");
+            alertDialog("获取字典信息获取失败！");
+            LineInfoRequest();
         }
     }else{
-        alertDialog("货物类型获取失败！");
+        dictTrue.push("0");
+        alertDialog("获取字典信息获取失败！");
+        LineInfoRequest();
     }
 }
 
 function fileUploadAllowed(id){
-    var list = $(".edit-form").find("input[type=file]");
-    for(var i = 0; i<list.length;i++){
-        var lid = "#"+list[i].id;
-        if(id == 0){ //不允许
-            $(lid).attr("disabled",true);
-            //全部只读
-            $(".edit-form").find("select").attr("disabled", true);
-            $(".edit-form").find("input").attr("disabled", true);
-        }else{
-            $(lid).attr("disabled",false);
-            $(".edit-form").find("select").attr("disabled", false);
-            $(".edit-form").find("input").attr("disabled", false);
+    if(id == 0){ //不允许
+        //全部只读
+        $(".register-form").find("select").attr("disabled", true);
+        $(".register-form").find("input").attr("disabled", true);
+        $("#goods").attr("disabled", true);
+    }else{
+        $(".register-form").find("select").attr("disabled", false);
+        $(".register-form").find("input").attr("disabled", false);
+        $("#goods").attr("disabled", false);
+    }
+}
+
+//获取线路信息
+function LineInfoRequest(){
+    if(dictTrue.length ==  2){
+        //线路列表
+        LineTable.init();
+    }
+}
+
+//显示货物类型
+function typeDisplay(data){
+    var value = "";
+    for(var i in goodsTypeList){
+        if(data == goodsTypeList[i].code){
+            value =  goodsTypeList[i].value;
+        }
+    }
+    return value;
+}
+
+//显示单位
+function unitDisplay(data){
+    var value = "";
+    for(var i in unitList){
+        if(data == unitList[i].code){
+            value =  unitList[i].value;
+        }
+    }
+    return value;
+}
+
+//省市区显示
+function areaNameDisplay(data){
+    //装货
+    for(var i in areaCode){
+        if(data.loading_provincecode == areaCode[i].code){
+            var city = areaCode[i].city;
+            for(var j in city){
+                $("#loading_citycode").append('<option value="'+city[j].code+'">'+city[j].name+'</option>');
+            }
+            //显示县
+            loadCountyNameDisplay(city,data.loading_citycode);
+        }
+    }
+    //卸货
+    for(var i in areaCode){
+        if(data.unloading_provincecode == areaCode[i].code){
+            var city = areaCode[i].city;
+            for(var j in city){
+                $("#unloading_citycode").append('<option value="'+city[j].code+'">'+city[j].name+'</option>');
+            }
+            //显示县
+            unloadCountyNameDisplay(city,data.unloading_citycode);
+        }
+    }
+}
+function loadCountyNameDisplay(city,code){
+    for(var i in city){
+        if(code == city[i].code){
+            var county = city[i].county;
+            for(var j in county){
+                $("#loading_countycode").append('<option value="'+county[j].code+'">'+county[j].name+'</option>');
+            }
+        }
+    }
+}
+function unloadCountyNameDisplay(city,code){
+    for(var i in city){
+        if(code == city[i].code){
+            var county = city[i].county;
+            for(var j in county){
+                $("#unloading_countycode").append('<option value="'+county[j].code+'">'+county[j].name+'</option>');
+            }
         }
     }
 }

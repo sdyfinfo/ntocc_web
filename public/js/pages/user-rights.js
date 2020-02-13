@@ -742,55 +742,6 @@ function regDelete(data){
     });
 }
 
-//项目查询
-function projectDataGet(data,callback){
-    App.blockUI({target: '#lay-out',boxed: true});
-    if(data == null){
-        data = {proname: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
-    }
-    $.ajax({
-        type: "post",
-        contentType: "application/json",
-        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url:"http://127.0.0.1:8007/ywt/web/front/projectdataquery",
-        //url: businessUrl + "projectquery",                    //请求发送到TestServlet处
-        data: sendMessageEdit(DEFAULT, data),
-        dataType: "json",        //返回数据形式为json
-        success: function (result) {
-            console.info("projectDataGet:" + JSON.stringify(result));
-            getProjectDataEnd(true, result, callback);
-        },
-        error: function (errorMsg) {
-            console.info("projectDataGet-error:" + JSON.stringify(errorMsg));
-            getProjectDataEnd(false, "", callback);
-        }
-    });
-}
-
-//发货人
-function consignoridDateGet(data,callback){
-    App.blockUI({target: '#lay-out',boxed: true});
-    if(data == null){
-        data = {conid: "",consignor:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
-    }
-    $.ajax({
-        type: "post",
-        contentType: "application/json",
-        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "consignorquery",               //请求发送到TestServlet处
-        data: sendMessageEdit(DEFAULT, data),
-        dataType: "json",        //返回数据形式为json
-        success: function (result) {
-            console.info("consignoridDateGet:" + JSON.stringify(result));
-            getconsignoridDataEnd(true, result, callback);
-        },
-        error: function (errorMsg) {
-            console.info("consignoridDateGet-error:" + JSON.stringify(errorMsg));
-            getconsignoridDataEnd(false, "", callback);
-        }
-    });
-}
-
 //收货人
 function consigneeidDateGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
@@ -1190,7 +1141,7 @@ function lineAdd(data){
 }
 
 //线路编辑
-function lineEdit(data,type){
+function lineEdit(data){
     App.blockUI({target:'#lay-out',boxed: true});
     $.ajax({
         type: "post",
@@ -1201,11 +1152,32 @@ function lineEdit(data,type){
         dataType: "json",        //返回数据形式为json
         success: function (result) {
             console.info("lineEdit:" + JSON.stringify(result));
-            lineEditEnd(true, result, type);
+            lineEditEnd(true, result, LINEEDIT);
         },
         error: function (errorMsg) {
             console.info("lineEdit-error:" + JSON.stringify(errorMsg));
-            lineEditEnd(false, "", type);
+            lineEditEnd(false, "", LINEEDIT);
+        }
+    });
+}
+
+//线路状态设置
+function lineState(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "lineStateUpdate",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("lineState:" + JSON.stringify(result));
+            lineEditEnd(true, result, LINESTATUS);
+        },
+        error: function (errorMsg) {
+            console.info("lineState-error:" + JSON.stringify(errorMsg));
+            lineEditEnd(false, "", LINESTATUS);
         }
     });
 }
