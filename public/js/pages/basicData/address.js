@@ -257,7 +257,7 @@ var addressEdit = function(){
                 }
             }
             //省市区显示
-            areaNameDisplay(address);
+            areaDisplay(address.provincecode,address.citycode,"#citycode","#countycode");
             var options = { jsonValue: address, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
             $("input[name=edittype]").val(ADDRSEDIT);
@@ -348,27 +348,3 @@ function addrEditEnd(flg, result, type){
 $("#addr_inquiry").on("click", function(){
     addressTable.init();
 });
-
-//省市区显示
-function areaNameDisplay(data){
-    for(var i in areaCode){
-        if(data.provincecode == areaCode[i].code){
-            var city = areaCode[i].city;
-            for(var j in city){
-                $("#citycode").append('<option value="'+city[j].code+'">'+city[j].name+'</option>');
-            }
-            //显示县
-            countyNameDisplay(city,data.citycode);
-        }
-    }
-}
-function countyNameDisplay(city,code){
-    for(var i in city){
-        if(code == city[i].code){
-            var county = city[i].county;
-            for(var j in county){
-                $("#countycode").append('<option value="'+county[j].code+'">'+county[j].name+'</option>');
-            }
-        }
-    }
-}

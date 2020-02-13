@@ -8,6 +8,7 @@ var goodsList = [];   //货物名称列表
 var dictTrue = [];   //获取字典结果
 if(App.isAngularJsApp() == false){
     jQuery(document).ready(function(){
+        fun_power();
         //省市区三级联动
         addressDispaly("#loading_provincecode");
         addressDispaly("#unloading_provincecode");
@@ -125,12 +126,12 @@ var LineTable = function(){
                 {
                     "targets":[17],
                     "render": function (data, type, row, meta) {
-                        var edit = '<a href="javascript:;" id="op_edit">编辑</a>';
-//                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
-//                            edit = '-';
-//                        }else{
-//                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
-//                        }
+                        var edit = '';
+                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
+                            edit = '-';
+                        }else{
+                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
+                        }
                         return edit;
                     }
                 }
@@ -463,7 +464,8 @@ var LineEdit = function(){
                 }
             }
             //省市区显示
-            areaNameDisplay(line);
+            loadAreaDisplay(line);
+            unloadAreaDisplay(line);
             var options = { jsonValue: line, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
             //显示货物名称
@@ -495,7 +497,8 @@ var LineEdit = function(){
                 }
             }
             //省市区显示
-            areaNameDisplay(line);
+            areaDisplay(line.loading_provincecode,line.loading_citycode,"#loading_citycode","#loading_countycode");
+            areaDisplay(line.unloading_provincecode,line.unloading_citycode,"#unloading_citycode","#unloading_countycode");
             var options = { jsonValue: line, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
             //显示货物名称
@@ -793,50 +796,4 @@ function unitDisplay(data){
         }
     }
     return value;
-}
-
-//省市区显示
-function areaNameDisplay(data){
-    //装货
-    for(var i in areaCode){
-        if(data.loading_provincecode == areaCode[i].code){
-            var city = areaCode[i].city;
-            for(var j in city){
-                $("#loading_citycode").append('<option value="'+city[j].code+'">'+city[j].name+'</option>');
-            }
-            //显示县
-            loadCountyNameDisplay(city,data.loading_citycode);
-        }
-    }
-    //卸货
-    for(var i in areaCode){
-        if(data.unloading_provincecode == areaCode[i].code){
-            var city = areaCode[i].city;
-            for(var j in city){
-                $("#unloading_citycode").append('<option value="'+city[j].code+'">'+city[j].name+'</option>');
-            }
-            //显示县
-            unloadCountyNameDisplay(city,data.unloading_citycode);
-        }
-    }
-}
-function loadCountyNameDisplay(city,code){
-    for(var i in city){
-        if(code == city[i].code){
-            var county = city[i].county;
-            for(var j in county){
-                $("#loading_countycode").append('<option value="'+county[j].code+'">'+county[j].name+'</option>');
-            }
-        }
-    }
-}
-function unloadCountyNameDisplay(city,code){
-    for(var i in city){
-        if(code == city[i].code){
-            var county = city[i].county;
-            for(var j in county){
-                $("#unloading_countycode").append('<option value="'+county[j].code+'">'+county[j].name+'</option>');
-            }
-        }
-    }
 }
