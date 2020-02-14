@@ -748,12 +748,10 @@ function getDictDataEnd(flg,result){
                 vehiceInfoRequest();
             }
         }else{
-            alertDialog("获取字典信息获取失败！");
             dictTrue.push("0");
             vehiceInfoRequest();
         }
     }else{
-        alertDialog("获取字典信息获取失败！");
         dictTrue.push("0");
         vehiceInfoRequest();
     }

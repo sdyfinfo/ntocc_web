@@ -64,6 +64,9 @@
             background-color:#ff0000;
             color: #FFFFFF;
         }
+        #route_detail{
+            width:100%;
+        }
 
     </style>
 
@@ -207,129 +210,127 @@
                 <div class="modal-body">
                     <form class="route-form form-horizontal" role="form">
                         <div class="form-body">
-                            <div style="height: 300px;overflow-y: auto;overflow-x: hidden">
-                                <h3 style="height: 40px">线路信息</h3>
-                                <div class="row">
-                                    <div class="form-group col-md-13">
-                                        <label class="col-md-2 control-label">项目名称</label>
-                                        <div class="col-md-9">
-                                            <input type="text" class="form-control"  name="proname">
-                                        </div>
+                            <h3 style="height: 40px">线路信息</h3>
+                            <div class="row">
+                                <div class="form-group col-md-13">
+                                    <label class="col-md-2 control-label">项目名称</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control"  name="proname">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-13">
-                                        <label class="col-md-2 control-label">线路名称</label>
-                                        <div class="col-md-9">
-                                            <input type="text" class="form-control"  name="linename">
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-13">
+                                    <label class="col-md-2 control-label">线路名称</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control"  name="linename">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">装货地名称</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control"  name="loading_name">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">卸货地名称</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" name="unloading_name">
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">装货地名称</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control"  name="loading_name">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">装货地址</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" name="loading_address">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">卸货地址</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" name="unloading_place">
-                                        </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">卸货地名称</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" name="unloading_name">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">发货人</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" name="consignor">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">收货人</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" name="consignee">
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">装货地址</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" name="loading_address">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">线路联系人</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" name="contacts">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">联系电话</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" name="phone">
-                                        </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">卸货地址</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" name="unloading_place">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">线路状态</label>
-                                        <div class="col-md-8">
-                                            <select class="form-control" name="state">
-                                                <option value="">请选择</option>
-                                                <option value="0">启用</option>
-                                                <option value="1">停用</option>
-                                            </select>
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">发货人</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" name="consignor">
                                     </div>
                                 </div>
-                                <h3 style="height: 40px">货物信息</h3>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">货物类型</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" name="goods_type">
-                                        </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">收货人</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" name="consignee">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-13">
-                                        <label class="col-md-2 control-label">货物名称</label>
-                                        <div class="col-md-9">
-                                            <input type="text" class="form-control"  name="goods">
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">线路联系人</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" name="contacts">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">货物单位</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" name="unit">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">货物数量</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" name="numbers">
-                                        </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">联系电话</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" name="phone">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">货物单价</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" name="univalence">
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">线路状态</label>
+                                    <div class="col-md-8">
+                                        <select class="form-control" name="state">
+                                            <option value="">请选择</option>
+                                            <option value="0">启用</option>
+                                            <option value="1">停用</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <h3 style="height: 40px">货物信息</h3>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">货物类型</label>
+                                    <div class="col-md-8">
+                                        <select class="form-control" id="goods_type" name="goods_type"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-13">
+                                    <label class="col-md-2 control-label">货物名称</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control"  name="goods">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">货物单位</label>
+                                    <div class="col-md-8">
+                                        <select class="form-control" id="unit" name="unit"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">货物数量</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" name="number">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">货物单价</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" name="univalence">
                                     </div>
                                 </div>
                             </div>

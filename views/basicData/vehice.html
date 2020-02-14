@@ -195,178 +195,176 @@
                 <div class="modal-body">
                     <form class="edit-form form-horizontal" role="form">
                         <div class="form-body">
-                            <div style="height: 300px;overflow-y: auto;overflow-x: hidden">
-                                <!-- 操作类型隐藏（用来区分新增还是编辑） -->
-                                <input type="hidden" name="edittype">
-                                <input type="hidden" class="form-control" name="vehid">
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">车牌号<span class="required"> * </span></label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" placeholder="车牌号" name="platenumber" id="platenumber_edit">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">车牌颜色<span class="required"> * </span></label>
-                                        <div class="col-md-8">
-                                            <select class="form-control" name="platecolor" id="platecolor_edit">
-                                                <option value="">请选择</option>
-                                            </select>
-                                        </div>
+                            <!-- 操作类型隐藏（用来区分新增还是编辑） -->
+                            <input type="hidden" name="edittype">
+                            <input type="hidden" class="form-control" name="vehid">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">车牌号<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="车牌号" name="platenumber" id="platenumber_edit">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">车长<span class="required"> * </span></label>
-                                        <div class="col-md-8">
-                                            <select class="form-control" name="conductor" id="conductor">
-                                                <option value="">请选择</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">车型<span class="required"> * </span></label>
-                                        <div class="col-md-8">
-                                            <select class="form-control" name="vehicletype" id="vehicletype_edit">
-                                                <option value="">请选择</option>
-                                            </select>
-                                        </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">车牌颜色<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <select class="form-control" name="platecolor" id="platecolor_edit">
+                                            <option value="">请选择</option>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">车架号</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" placeholder="车架号" name="vin">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">能源类型<span class="required"> * </span></label>
-                                        <div class="col-md-8">
-                                            <select class="form-control" name="energy_type" id="energy_type">
-                                                <option value="">请选择</option>
-                                            </select>
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">车长<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <select class="form-control" name="conductor" id="conductor">
+                                            <option value="">请选择</option>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">车辆所有人</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" placeholder="车辆所有人" name="proprietor">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">使用性质</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" placeholder="使用性质" name="nature">
-                                        </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">车型<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <select class="form-control" name="vehicletype" id="vehicletype_edit">
+                                            <option value="">请选择</option>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">发证机关</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" placeholder="发证机关" name="office">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">注册日期</label>
-                                        <div class="col-md-8">
-                                            <input class="form-control date-picker" readonly size="16" type="date" value="" name="regdate"  data-date-end-date="0d" />
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">车架号</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="车架号" name="vin">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">发证日期</label>
-                                        <div class="col-md-8">
-                                            <input class="form-control date-picker" readonly size="16" type="date" value="" name="issue_date"  data-date-end-date="0d" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">核定载质量<span class="required"> * </span></label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" placeholder="核定载质量" name="load">
-                                        </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">能源类型<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <select class="form-control" name="energy_type" id="energy_type">
+                                            <option value="">请选择</option>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">总质量<span class="required"> * </span></label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" placeholder="总质量" name="total_mass">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">道路运输证号<span class="required"> * </span></label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" placeholder="道路运输证号" name="transport_number">
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">车辆所有人</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="车辆所有人" name="proprietor">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">道路经营许可证号<span class="required"> * </span></label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" placeholder="道路经营许可证号" name="license_key">
-                                        </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">使用性质</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="使用性质" name="nature">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">行驶证<span class="required"> * </span></label>
-                                        <div class="col-md-8">
-                                            <label for="driving_img">
-                                                <img src="/public/img/img_upload.png">
-                                            </label>
-                                            <input type="file" accept="image/*" id="driving_img" style="display: none">
-                                            <input type="text" name="driving_img" hidden="hidden">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">道路运输证</label>
-                                        <div class="col-md-8">
-                                            <label for="transport_img">
-                                                <img src="/public/img/img_upload.png">
-                                            </label>
-                                            <input type="file" accept="image/*" id="transport_img" style="display: none">
-                                            <input type="text" name="transport_img" hidden="hidden">
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">发证机关</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="发证机关" name="office">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">道路运输经营许可证</label>
-                                        <div class="col-md-8">
-                                            <label for="license_img">
-                                                <img src="/public/img/img_upload.png">
-                                            </label>
-                                            <input type="file" accept="image/*" id="license_img" style="display: none">
-                                            <input type="text" name="license_img" hidden="hidden">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">保险卡</label>
-                                        <div class="col-md-8">
-                                            <label for="insurance_img">
-                                                <img src="/public/img/img_upload.png">
-                                            </label>
-                                            <input type="file" accept="image/*" id="insurance_img" style="display: none">
-                                            <input type="text" name="insurance_img" hidden="hidden">
-                                        </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">注册日期</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control date-picker" readonly size="16" type="date" value="" name="regdate"  data-date-end-date="0d" />
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">人车合影</label>
-                                        <div class="col-md-8">
-                                            <label for="group_photo">
-                                                <img src="/public/img/img_upload.png">
-                                            </label>
-                                            <input type="file" accept="image/*" id="group_photo" style="display: none">
-                                            <input type="text" name="group_photo" hidden="hidden">
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">发证日期</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control date-picker" readonly size="16" type="date" value="" name="issue_date"  data-date-end-date="0d" />
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">核定载质量<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="核定载质量" name="load">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">总质量<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="总质量" name="total_mass">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">道路运输证号<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="道路运输证号" name="transport_number">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">道路经营许可证号<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="道路经营许可证号" name="license_key">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">行驶证<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <label for="driving_img">
+                                            <img src="/public/img/img_upload.png">
+                                        </label>
+                                        <input type="file" accept="image/*" id="driving_img" style="display: none">
+                                        <input type="text" name="driving_img" hidden="hidden">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">道路运输证</label>
+                                    <div class="col-md-8">
+                                        <label for="transport_img">
+                                            <img src="/public/img/img_upload.png">
+                                        </label>
+                                        <input type="file" accept="image/*" id="transport_img" style="display: none">
+                                        <input type="text" name="transport_img" hidden="hidden">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">道路运输经营许可证</label>
+                                    <div class="col-md-8">
+                                        <label for="license_img">
+                                            <img src="/public/img/img_upload.png">
+                                        </label>
+                                        <input type="file" accept="image/*" id="license_img" style="display: none">
+                                        <input type="text" name="license_img" hidden="hidden">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">保险卡</label>
+                                    <div class="col-md-8">
+                                        <label for="insurance_img">
+                                            <img src="/public/img/img_upload.png">
+                                        </label>
+                                        <input type="file" accept="image/*" id="insurance_img" style="display: none">
+                                        <input type="text" name="insurance_img" hidden="hidden">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">人车合影</label>
+                                    <div class="col-md-8">
+                                        <label for="group_photo">
+                                            <img src="/public/img/img_upload.png">
+                                        </label>
+                                        <input type="file" accept="image/*" id="group_photo" style="display: none">
+                                        <input type="text" name="group_photo" hidden="hidden">
                                     </div>
                                 </div>
                             </div>

@@ -84,7 +84,7 @@ var DriverTable = function () {
                     startindex: data.start,
                     draw: data.draw
                 };
-                deiverDataGet(da, callback);
+                driverDataGet(da, callback);
             },
             columns: [//返回的json数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 { "data": null},
@@ -726,11 +726,7 @@ function getVehiceDataEnd(flg, result, callback){
                 $("#vehiceList").append("<option>"+vehicleList[i].platenumber+"</option>");
                 $("#vehiceList_edit").append("<option>"+vehicleList[i].platenumber+"</option>");
             }
-        }else{
-            alertDialog("车辆信息获取失败！");
         }
-    }else{
-        alertDialog("车辆信息获取失败！");
     }
 }
 
@@ -746,11 +742,7 @@ function getPayeeDataEnd(flg,result){
                 $("#payeeList").append("<option>"+payeeList[i].payname+"</option>");
                 $("#payeeList_edit").append("<option>"+payeeList[i].payname+"</option>");
             }
-        }else{
-            alertDialog("收款人信息获取失败！");
         }
-    }else{
-        alertDialog("收款人信息获取失败！");
     }
 }
 
@@ -797,12 +789,10 @@ function getDictDataEnd(flg,result){
             //司机表格
             DriverTable.init();
         }else{
-            alertDialog("准驾车型信息获取失败！");
             //司机表格
             DriverTable.init();
         }
     }else{
-        alertDialog("准驾车型信息获取失败！");
         //司机表格
         DriverTable.init();
     }

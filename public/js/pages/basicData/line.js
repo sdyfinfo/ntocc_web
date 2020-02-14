@@ -40,6 +40,7 @@ var LineTable = function(){
             "ajax":function (data, callback, settings) {
                 var formData = $(".inquiry-form").getFormData();
                 var da = {
+                    lid:"",
                     project_id: formData.projec_tname,
                     linename: formData.linename,
                     loading_place:formData.loading_place,
@@ -463,15 +464,16 @@ var LineEdit = function(){
                     line = lineList[i];
                 }
             }
+            $("#goods").empty();
             //省市区显示
-            loadAreaDisplay(line);
-            unloadAreaDisplay(line);
+            areaDisplay(line.loading_provincecode,line.loading_citycode,"#loading_citycode","#loading_countycode");
+            areaDisplay(line.unloading_provincecode,line.unloading_citycode,"#unloading_citycode","#unloading_countycode");
             var options = { jsonValue: line, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
             //显示货物名称
             goodsList = line.goods.split(",");
             for(var i in goodsList){
-                var div = "<div class='goods_div'><span>×</span>"+goodsList[i]+"</div>";
+                var div = "<div class='goods_check'><span>×</span>"+goodsList[i]+"</div>";
                 $("#goods").append(div);
             }
             //项目名称赋值
@@ -496,6 +498,7 @@ var LineEdit = function(){
                     line = lineList[i];
                 }
             }
+            $("#goods").empty();
             //省市区显示
             areaDisplay(line.loading_provincecode,line.loading_citycode,"#loading_citycode","#loading_countycode");
             areaDisplay(line.unloading_provincecode,line.unloading_citycode,"#unloading_citycode","#unloading_countycode");
@@ -650,12 +653,10 @@ function getProjectDataEnd(flg, result){
             //发货人信息获取
             consignorDataGet();
         }else{
-            alertDialog("项目名称获取失败！");
             //发货人信息获取
             consignorDataGet();
         }
     }else{
-        alertDialog("项目名称获取失败！");
         //发货人信息获取
         consignorDataGet();
     }
@@ -674,12 +675,10 @@ function getConsignorDataEnd(flg, result){
             //收货人信息获取
             consigneeidDateGet();
         }else{
-            alertDialog("发货人名称获取失败！");
             //收货人信息获取
             consigneeidDateGet();
         }
     }else{
-        alertDialog("发货人名称获取失败！");
         //收货人信息获取
         consigneeidDateGet();
     }
@@ -709,7 +708,6 @@ function getconsigneeidDataEnd(flg, result, callback){
                 var data = {lx:list[i]};
                 dictQuery(data);
             }
-            alertDialog("收货人名称获取失败！");
         }
     }else{
         //货物类型获取
@@ -718,7 +716,6 @@ function getconsigneeidDataEnd(flg, result, callback){
             var data = {lx:list[i]};
             dictQuery(data);
         }
-        alertDialog("收货人名称获取失败！");
     }
 }
 
@@ -745,12 +742,10 @@ function getDictDataEnd(flg, result){
             LineInfoRequest();
         }else{
             dictTrue.push("0");
-            alertDialog("获取字典信息获取失败！");
             LineInfoRequest();
         }
     }else{
         dictTrue.push("0");
-        alertDialog("获取字典信息获取失败！");
         LineInfoRequest();
     }
 }
@@ -760,11 +755,9 @@ function fileUploadAllowed(id){
         //全部只读
         $(".register-form").find("select").attr("disabled", true);
         $(".register-form").find("input").attr("disabled", true);
-        $("#goods").attr("disabled", true);
     }else{
         $(".register-form").find("select").attr("disabled", false);
         $(".register-form").find("input").attr("disabled", false);
-        $("#goods").attr("disabled", false);
     }
 }
 

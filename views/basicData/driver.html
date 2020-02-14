@@ -227,128 +227,126 @@
                 <div class="modal-body">
                     <form class="edit-form form-horizontal" role="form">
                         <div class="form-body">
-                            <div style="height: 300px;overflow-y: auto;overflow-x: hidden">
-                                <!-- 操作类型隐藏（用来区分新增还是编辑） -->
-                                <input type="hidden" name="edittype">
-                                <input type="hidden" class="form-control" name="did">
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">身份证号<span class="required"> * </span></label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" placeholder="身份证号" name="id_number">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">司机姓名<span class="required"> * </span></label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" placeholder="司机姓名" name="name">
-                                        </div>
+                            <!-- 操作类型隐藏（用来区分新增还是编辑） -->
+                            <input type="hidden" name="edittype">
+                            <input type="hidden" class="form-control" name="did">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">身份证号<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="身份证号" name="id_number">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">准驾车型<span class="required"> * </span></label>
-                                        <div class="col-md-8">
-                                            <select class="form-control" name="quasi_driving" id="quasi_driving">
-                                                <option value="">请选择</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">发证机关</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" placeholder="发证机关" name="certification_authority">
-                                        </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">司机姓名<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="司机姓名" name="name">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">驾驶证有效期自</label>
-                                        <div class="col-md-8">
-                                            <input class="form-control date-picker" readonly size="16" type="date" value="" name="driving_license_starttime"  data-date-end-date="0d" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">驾驶证有效期至</label>
-                                        <div class="col-md-8">
-                                            <input class="form-control date-picker" readonly size="16" type="date" value="" name="driving_license_endtime"  data-date-end-date="0d" />
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">准驾车型<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <select class="form-control" name="quasi_driving" id="quasi_driving">
+                                            <option value="">请选择</option>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">从业资格证号<span class="required"> * </span></label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" placeholder="从业资格证号" name="qualification">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">手机号<span class="required"> * </span></label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" placeholder="手机号" name="phone" maxlength="11">
-                                        </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">发证机关</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="发证机关" name="certification_authority">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">身份证正面<span class="required"> * </span></label>
-                                        <div class="col-md-8">
-                                            <label for="id_front">
-                                                <img src="/public/img/img_upload.png">
-                                            </label>
-                                            <input type="file" accept="image/*" id="id_front" style="display: none">
-                                            <input type="text" name="id_front" hidden="hidden">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">身份证反面<span class="required"> * </span></label>
-                                        <div class="col-md-8">
-                                            <label for="id_back">
-                                                <img src="/public/img/img_upload.png">
-                                            </label>
-                                            <input type="file" accept="image/*" id="id_back" style="display: none">
-                                            <input type="text" name="id_back" hidden="hidden">
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">驾驶证有效期自</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control date-picker" readonly size="16" type="date" value="" name="driving_license_starttime"  data-date-end-date="0d" />
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">驾驶证照片<span class="required"> * </span></label>
-                                        <div class="col-md-8">
-                                            <label for="driving_license">
-                                                <img src="/public/img/img_upload.png">
-                                            </label>
-                                            <input type="file" accept="image/*" id="driving_license" style="display: none">
-                                            <input type="text" name="driving_license" hidden="hidden">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">从业资格证</label>
-                                        <div class="col-md-8">
-                                            <label for="qualification_img">
-                                                <img src="/public/img/img_upload.png">
-                                            </label>
-                                            <input type="file" accept="image/*" id="qualification_img" style="display: none">
-                                            <input type="text" name="qualification_img" hidden="hidden">
-                                        </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">驾驶证有效期至</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control date-picker" readonly size="16" type="date" value="" name="driving_license_endtime"  data-date-end-date="0d" />
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">关联车辆</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" placeholder="请选择" name="plate_number" list="vehiceList_edit" autocomplete="off">
-                                            <datalist id="vehiceList_edit">
-                                            </datalist>
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">从业资格证号<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="从业资格证号" name="qualification">
                                     </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="col-md-4 control-label">关联收款人</label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" placeholder="请选择" name="payee_name" list="payeeList_edit" autocomplete="off">
-                                            <datalist id="payeeList_edit">
-                                            </datalist>
-                                        </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">手机号<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="手机号" name="phone" maxlength="11">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">身份证正面<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <label for="id_front">
+                                            <img src="/public/img/img_upload.png">
+                                        </label>
+                                        <input type="file" accept="image/*" id="id_front" style="display: none">
+                                        <input type="text" name="id_front" hidden="hidden">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">身份证反面<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <label for="id_back">
+                                            <img src="/public/img/img_upload.png">
+                                        </label>
+                                        <input type="file" accept="image/*" id="id_back" style="display: none">
+                                        <input type="text" name="id_back" hidden="hidden">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">驾驶证照片<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <label for="driving_license">
+                                            <img src="/public/img/img_upload.png">
+                                        </label>
+                                        <input type="file" accept="image/*" id="driving_license" style="display: none">
+                                        <input type="text" name="driving_license" hidden="hidden">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">从业资格证</label>
+                                    <div class="col-md-8">
+                                        <label for="qualification_img">
+                                            <img src="/public/img/img_upload.png">
+                                        </label>
+                                        <input type="file" accept="image/*" id="qualification_img" style="display: none">
+                                        <input type="text" name="qualification_img" hidden="hidden">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">关联车辆</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="请选择" name="plate_number" list="vehiceList_edit" autocomplete="off">
+                                        <datalist id="vehiceList_edit">
+                                        </datalist>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">关联收款人</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="请选择" name="payee_name" list="payeeList_edit" autocomplete="off">
+                                        <datalist id="payeeList_edit">
+                                        </datalist>
                                     </div>
                                 </div>
                             </div>

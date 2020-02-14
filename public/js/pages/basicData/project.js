@@ -4,10 +4,18 @@
 
 var projectList = [];
 var routeInfo = {};
+var goodsTypeList,unitList = [];
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
         fun_power();
+        //字典获取
+        //货物类型获取
+        var list = ["10005","10006"];
+        for(var i in list){
+            var data = {lx:list[i]};
+            dictQuery(data);
+        }
         //项目表格
         ProjectTable.init();
         //项目表操作
@@ -150,7 +158,7 @@ function formatRoute(data){
             content += "<div><a href='javascript:;' id='route_detail' data-routeid='"+data[i].lineid+"'>"+data[i].line+"</a></div>";
         }
         var main =
-            "<div style='width: 100px;'>"+
+            "<div style='width: 300px;'>"+
             "<div id='routeOpen'><i class='iconfont icon-jianhao'>点击收回</i></div>"+
             "<div id='routeContent'>"+content+"</div>"+
             "</div>";
@@ -232,8 +240,8 @@ var StatusChange = function(){
 $("#pro_table").on('click','#route_detail',function(){
     //获取线路id
     var data = {};
-    data.routeid = $(this).data("routeid");
-    routeDataGet(data);
+    data.lid = $(this).data("routeid");
+    lineDataGet(data);
 });
 
 //项目表操作
@@ -421,7 +429,7 @@ function projectEditEnd(flg, result, type){
 }
 
 //线路信息获取返回结果
-function getRouteDataEnd(flg,result){
+function getlineDataEnd(flg,result){
     App.unblockUI('#lay-out');
     if(flg){
         if (result && result.retcode == SUCCESS) {
@@ -442,7 +450,35 @@ function routeInfoDisplay(){
     var exclude = [];
     var options = { jsonValue: routeInfo, exclude:exclude,isDebug: false};
     $(".route-form").initForm(options);
+    for(var i in projectList){
+        if(routeInfo.project_id == projectList[i].proid){
+            $("#edit_route").find("input[name=proname]").val(projectList[i].proname);
+        }
+    }
     //全部为只读
     $("#edit_route").find('.form-control').attr("disabled","disabled");
     $('#edit_route').modal('show');
+}
+
+//字典获取
+function getDictDataEnd(flg, result){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+            var res = result.response;
+            dictList = res.dictlist;
+            for(var i = 0; i < dictList.length; i++){
+                switch (dictList[i].lx){
+                    case "10005":
+                        goodsTypeList = dictList;
+                        $("#goods_type").append("<option value='"+dictList[i].code+"'>"+ dictList[i].value +"</option>");
+                        break;
+                    case "10006":
+                        unitList = dictList;
+                        $("#unit").append("<option value='"+dictList[i].code+"'>"+ dictList[i].value +"</option>");
+                        break;
+                }
+            }
+        }
+    }
 }

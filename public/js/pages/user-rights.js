@@ -742,55 +742,6 @@ function regDelete(data){
     });
 }
 
-//项目查询
-function projectDataGet(data,callback){
-    App.blockUI({target: '#lay-out',boxed: true});
-    if(data == null){
-        data = {proname: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
-    }
-    $.ajax({
-        type: "post",
-        contentType: "application/json",
-        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url:"http://127.0.0.1:8007/ywt/web/front/projectdataquery",
-        //url: businessUrl + "projectquery",                    //请求发送到TestServlet处
-        data: sendMessageEdit(DEFAULT, data),
-        dataType: "json",        //返回数据形式为json
-        success: function (result) {
-            console.info("projectDataGet:" + JSON.stringify(result));
-            getProjectDataEnd(true, result, callback);
-        },
-        error: function (errorMsg) {
-            console.info("projectDataGet-error:" + JSON.stringify(errorMsg));
-            getProjectDataEnd(false, "", callback);
-        }
-    });
-}
-
-//发货人
-function consignoridDateGet(data,callback){
-    App.blockUI({target: '#lay-out',boxed: true});
-    if(data == null){
-        data = {conid: "",consignor:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
-    }
-    $.ajax({
-        type: "post",
-        contentType: "application/json",
-        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "consignorquery",               //请求发送到TestServlet处
-        data: sendMessageEdit(DEFAULT, data),
-        dataType: "json",        //返回数据形式为json
-        success: function (result) {
-            console.info("consignoridDateGet:" + JSON.stringify(result));
-            getconsignoridDataEnd(true, result, callback);
-        },
-        error: function (errorMsg) {
-            console.info("consignoridDateGet-error:" + JSON.stringify(errorMsg));
-            getconsignoridDataEnd(false, "", callback);
-        }
-    });
-}
-
 //收货人
 function consigneeidDateGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
@@ -1037,7 +988,7 @@ function routeDataGet(data){
 function lineDataGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
-        data = {projectname: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+        data = {lid:"",projectname: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",
@@ -1499,7 +1450,7 @@ function payeeUpload(data){
 
 
 //司机查询
-function deiverDataGet(data,callback){
+function driverDataGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
         data = {platenumber: "", name:"",id_number:"",receivables:"",currentpage: "", pagesize: "", startindex: "0", draw: 1}
@@ -1512,11 +1463,11 @@ function deiverDataGet(data,callback){
         data: sendMessageEdit(DEFAULT, data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
-            console.info("deiverDataGet:" + JSON.stringify(result));
+            console.info("driverDataGet:" + JSON.stringify(result));
             getDriverDataEnd(true, result, callback);
         },
         error: function (errorMsg) {
-            console.info("deiverDataGet-error:" + JSON.stringify(errorMsg));
+            console.info("driverDataGet-error:" + JSON.stringify(errorMsg));
             getDriverDataEnd(false, "", callback);
         }
     });
@@ -1655,7 +1606,7 @@ function dictQuery(data){
 function consignorDataGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
-        data = {consignor: "",invoice_rise:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+        data = {conid: "",consignor: "",invoice_rise:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",
@@ -1782,6 +1733,32 @@ function payeeDataGet(data,callback){
         error: function (errorMsg) {
             console.info("payeeDataGet-error:" + JSON.stringify(errorMsg));
             getPayeeDataEnd(false, "", callback);
+        }
+    });
+}
+
+//运单查询
+function billDataGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {start_subtime: "",end_subtime:"", loading_start_subtime:"",loading_end_subtime:"",
+            project_id:"",lid:"",consignor:"",platenumber:"",driver_name:"",state:"",
+            currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "billquery",    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("billDataGet:" + JSON.stringify(result));
+            getBillDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("billDataGet-error:" + JSON.stringify(errorMsg));
+            getBillDataEnd(false, "", callback);
         }
     });
 }
