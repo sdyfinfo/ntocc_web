@@ -112,7 +112,11 @@ const PAYEEEDIT = 81;
 const PAYEEDELETE = 82;
 const PAYEESTATUS =82;
 const GENNUPLOAD =83;
-
+const USHADD = 84;
+const USHEDIT = 85;
+const USHDELETE = 86;
+const USHSTATUS = 87;
+const USHPLOAD = 88;
 
 
 

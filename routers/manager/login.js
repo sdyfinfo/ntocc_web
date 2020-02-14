@@ -345,7 +345,7 @@ router.get('/payee',function(req,res,next){
 var fs = require('fs');
 var path = require('path');
 router.get('/downloadpayeefile', function (req, res, next) {
-    var filename = 'driverTemplate.xlsx';
+    var filename = 'payeeTemplate.xlsx';
     var filepath = path.join(__dirname, '../upload/' + filename);
     var stats = fs.statSync(filepath);
     if (stats.isFile()) {
@@ -357,6 +357,53 @@ router.get('/downloadpayeefile', function (req, res, next) {
         fs.createReadStream(filepath).pipe(res);
     } else {
         res.end(404);
+    }
+});
+
+//U盾管理
+router.get('/ushield',function(req,res,next){
+    console.info(req.url);
+    var uname = req.query.username;
+    if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
+        res.render('shield/ushield', {
+            menu: req.url.substr(1),
+            loginsucc: req.session["ywtLogin" + uname]
+        });
+    }else{
+        res.redirect('/');
+    }
+});
+
+//U盾模板下载
+var fs = require('fs');
+var path = require('path');
+router.get('/downloadushieldfile', function (req, res, next) {
+    var filename = 'ushieldTemplate.xlsx';
+    var filepath = path.join(__dirname, '../upload/' + filename);
+    var stats = fs.statSync(filepath);
+    if (stats.isFile()) {
+        res.set({
+            'Content-Type': 'application/octet-stream',
+            'Content-Disposition': 'attachment; filename=' + filename,
+            "Content-Length": stats.size
+        });
+        fs.createReadStream(filepath).pipe(res);
+    } else {
+        res.end(404);
+    }
+});
+
+//我的U盾
+router.get('/mshield',function(req,res,next){
+    console.info(req.url);
+    var uname = req.query.username;
+    if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
+        res.render('shield/mshield', {
+            menu: req.url.substr(1),
+            loginsucc: req.session["ywtLogin" + uname]
+        });
+    }else{
+        res.redirect('/');
     }
 });
 

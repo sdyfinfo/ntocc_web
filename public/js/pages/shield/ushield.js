@@ -1,23 +1,24 @@
 /**
- * Created by Lenovo on 2020/2/13.
+ * Created by Lenovo on 2020/2/14.
  */
 
-var payeeList = [];
+var ushList = [];
+
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function () {
         //fun_power();
         //收款人列表
-        PayeeTable.init();
+        ushTable.init();
         //
-        payeeEdit.init();
-        //获取开户银行信息
-        bankNameDataGet();
+       ushEdit.init();
+       //获取发货人信息
+       cgneeDataGet();
     })
 }
 
 
 //收货人表格
-var PayeeTable = function () {
+var ushTable = function () {
     var initTable = function () {
         var table = $('#payee_table');
         pageLengthInit(table);
@@ -36,27 +37,26 @@ var PayeeTable = function () {
             "ajax":function (data, callback, settings) {
                 var formData = $(".inquiry-form").getFormData();
                 var da = {
-                    payname: formData.payname,
-                    banknumber:formData.banknumber,
-                    bankid:formData.bankid,
+                    startdate: formData.startdate,
+                    enddate:formData.enddate,
+                    unumber:formData.unumber,
+                    shieid: formData.shieid,
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
                     draw: data.draw
                 };
-                PDataGet(da, callback);
+                ushieldGet(da, callback);
             },
             columns: [//返回的json数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 { "data": null},
                 { "data": null},
-                { "data": "payid",visible: false },
-                { "data": "bankid",visible: false },
-                { "data": "payname"},
-                { "data": "idcard" },
-                { "data": "payphone" },
-                { "data": "bank" },
-                { "data": "bankname"},
-                { "data": "state"},
+                { "data": "shieid",visible: false},
+                { "data": "unumber"},
+                { "data": "secret_key"},
+                { "data": "check"},
+                { "data": "status"},
+                { "data": "consignee"},
                 { "data": "updatetime"},
                 { "data": null}
             ],
@@ -75,34 +75,49 @@ var PayeeTable = function () {
                     }
                 },
                 {
-                    "targets":[9],
+                    "targets":[5],
                     "render":function (data, type, row, meta) {
-                        return statusFormat(data);
+                        var check = "是";
+                        if(data == "0"){
+                            check = "否";
+                        }
+                        return check;
+                        //return ushFormat(data);
                     }
                 },
                 {
-                    "targets":[10],
+                    "targets":[6],
+                    "render":function (data, type, row, meta) {
+                        var status = "已绑定";
+                        if(data == "0"){
+                            status = "未绑定";
+                        }
+                        return status;
+                    }
+                },
+                {
+                    "targets":[8],
                     "render": function (data, type, row ,meta) {
                         return dateTimeFormat(data);
                     }
                 },
                 {
-                    "targets": [11],
+                    "targets": [9],
                     "render": function (data, type, row, meta) {
                         /*var edit = "";
-                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
-                            edit = '-';
-                        }else{
-                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
-                        }
-                        return edit;*/
+                         if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
+                         edit = '-';
+                         }else{
+                         edit = '<a href="javascript:;" id="op_edit">编辑</a>';
+                         }
+                         return edit;*/
                         //if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")) return '-';
                         return '<a href="javascript:;" id="op_edit">编辑</a>'
                     }
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(2),td:eq(3),td:eq(4),td:eq(5),td:eq(6),td:eq(7)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );
@@ -136,7 +151,7 @@ var PayeeTable = function () {
 
 
 
-var payeeEdit = function(){
+var ushEdit = function(){
     var handleRegister = function() {
         var validator = $('.register-form').validate({
             errorElement: 'span', //default input error message container
@@ -144,42 +159,28 @@ var payeeEdit = function(){
             focusInvalid: false, // do not focus the last invalid input
             ignore: "",
             rules: {
-                payname:{
+                unumber:{
                     required: true
                 },
-                idcard:{
+                secret_key:{
                     required: true
                 },
-                addresseeTel:{
-                    required: true
-                },
-                payphone:{
-                    required: true
-                },
-                bank:{
-                    required: true
-                },
-                bankname:{
+                consigneeid:{
                     required: true
                 }
-
             },
 
             messages: {
-                payname:{
-                    required: "请输入银行开户户名"
+                unumber:{
+                    required:"请输入U盾编号"
+
+
                 },
-                idcard:{
-                    required: "请输入身份证号"
+                secret_key:{
+                    required: "请输入U盾秘钥"
                 },
-                payphone:{
-                    required: "请输入收款人手机号"
-                },
-                bank:{
-                    required: "请输入银行卡号"
-                },
-                bankname:{
-                    required: "请选择开户行"
+                consigneeid:{
+                    required: "请选择关联发货人"
                 }
             },
 
@@ -211,41 +212,28 @@ var payeeEdit = function(){
                 form.submit();
             }
         });
-        // 手机号码验证
-        jQuery.validator.addMethod("payphone", function(value, element) {
-            var tel = /^1[3456789]\d{9}$/;
-            return this.optional(element) || (tel.test(value));
-        }, "请正确填写您的联系电话");
-
-        jQuery.validator.addMethod("bank", function(value, element) {
-            var reg = /^([1-9]{1})(\d{14}|\d{18})$/;
-            return this.optional(element) || (reg.test(value));
-        }, "请正确填写您的银行卡号");
-
-        jQuery.validator.addMethod("idcard", function(value, element) {
-            var ard =  /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/;
-            return this.optional(element) || (ard.test(value));
-        }, "请正确填写您的身份证号");
-
         //点击确定按钮
         $('#register-btn').click(function() {
             btnDisable($('#register-btn'));
             if ($('.register-form').validate().form()) {
-                var pay = $('.register-form').getFormData();
-                pay.bankname = $("#bankid").find("option:selected").text();
-            }
-            if($("input[name=edittype]").val() == PAYEEADD){
-                payeeAdd(pay);
-            }else {
-                var data;
-                for(var i = 0; i < payeeList.length; i++) {
-                    if(pay.payid == payeeList[i].payid){
-                        data = payeeList[i];
+                var ush = $('.register-form').getFormData();
+                ush.consignee = $("#consigneeid").find("option:selected").text();
+                ush.unumber = $("input[name=unumber]").val();
+                ush.secret_key = $("input[name=secret_key]").val();
+                if($("input[name=edittype]").val() == USHADD){
+                    ushieldAdd(ush);
+                }else {
+                    var data;
+                    for(var i = 0; i < ushList.length; i++) {
+                        if(ush.payid == ushList[i].shieid){
+                            data = ushList[i];
+                        }
                     }
+                    ushieldEdit(ush,USHEDIT);
                 }
-                payeEdit(pay,PAYEEEDIT);
             }
         });
+
         //新增项目
         $('#op_add').click(function() {
             //清除校验错误信息
@@ -255,12 +243,12 @@ var payeeEdit = function(){
             $(":input",".register-form").not(":button,:reset,:submit,:radio,:input[name=birthday],#evaluationneed").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
-            $(".register-form").find("input[name=payid]").attr("readonly", false);
-            $("input[name=edittype]").val(PAYEEADD);
-            $('#edit_pay').modal('show');
+            $(".register-form").find("input[name=shieid]").attr("readonly", false);
+            $("input[name=edittype]").val(USHADD);
+            $('#edit_ush').modal('show');
         });
         //编辑项目
-        $('#payee_table').on('click', '#op_edit', function (e) {
+        $('#ush_table').on('click', '#op_edit', function (e) {
             e.preventDefault();
             //清除校验错误信息
             validator.resetForm();
@@ -268,17 +256,17 @@ var payeeEdit = function(){
             $(".modal-title").text("编辑项目");
             var exclude = [];
             var row = $(this).parents('tr')[0];
-            var payid = $("#payee_table").dataTable().fnGetData(row).payid;
-            var payee = new Object();
-            for(var i=0; i < payeeList.length; i++){
-                if(payid == payeeList[i].payid){
-                    payee = payeeList[i];
+            var shieid = $("#ush_table").dataTable().fnGetData(row).shieid;
+            var ushield = new Object();
+            for(var i=0; i < ushList.length; i++){
+                if(shieid.shieid == ushList[i].shieid){
+                    ushield = ushList[i];
                 }
             }
-            var options = { jsonValue: payee, exclude:exclude,isDebug: false};
+            var options = { jsonValue: ushield, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
-            $("input[name=edittype]").val(PAYEEEDIT);
-            $('#edit_pay').modal('show');
+            $("input[name=edittype]").val(USHEDIT);
+            $('#edit_ush').modal('show');
         });
     };
     return {
@@ -290,109 +278,119 @@ var payeeEdit = function(){
 
 
 
-// 返回查询结果
-function getPDataEnd(flg, result, callback){
-    App.unblockUI('#lay-out');
-    if(flg){
-        if (result && result.retcode == SUCCESS) {
-            var res = result.response;
-            payeeList = res.payeelist;
-            tableDataSet(res.draw, res.totalcount, res.totalcount, res.payeelist, callback);
-        }else{
-            tableDataSet(0, 0, 0, [], callback);
-            alertDialog("司机信息获取失败！");
-        }
-    }else{
-        tableDataSet(0, 0, 0, [], callback);
-        alertDialog("司机信息获取失败！");
-    }
-}
-
 //查询按钮
-$("#pay_inquiry").on("click",function(){
-    PayeeTable.init();
+$("#us_inquiry").on("click",function(){
+    ushTable.init();
 })
 
-//返回开户行结果
-function getbankNameDataEnd(flg, result, callback){
+
+//返回U盾管理结果
+function getushieldDataEnd(flg, result, callback){
     App.unblockUI('#lay-out');
     if(flg){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
-            bankList = res.banklist;
-            for(var i = 0; i < bankList.length; i++){
-                $("#bankid").append("<option value='"+bankList[i].bankid+"'>" + bankList[i].bankname +"</option>");
-            }
+            ushList = res.shielist;
+            tableDataSet(res.draw, res.totalcount, res.totalcount, res.shielist, callback);
         }else{
+            tableDataSet(0, 0, 0, [], callback);
             alertDialog("开户行信息获取失败！");
         }
     }else{
+        tableDataSet(0, 0, 0, [], callback);
         alertDialog("开户行信息获取失败！");
     }
 }
 
-
-//收款状态显示
-function statusFormat(data){
-    var content;
-    switch (data){
-        case "0":  //启用
-            content =
-                "<div class='switch'>"+
-                "<div class='onoffswitch'>"+
-                "<input type='checkbox' checked='' class='onoffswitch-checkbox'>"+
-                "<label class='onoffswitch-label' data-status='1' id='statusChange'>"+
-                "<span class='inner on_inner' style='float: left'>启用</span>"+
-                "<span class='switch' style='float: right'></span>"+
-                "</label>"+
-                "</div>"+
-                "</div>";
-            break;
-        case "1":  //启用
-            content =
-                "<div class='switch'>"+
-                "<div class='onoffswitch'>"+
-                "<input type='checkbox' checked='' class='onoffswitch-checkbox'>"+
-                "<label class='onoffswitch-label' style='border: 2px solid #ff0000;' data-status='0' id='statusChange'>"+
-                "<span class='inner off_inner' style='float: right'>停用</span>"+
-                "<span class='switch' style='float: left'></span>"+
-                "</label>"+
-                "</div>"+
-                "</div>";
-            break;
+//获取发货人信息
+function getcgneeEnd(flg, result, callback){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+            var res = result.response;
+            conList = res.conlist;
+            for(var i = 0; i < conList.length; i++){
+                $("#consigneeid").append("<option value='"+conList[i].conid+"'>" + conList[i].consignor +"</option>");
+            }
+        }else{
+            alertDialog("关联发货人信息获取失败！");
+        }
+    }else{
+        alertDialog("关联发货人信息获取失败！");
     }
-    return content;
 }
 
+function getushEditEnd(flg, result, type){
+    var res = "失败";
+    var text = "";
+    var alert = "";
+    switch (type){
+        case USHADD:
+            text = "新增";
+            break;
+        case USHEDIT:
+            text = "编辑";
+            break;
+        case USHDELETE:
+            text = "删除";
+            break;
+        case USHPLOAD:
+            text = "导入";
+            break;
+    }
+    if(flg){
+        if(result && result.retcode != SUCCESS){
+            alert = result.retmsg;
+        }
+        if (result && result.retcode == SUCCESS) {
+            res = "成功";
+            ushTable.init();
+            $('#edit_ush').modal('hide');
+            $('#ush_upload').modal('hide');
+        }
+    }
+    if(alert == ""){
+        if(type == USHPLOAD){
+            alert ="U盾信息"+ text + res + "！";
+        }else{
+            alert = text + "U盾信息" + res + "！";
+        }
+    }
+    App.unblockUI('#lay-out');
+    alertDialog(alert);
+}
 
-//收款人状态更改
-var StatusChange = function(){
-    var payee = {};
-    $("#payee_table").on('click','#statusChange',function(){
-        //获取id和status
-        var row = $(this).parents('tr')[0];
-        var payid = $("#payee_table").dataTable().fnGetData(row).payid;
-        payee.payid = payid;
-        payee.state = $(this).data('status');
-        //先提示
-        confirmDialog("您确定要更改该项目状态吗？", StatusChange.changeStatus);
+//删除
+var UshDelete = function() {
+    $('#op_del').click(function() {
+        var len = $(".checkboxes:checked").length;
+        if(len < 1){
+            alertDialog("至少选中一项！");
+        }else{
+            confirmDialog("数据删除后将不可恢复，您确定要删除吗？", UshDelete.deleteush)
+        }
     });
     return{
-        changeStatus: function(){
-            payeeState(payee);
+        deleteush: function(){
+            var ush = {shieidlist:[]};
+            $(".checkboxes:checked").parents("td").each(function () {
+                var row = $(this).parents('tr')[0];
+                ush.shieidlist.push($("#ush_table").dataTable().fnGetData(row).shieid);
+            });
+            ushieldDelete(ush);
         }
     }
 }();
 
-//导入收款人
-$("#pay_import").on("click",function(){
+//导入U盾
+$("#us_import").on("click",function(){
     $(".pay_upload").find("input[type=file]").value = "";
     $("#upload_name").hide();
-    $("#pay_upload").modal('show');
+    $("#ush_upload").modal('show');
 });
 
-//收款人点击上传
-$("#payee_file").change(function(){
+//U盾点击上传
+$("#ush_file").change(function(){
     var img = $(this).siblings("label").find("img");
     if(this.files[0]){
         //显示上传文件名
@@ -412,7 +410,7 @@ $("#payee_file").change(function(){
 });
 
 
-//收款人文件拖拽上传
+//U盾文件拖拽上传
 function allowDrop(ev) {
     //阻止浏览器默认打开文件的操作
     ev.preventDefault();
@@ -436,7 +434,7 @@ function drop(ev) {
             };
             var data = sendMessageEdit(DEFAULT,userid);
             formData.append("body",new Blob([data],{type:"application/json"}));
-            driverUpload(formData);
+            ushieldUpload(formData);
         }else{
             alertDialog("请选择.xlsx类型的文件上传！");
             return false;
@@ -445,70 +443,3 @@ function drop(ev) {
         $("#upload_name").html("");
     }
 };
-
-
-
-function payeeEditEnd(flg, result, type){
-    var res = "失败";
-    var text = "";
-    var alert = "";
-    switch (type){
-        case PAYEEADD:
-            text = "新增";
-            break;
-        case PAYEEEDIT:
-            text = "编辑";
-            break;
-        case PAYEEDELETE:
-            text = "删除";
-            break;
-        case GENNUPLOAD:
-            text = "导入";
-            break;
-        case PAYEESTATUS:
-            text = "状态设置";
-            break;
-    }
-    if(flg){
-        if(result && result.retcode != SUCCESS){
-            alert = result.retmsg;
-        }
-        if (result && result.retcode == SUCCESS) {
-            res = "成功";
-            PayeeTable.init();
-            $('#edit_pay').modal('hide');
-            $('#pay_upload').modal('hide');
-        }
-    }
-    if(alert == ""){
-        if(type == PAYEESTATUS){
-            alert ="收款人信息"+ text + res + "！";
-        }else{
-            alert = text + "收款人信息" + res + "！";
-        }
-    }
-    App.unblockUI('#lay-out');
-    alertDialog(alert);
-}
-
-//删除
-var PayeeDelete = function() {
-    $('#op_del').click(function() {
-        var len = $(".checkboxes:checked").length;
-        if(len < 1){
-            alertDialog("至少选中一项！");
-        }else{
-            confirmDialog("数据删除后将不可恢复，您确定要删除吗？", PayeeDelete.deletepay)
-        }
-    });
-    return{
-        deletepay: function(){
-            var payy = {payidlist:[]};
-            $(".checkboxes:checked").parents("td").each(function () {
-                var row = $(this).parents('tr')[0];
-                payy.payidlist.push($("#payee_table").dataTable().fnGetData(row).payid);
-            });
-            payeeDelete(payy);
-        }
-    }
-}();

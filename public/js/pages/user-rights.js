@@ -829,6 +829,140 @@ function gennDelete(data){
     });
 }
 
+//获取U盾发货人关联信息
+function cgneeDataGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {conid: "",consignor:"",draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "consignorquery",               //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("consignoridDateGet:" + JSON.stringify(result));
+            getcgneeEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("consignoridDateGet-error:" + JSON.stringify(errorMsg));
+            getcgneeEnd(false, "", callback);
+        }
+    });
+}
+
+//U盾查询
+function ushieldGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {startdate: "", enddate: "", shieid: "", unumber: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "shieldquery",                    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("ushieldGet:" + JSON.stringify(result));
+            getushieldDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("ushieldGet-error:" + JSON.stringify(errorMsg));
+            getushieldDataEnd(false, "", callback);
+        }
+    });
+}
+
+//U盾添加
+function ushieldAdd(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "shieldadd",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("ushieldAdd:" + JSON.stringify(result));
+            getushEditEnd(true, result, USHADD);
+        },
+        error: function (errorMsg) {
+            console.info("ushieldAdd-error:" + JSON.stringify(errorMsg));
+            getushEditEnd(false, "", USHADD);
+        }
+    });
+}
+
+//U盾编辑
+function ushieldEdit(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "shieldedit",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("ushieldEdit:" + JSON.stringify(result));
+            getushEditEnd(true, result, USHEDIT);
+        },
+        error: function (errorMsg) {
+            console.info("ushieldEdit-error:" + JSON.stringify(errorMsg));
+            getushEditEnd(false, "", USHEDIT);
+        }
+    });
+}
+
+
+//U盾删除
+function ushieldDelete(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "shielddelete",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("projectEdit:" + JSON.stringify(result));
+            getushEditEnd(true, result, USHDELETE);
+        },
+        error: function (errorMsg) {
+            console.info("projectEdit-error:" + JSON.stringify(errorMsg));
+            getushEditEnd(false, "", USHDELETE);
+        }
+    });
+}
+
+//U盾导入
+function ushieldUpload(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: false,
+        processData:false,
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "shieldimport",    //请求发送到TestServlet处
+        data: data,
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("ushieldUpload:" + JSON.stringify(result));
+            getushEditEnd(true, result, USHPLOAD);
+        },
+        error: function (errorMsg) {
+            console.info("ushieldUpload-error:" + JSON.stringify(errorMsg));
+            getushEditEnd(false, "", USHPLOAD);
+        }
+    });
+}
+
 
 //货物类型
 function didDateGet(data,callback){
