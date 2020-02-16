@@ -1738,5 +1738,58 @@ router.post('/googsquery',function(req,res,next){
 });
 
 
+router.post('/billquery',function(req,res,next){
+    var draw = req.query.currentpage;
+    var response = {
+        "response": {
+            "totalcount": "1",
+            "draw": "1",
+            "list": [
+                {
+                    "wid": "001", //运单id
+                    "project_name": "测试项目668",
+                    "project_id": "6c747281f9dc46c2b2475bffd6a76a85",
+                    "linename": "平阴→文登",
+                    "line_id": "70c2cabf02af425da02d4d12447cfdb1",
+                    "consignee_id": "",
+                    "consignee": "张山",
+                    "consignor_id": "",
+                    "consignor": "测试4",
+                    "consigneeTel": "15100000001",
+                    "consignorTel": "15245678911",
+                    "orderMaking_time": "20200216", //制单时间
+                    "planTime": "20200315", //计划发车时间
+                    "vehicle_id": "601c0866d5e9432991e7ce9e0f023222",
+                    "plate_number": "鲁ANA637",
+                    "load": "30",
+                    "driver_id": "00d4e8a490624538951bd2c25c2e30ea",
+                    "name": "测试司机3", //司机姓名
+                    "id_number":"370133199807165500",
+                    "goods_type": "06",
+                    "goods": "钢筋,水泥",
+                    "number": "40",
+                    "loading_place": "济南",
+                    "unloading_place": "潍坊",
+                    "univalence": "1234", // 货物单价
+                    "odd_numbers": "233333", //自定义单号
+                    "remarks": "没有",
+                    "loading_time": "",
+                    "disburden_time": "",
+                    "freight":"2222",//运费
+                    "oil_fee":"",
+                    "state":"01", //运单状态
+                    "wabill_numbers": "1234567890", //运单号
+                    "pay_state": "01", //支付状态
+                    "unit":"01"
+                }
+            ]
+        },
+        "retmsg": "调用成功",
+        "retcode": "0000"
+    };
+    res.send(
+        response
+    )
+});
 
 module.exports = router;

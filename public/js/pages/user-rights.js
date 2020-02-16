@@ -1883,7 +1883,7 @@ function billDataGet(data,callback){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "billquery",    //请求发送到TestServlet处
+        url: "http://127.0.0.1:8007/ywt/web/front/billquery",    //请求发送到TestServlet处   businessUrl + "billquery"
         data: sendMessageEdit(DEFAULT, data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -1893,6 +1893,112 @@ function billDataGet(data,callback){
         error: function (errorMsg) {
             console.info("billDataGet-error:" + JSON.stringify(errorMsg));
             getBillDataEnd(false, "", callback);
+        }
+    });
+}
+
+//运单新增
+function wayBillAdd(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "billadd",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("wayBillAdd:" + JSON.stringify(result));
+            billEditEnd(true, result, BILLADD);
+        },
+        error: function (errorMsg) {
+            console.info("wayBillAdd-error:" + JSON.stringify(errorMsg));
+            billEditEnd(false, "", BILLADD);
+        }
+    });
+}
+
+//运单编辑
+function wayBillEdit(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "billedit",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("wayBillEdit:" + JSON.stringify(result));
+            billEditEnd(true, result, BILLEDIT);
+        },
+        error: function (errorMsg) {
+            console.info("wayBillEdit-error:" + JSON.stringify(errorMsg));
+            billEditEnd(false, "", BILLEDIT);
+        }
+    });
+}
+
+//运单删除
+function wayBillDelete(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "billdelete",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("wayBillDelete:" + JSON.stringify(result));
+            billEditEnd(true, result, BILLDELETE);
+        },
+        error: function (errorMsg) {
+            console.info("wayBillDelete-error:" + JSON.stringify(errorMsg));
+            billEditEnd(false, "", BILLDELETE);
+        }
+    });
+}
+
+//运单导入
+function billUpload(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: false,
+        processData:false,
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "vehicleimport",    //请求发送到TestServlet处
+        data: data,
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("billUpload:" + JSON.stringify(result));
+            billEditEnd(true, result, BILLUPLOAD);
+        },
+        error: function (errorMsg) {
+            console.info("billUpload-error:" + JSON.stringify(errorMsg));
+            billEditEnd(false, "", BILLUPLOAD);
+        }
+    });
+}
+
+//运单状态修改
+function wayBillStateChange(data,type){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "billstate",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("wayBillStateChange:" + JSON.stringify(result));
+            billEditEnd(true, result, type);
+        },
+        error: function (errorMsg) {
+            console.info("wayBillStateChange-error:" + JSON.stringify(errorMsg));
+            billEditEnd(false, "", type);
         }
     });
 }

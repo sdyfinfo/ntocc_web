@@ -95,7 +95,7 @@ function dateTimeFormat(datetime){
 
 
 function conferenceDateFormat(dateRange){
-    if(datetime == "" || dateRange.length < 8) return dateRange;
+    if(dateRange == "" || dateRange.length < 8) return dateRange;
     return dateRange.substr(0, 4) + "/" + dateRange.substr(4, 2) + "/" +
         dateRange.substr(6, 2);
 }
