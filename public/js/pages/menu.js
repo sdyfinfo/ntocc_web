@@ -4,9 +4,10 @@
 var menuMake = '<ul class="nav" id="side-menu"><li class="nav-header">' +
         '<div class="profile-element">' +
         '<a href="#">' +
-        '<span class="clear">' +
-        '<span class="block m-t-xs"><strong class="font-bold">Beaut-zihan</strong></span>' +
-        '<span class="text-muted text-xs block">超级管理员</span>' +
+        '<span class="clear" style="text-align: center">' +
+            '<span><img alt="image" class="img-circle user-logo" src="' + "/public/img/user.png" + '" /></span>' +
+            '<span class="block m-t-xs"><strong class="font-bold">' + loginSucc.userid + '</strong></span>' +
+            '<span class="text-muted text-xs block">' + loginSucc.username + '</span>' +
         '</span>' +
         '</a>' +
         '</div>' +

@@ -211,7 +211,7 @@ body.body-small .navbar-top-links li:last-child {
 }
 
 .nav-header {
-    padding: 33px 25px;
+    padding: 10px 20px;
     background: url("patterns/header-profile.png") no-repeat;
 }
 
@@ -7930,4 +7930,10 @@ body.skin-3 {
     overflow: auto;
     border: 1px solid #ccc;
     padding: 5px 10px;
+}
+
+
+.user-logo{
+    width: 80px;
+    height: 80px;
 }
