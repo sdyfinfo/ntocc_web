@@ -241,16 +241,16 @@ var DriverEdit = function() {
                 phone:{
                     required: true,
                     phone:true
+                },
+                id_front:{
+                    required: true
+                },
+                id_back:{
+                    required: true
+                },
+                driving_license: {
+                    required: true
                 }
-//                id_front:{
-//                    required: true
-//                },
-//                id_back:{
-//                    required: true
-//                },
-//                driving_license: {
-//                    required: true
-//                }
             },
 
             messages: {
@@ -268,16 +268,16 @@ var DriverEdit = function() {
                 },
                 phone:{
                     required: "手机号必须输入"
+                },
+                id_front:{
+                    required: "身份证正面照必须上传"
+                },
+                id_back:{
+                    required: "身份证反面照必须上传"
+                },
+                driving_license: {
+                    required: "行驶证必须上传"
                 }
-//                id_front:{
-//                    required: "身份证正面照必须上传"
-//                },
-//                id_back:{
-//                    required: "身份证反面照必须上传"
-//                },
-//                driving_license: {
-//                    required: "行驶证必须上传"
-//                }
             },
 
             invalidHandler: function(event, validator) { //display error alert on form submit
@@ -466,6 +466,8 @@ var DriverEdit = function() {
             clearFile();
             //是否允许上传图片
             fileUploadAllowed(1);
+            $(".edit-form").find("input[name=name]").removeAttr("readonly");
+            $(".edit-form").find("input[name=id_number]").removeAttr("readonly");
             $(".modal-footer").show();
             $("input[name=edittype]").val(DRIVERADD);
             $('#edit_driver').modal('show');
