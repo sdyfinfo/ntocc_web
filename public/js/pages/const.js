@@ -11,8 +11,9 @@
 //     "gramtuWebUrl": hostIp + "8002/gramtu/web/"                       // web端URL
 // };
 
-var hostIp = "https://www.gramtu.com";
-var operatorIp = "http://ntocc.qicp.vip:34610";
+var hostIp = "http://ntocc.natapp1.cc";
+var operatorIp = "http://8hsdk3.natappfree.cc";
+
 var regulateSucc = {
     "uploadFolder" : "/home/yfdev/src/ywt_web",                       // 上传文件所在文件夹
     "loginUrl" : hostIp + "/ntocc/ntocc-ac/web/",                      // 登录URL   "/gramtu/ac/web/"  /ntocc/ntocc-ac/web/
