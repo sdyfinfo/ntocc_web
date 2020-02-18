@@ -164,7 +164,7 @@
 			// Adjust the position of the menu by its offset parent position.
 			parentOffset = $menu.offsetParent().offset();
 			X.left = X.left - parentOffset.left;
-			Y.top = Y.top - parentOffset.top + ($menu.offsetParent().height() / 2);
+			Y.top = Y.top - parentOffset.top + 10;// + ($menu.offsetParent().height() / 2);
  
 			return $.extend(tp, Y, X);
 		}
