@@ -131,6 +131,13 @@ var ProjectTable = function () {
         });
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
+            //判断是否全选
+            var checklength = $("#pro_table").find(".checkboxes:checked").length;
+            if(checklength == projectList.length){
+                $("#pro_table").find(".group-checkable").prop("checked",true);
+            }else{
+                $("#pro_table").find(".group-checkable").prop("checked",false);
+            }
         });
     };
     return {
@@ -231,6 +238,7 @@ var StatusChange = function(){
     });
     return{
         changeStatus: function(){
+            $("#loading_edit").modal('show');
             projectState(project);
         }
     }
@@ -301,8 +309,10 @@ var ProjectEdit = function() {
                 project.userid = loginSucc.userid;
             }
             if($("input[name=edittype]").val() == PROJECTADD){
+                $("#loading_edit").modal('show');
                 projectAdd(project);
             }else {
+                $("#loading_edit").modal('show');
                 projectEdit(project,PROJECTEDIT);
             }
         });
@@ -364,6 +374,7 @@ var ProjectDelete = function() {
                 var row = $(this).parents('tr')[0];
                 prolist.proidlist.push($("#pro_table").dataTable().fnGetData(row).proid);
             });
+            $("#loading_edit").modal('show');
             projectDelete(prolist);
         }
     }
@@ -390,6 +401,7 @@ function getProjectDataEnd(flg, result, callback){
 
 //项目操作返回结果
 function projectEditEnd(flg, result, type){
+    $("#loading_edit").modal('hide');
     var res = "失败";
     var text = "";
     var alert = "";

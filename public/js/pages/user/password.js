@@ -86,6 +86,7 @@ var Password = function() {
                     oldpassword: data.opassword,
                     newpassword: data.npassword
                 };
+                $("#loading_edit").modal('show');
                 passwordModify(user);
             }
         });
@@ -100,6 +101,7 @@ var Password = function() {
 }();
 
 function passwordModifyEnd(flg, result){
+    $("#loading_edit").modal('hide');
     var res = "失败！";
     var alert = "";
     if(flg){

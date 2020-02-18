@@ -192,6 +192,13 @@ var VehiceTable = function () {
         });
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
+            //判断是否全选
+            var checklength = $("#vehice_table").find(".checkboxes:checked").length;
+            if(checklength == vehicleList.length){
+                $("#vehice_table").find(".group-checkable").prop("checked",true);
+            }else{
+                $("#vehice_table").find(".group-checkable").prop("checked",false);
+            }
         });
     };
     return {
@@ -394,8 +401,10 @@ var VehiceEdit = function() {
                     }
                 }
                 if($("input[name=edittype]").val() == VEHICEADD){
+                    $("#loading_edit").modal('show');
                     vehiceAdd(formData);
                 }else{
+                    $("#loading_edit").modal('show');
                     vehiceEdit(formData);
                 }
             }
@@ -533,6 +542,7 @@ var VehiceDelete = function() {
                 var row = $(this).parents('tr')[0];
                 vehice.vehidlist.push($("#vehice_table").dataTable().fnGetData(row).vehid);
             });
+            $("#loading_edit").modal('show');
             vehiceDelete(vehice);
         }
     }
@@ -560,6 +570,7 @@ $("#vehice_file").change(function(){
         }
         var data = sendMessageEdit(DEFAULT,userid);
         formData.append("body",new Blob([data],{type:"application/json"}));
+        $("#loading_edit").modal('show');
         vehiceUpload(formData);
     }else{
         $("#upload_name").html("");
@@ -591,6 +602,7 @@ function drop(ev) {
             }
             var data = sendMessageEdit(DEFAULT,userid);
             formData.append("body",new Blob([data],{type:"application/json"}));
+            $("#loading_edit").modal('show');
             vehiceUpload(formData);
         }else{
             alertDialog("请选择.xlsx类型的文件上传！");
@@ -654,6 +666,7 @@ function conductorDisplay(data){
 
 //车辆信息操作返回结果
 function vehiceEditEnd(flg, result, type){
+    $("#loading_edit").modal('hide');
     var res = "失败";
     var text = "";
     var alert = "";

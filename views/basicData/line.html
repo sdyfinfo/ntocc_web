@@ -85,7 +85,7 @@
                                         <div class="form-group">
                                             <label class="col-md-4 control-label">项目名称</label>
                                             <div class="col-md-8">
-                                                <input type="text" class="form-control" placeholder="请选择" name="projec_tname" list="projectname" autocomplete="off">
+                                                <input type="text" class="form-control" placeholder="请选择" name="project_name" list="projectname" autocomplete="off">
                                                 <datalist id="projectname">
                                                 </datalist>
                                             </div>
@@ -147,7 +147,7 @@
                             <div class="row">
                                 <div class="col-lg-10">
                                     <div class="btn-group">
-                                        <button id="pro_inquiry" class="btn btn-success"> 查询
+                                        <button id="lin_inquiry" class="btn btn-success"> 查询
                                             <i class="fa fa-search"></i>
                                         </button>
                                     </div>
@@ -248,8 +248,8 @@
                                 <div class="form-group col-md-12">
                                     <label class="col-md-2 control-label mini-combobox" style="padding-right: 20px">项目名称<span class="required"> * </span></label>
                                     <div class="col-md-10" style="padding-left: 10px;width: 80% ">
-                                        <input type="text" class="form-control" placeholder="请选择" name="project_id" list="project_name" autocomplete="off">
-                                        <datalist id="project_name" data-set="project_name">
+                                        <input type="text" class="form-control" placeholder="请选择" name="project_name" list="project_name"  autocomplete="off">
+                                        <datalist id="project_name">
                                         </datalist>
                                     </div>
                                 </div>
@@ -373,9 +373,9 @@
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label" style="padding-right: 20px">货物类型<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <input type="text" class="form-control" placeholder="请选择" name="goods_type" list="goods_type" autocomplete="off">
-                                        <datalist data-set="goods_type">
-                                        </datalist>
+                                        <select type="text" class="form-control" name="goods_type" id="goods_type">
+                                            <option value="">请选择</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -423,6 +423,17 @@
             </div>
         </div>
     </div>
+    <!-- 处理遮罩 -->
+    <div class="modal fade" id="loading_edit" role="basic" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="/public/img/loading-spinner-grey.gif" alt="" class="loading">
+                    <span> &nbsp;&nbsp;正在处理中... </span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!--本页面用到插件的JS-->
     <script src="/public/js/jquery.min.js?v=2.1.4"></script>
@@ -453,27 +464,7 @@
     <script type="text/javascript" src="/public/js/pages/basicData/areaCodeAddress.js"></script>
 
     <script src="/public/js/pages/basicData/line.js"></script>
-    <script>
-        function setValue() {
-            var obj = mini.get("project_name");
-            obj.setValue("usa");
 
-        }
-        function getValue() {
-            var obj = mini.get("project_name");
-            alert(obj.getValue() +":"+ obj.getText());
-        }
-        function enable() {
-            var obj = mini.get("project_name");
-            obj.enable();
-        }
-        function disable() {
-            var obj = mini.get("project_name");
-            obj.disable();
-        }
-
-
-    </script>
 </body>
 
 </html>

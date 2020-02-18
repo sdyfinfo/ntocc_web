@@ -69,7 +69,10 @@ var WayBillTable = function () {
             "bAutoWidth": false,
             "ajax":function (data, callback, settings) {
                 var formData = $(".inquiry-form").getFormData();
-                var start_subtime,end_subtime,loading_start_subtime,loading_end_subtime = "";
+                var start_subtime = "";
+                var end_subtime = "";
+                var loading_start_subtime ="";
+                var loading_end_subtime = "";
                 if(formData.start_subtime != ""){
                     start_subtime = formData.start_subtime.replace(/(\/)/g,'')+"000000";
                 }
@@ -82,13 +85,14 @@ var WayBillTable = function () {
                 if(formData.loading_end_subtime != ""){
                     loading_end_subtime = formData.loading_end_subtime.replace(/(\/)/g,'')+"000000";
                 }
+                var lid = $("#lineList").val();
                 var da = {
                     start_subtime:start_subtime,
                     end_subtime:end_subtime,
                     loading_start_subtime:loading_start_subtime,
                     loading_end_subtime:loading_end_subtime,
                     project_id:formData.project_id,
-                    lid:formData.lid,
+                    lid:lid,
                     consignor:formData.consignor,
                     platenumber:formData.platenumber,
                     driver_name:formData.driver_name,
@@ -115,8 +119,9 @@ var WayBillTable = function () {
                 { "data": "freight"},
                 { "data": "orderMaking_time"},
                 { "data": "state"},
-                { "data": "paystate"},
-                { "data": null}
+                { "data": "verification_status"},
+                { "data": "tips"},
+                { "data": "state"}
             ],
             columnDefs: [
                 {
@@ -191,13 +196,13 @@ var WayBillTable = function () {
                         return value;
                     }
                 },{
-                    "targets": [15],
+                    "targets": [16],
                     "render": function (data, type, row, meta) {
                         var edit = '<a href="javascript:;" id="op_edit">编辑</a>';
-//                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
-//                            edit = '-';
-//                        }else{
+//                        if(window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit") $$ data == "01"){
 //                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
+//                        }else{
+//                            edit = '-';
 //                        }
                         return edit;
                     }
@@ -223,7 +228,15 @@ var WayBillTable = function () {
         });
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
+            //判断是否全选
+            var checklength = $("#bill_table").find(".checkboxes:checked").length;
+            if(checklength == wayBillList.length){
+                $("#bill_table").find(".group-checkable").prop("checked",true);
+            }else{
+                $("#bill_table").find(".group-checkable").prop("checked",false);
+            }
         });
+
     };
     return {
         init: function (data) {
@@ -266,10 +279,12 @@ var WayBillAdd = function() {
                     required: true
                 },
                 loading_address:{
-                    required: true
+                    required: true,
+                    address:true
                 },
                 unloading_address:{
-                    required: true
+                    required: true,
+                    address:true
                 },
                 goods_type:{
                     required: true
@@ -302,6 +317,9 @@ var WayBillAdd = function() {
                     required: true
                 },
                 freight:{
+                    required: true
+                },
+                planTime:{
                     required: true
                 }
             },
@@ -360,6 +378,9 @@ var WayBillAdd = function() {
                 },
                 freight:{
                     required: "请输入运费"
+                },
+                planTime:{
+                    required: "请输入计划发车时间"
                 }
             },
 
@@ -396,6 +417,11 @@ var WayBillAdd = function() {
             var tel = /^1[3456789]\d{9}$/;
             return this.optional(element) || (tel.test(value));
         }, "请正确填写您的手机号码");
+
+        //省市区格式验证
+        jQuery.validator.addMethod("address", function(value, element) {
+            return this.optional(element) || (addressCheck(value));
+        }, "请正确填写您的地址");
 
         //新增框项目联动线路
         $("#project_add").blur(function(){
@@ -450,6 +476,7 @@ var WayBillAdd = function() {
             }else{
                 $(".line-display").find("input").val("");
                 $(".line-display").find("select").val("");
+                $(".add-form").find("input[name=freight]").val("");
                 $("#goods").empty();
             }
         });
@@ -586,6 +613,8 @@ var WayBillAdd = function() {
                 case "0":  //有
                     $("#line-display,#lineList_add").show();
                     $(".line-display").find("input").attr("readonly","readonly");
+                    //总运发重量可修改
+                    $("#goodsname,input[name=number]").removeAttr("readonly");
                     $(".line-display").find("select").attr("disabled", true);
                     validator.resetForm();
                     clearFormInfo();
@@ -631,6 +660,7 @@ var WayBillAdd = function() {
                 if($("input[name=edittype]").val() == BILLADD){
                     wayBillAdd(bill);
                 }else{
+                    bill.line_id = $("#lineList_add").val();
                     wayBillEdit(bill);
                 }
 
@@ -676,6 +706,7 @@ var WayBillAdd = function() {
             }
             $("#driver_add").val(bill.name+bill.id_number);
             $("input[name=orderMaking_time]").datepicker("setDate",dateFormat(bill.orderMaking_time, "-"));
+            $("input[name=planTime]").datepicker("setDate",dateFormat(bill.planTime, "-"));
             $('.add-form').find("input,textarea,select").attr("disabled", true);
             $("#lineInfo").hide();
             $("#line-display").show();
@@ -696,8 +727,8 @@ var WayBillAdd = function() {
             var row = $(this).parents('tr')[0];
             var wid = $("#bill_table").dataTable().fnGetData(row).wid;
             var state =  $("#bill_table").dataTable().fnGetData(row).state;
-            if(state != "01" && state != "02"){
-                alertDialog("只有新建和装货中的运单可编辑！");
+            if(state != "01"){
+                alertDialog("只有新建的运单可编辑！");
                 return;
             }
             var bill = new Object();
@@ -730,17 +761,21 @@ var WayBillAdd = function() {
             }
             $("#driver_add").val(bill.name+bill.id_number);
             $("input[name=orderMaking_time]").datepicker("setDate",dateFormat(bill.orderMaking_time, "-"));
+            $("input[name=planTime]").datepicker("setDate",dateFormat(bill.planTime, "-"));
 
             //根据是否有线路信息，判断哪些不可编辑
-            if(bill.line_id != ""){   //有
-                $("#lineInfo").val("0");
+            if(bill.line_id != ""){   //有线路
+                $("#lineHave").val("0");
                 $("#lineList_add").show();
-                $("#project_add,#lineList_add,input[name=orderMaking_time]").attr("disabled",true);
+                $("#project_add").attr("readonly","readonly");
+                $("#lineList_add,input[name=orderMaking_time]").attr("disabled",true);
                 $(".line-display").find("input").attr("readonly","readonly");
                 $(".line-display").find("select").attr("disabled", true);
+                //总发运数量和货物名称可编辑
+                $("#goodsname,input[name=number]").removeAttr("readonly");
             }else{
-                $("#lineInfo").val("1");
-                $("#project_add,input[name=orderMaking_time]").attr("disabled",true);
+                $("#lineHave").val("1");
+                $("#project_add,input[name=orderMaking_time],#goods_type").attr("disabled",true);
                 $(".line-display").find("input").removeAttr("readonly");
                 $("#lineList_add").hide();
                 $("input[name=consigneeTel],input[name=consignorTel]").attr("readonly","readonly");
@@ -762,6 +797,7 @@ var WayBillAdd = function() {
             validator.resetForm();
             $("#lineInfo").show();
             $("#lineHave").val("");
+            $("#project_add").removeAttr("readonly");
             $('.add-form').find("input,textarea,select").attr("disabled", false);
             $("input[name=edittype]").val(BILLADD);
             $(".modal-title").text("新增运单");
@@ -902,32 +938,25 @@ function drop(ev) {
     }
 };
 
-//提交运单
+//提交审验运单
 var WayBillSubimt = function() {
     $('#bill_submit').click(function() {
         var len = $(".checkboxes:checked").length;
         if(len < 1){
             alertDialog("至少选中一项！");
         }else{
-            confirmDialog("您确定要提交吗？", WayBillSubimt.deletePro)
+            confirmDialog("您确定要提交审验吗？", WayBillSubimt.deletePro)
         }
     });
     return{
         deletePro: function(){
-            var bill = {waybillidlist:[],state:"02"};
+            var bill = {waybillidlist:[],verification_status:"01"};
             $(".checkboxes:checked").parents("td").each(function () {
                 var row = $(this).parents('tr')[0];
-                //只有新建和装货中的运单可删除
                 var state = $("#bill_table").dataTable().fnGetData(row).state;
-                if(state == "01"){
-                    bill.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
-                }else{
-                    alertDialog("只有新建的运单可提交");
-                    throw new Error("breakForEach");
-                    return;
-                }
+                bill.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
             });
-            wayBillStateChange(bill,'提交');
+            wayBillStateChange(bill,'提交审验');
         }
     }
 }();
@@ -944,50 +973,20 @@ var WayBillDepart = function() {
     });
     return{
         deletePro: function(){
-            var bill = {waybillidlist:[],state:"03"};
+            var bill = {waybillidlist:[],state:"02","date":getNowDateTime()};
             $(".checkboxes:checked").parents("td").each(function () {
                 var row = $(this).parents('tr')[0];
                 //只有新建和装货中的运单可删除
-                var state = $("#bill_table").dataTable().fnGetData(row).state;
-                if(state == "02"){
+                var verification_status = $("#bill_table").dataTable().fnGetData(row).verification_status;
+                if(verification_status == "03"){
                     bill.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
                 }else{
-                    alertDialog("只有提交的运单可发车");
+                    alertDialog("只有通过审验的运单可发车");
                     throw new Error("breakForEach");
                     return;
                 }
             });
             wayBillStateChange(bill,'发车');
-        }
-    }
-}();
-
-//运单卸货
-var WayBillUnLoad = function() {
-    $('#bill_unload').click(function() {
-        var len = $(".checkboxes:checked").length;
-        if(len < 1){
-            alertDialog("至少选中一项！");
-        }else{
-            confirmDialog("您确定要卸货吗？", WayBillUnLoad.deletePro)
-        }
-    });
-    return{
-        deletePro: function(){
-            var bill = {waybillidlist:[],state:"04"};
-            $(".checkboxes:checked").parents("td").each(function () {
-                var row = $(this).parents('tr')[0];
-                //只有新建和装货中的运单可删除
-                var state = $("#bill_table").dataTable().fnGetData(row).state;
-                if(state == "03"){
-                    bill.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
-                }else{
-                    alertDialog("只有发车的运单可卸货");
-                    throw new Error("breakForEach");
-                    return;
-                }
-            });
-            wayBillStateChange(bill,'卸货');
         }
     }
 }();
@@ -999,20 +998,20 @@ var WayBillDone = function() {
         if(len < 1){
             alertDialog("至少选中一项！");
         }else{
-            confirmDialog("您确定要完成吗？", WayBillDone.deletePro)
+            confirmDialog("您确定要完成运单吗？", WayBillDone.deletePro)
         }
     });
     return{
         deletePro: function(){
-            var bill = {waybillidlist:[],state:"05"};
+            var bill = {waybillidlist:[],state:"03","date":getNowDateTime()};
             $(".checkboxes:checked").parents("td").each(function () {
                 var row = $(this).parents('tr')[0];
                 //只有新建和装货中的运单可删除
                 var state = $("#bill_table").dataTable().fnGetData(row).state;
-                if(state == "04"){
+                if(state == "02"){
                     bill.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
                 }else{
-                    alertDialog("只有卸货的运单可完成");
+                    alertDialog("只有已发车的运单可完成");
                     throw new Error("breakForEach");
                     return;
                 }
@@ -1032,10 +1031,10 @@ function billEditEnd(flg, result, type){
             text = "新增";
             break;
         case BILLDELETE:
-            text = "编辑";
+            text = "删除";
             break;
         case BILLEDIT:
-            text = "删除";
+            text = "编辑";
             break;
         case BILLUPLOAD:
             text = "导入";
@@ -1114,9 +1113,11 @@ function getlineDataEnd(flg,result){
             //显示货物名称
             goodsList = line.goods.split(",");
             for(var i in goodsList){
-                var div = "<div class='goods_check'><span>×</span>"+goodsList[i]+"</div>";
+                var div = "<div class='goods_div'><span>×</span>"+goodsList[i]+"</div>";
                 $("#goods").append(div);
             }
+            //计算运费：单价x总发运数
+            $(".add-form").find("input[name=freight]").val(line.univalence*line.number);
         }else{
             alertDialog("线路信息获取失败");
         }
@@ -1275,7 +1276,7 @@ function clearFormInfo(){
     $("#goods").empty();
     $(".modal-footer").show();
     $(".add-form").find(".has-error").removeClass("has-error");
-    $(":input",".add-form").not(":button,:reset,:submit,:radio,#evaluationneed,.date-picker,#lineHave").val("")
+    $(":input",".add-form").not(":button,:reset,:submit,:radio,#evaluationneed,[name=orderMaking_time],#lineHave").val("")
         .removeAttr("checked")
         .removeAttr("selected");
 }

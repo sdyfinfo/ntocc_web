@@ -198,6 +198,13 @@ var DriverTable = function () {
         });
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
+            //判断是否全选
+            var checklength = $("#driver_table").find(".checkboxes:checked").length;
+            if(checklength == driverList.length){
+                $("#driver_table").find(".group-checkable").prop("checked",true);
+            }else{
+                $("#driver_table").find(".group-checkable").prop("checked",false);
+            }
         });
     };
     return {
@@ -362,6 +369,10 @@ var DriverEdit = function() {
                         driver.payid = payeeList[i].payid;
                     }
                 }
+                delete driver.id_front;
+                delete driver.id_back;
+                delete driver.driving_license;
+                delete driver.qualification_img;
                 var formData = new FormData();
                 var list = ["driving_license","id_front","id_back","qualification_img"];
                 for(var i in list){
@@ -376,8 +387,10 @@ var DriverEdit = function() {
                     }
                 }
                 if($("input[name=edittype]").val() == DRIVERADD){
+                    $("#loading_edit").modal("show");
                     driverAdd(formData);
                 }else{
+                    $("#loading_edit").modal("show");
                     driverEdit(formData);
                 }
             }
@@ -494,7 +507,7 @@ $("#driver_table").on('click','.receivables_click',function(){
     var receivables_id = $("#driver_table").dataTable().fnGetData(row).receivables_id;
     var receivables = $(this)[0].innerText;
     var bank = $("#driver_table").dataTable().fnGetData(row).bank;
-    location.href = 'receivables?username='+loginSucc.userid+"&receivables="+receivables+"&bank="+bank;
+    location.href = 'payee?username='+loginSucc.userid+"&payname="+encodeURI(receivables)+"&banknumber="+bank;
 });
 
 //项目状态显示
@@ -543,6 +556,7 @@ var StatusChange = function(){
     });
     return{
         changeStatus: function(){
+            $("#loading_edit").modal("show");
             driverState(driver);
         }
     }
@@ -578,6 +592,7 @@ var DriverDelete = function() {
                 var row = $(this).parents('tr')[0];
                 driver.driveridlist.push($("#driver_table").dataTable().fnGetData(row).did);
             });
+            $("#loading_edit").modal("show");
             driverDelete(driver);
         }
     }
@@ -605,6 +620,7 @@ $("#driver_file").change(function(){
         }
         var data = sendMessageEdit(DEFAULT,userid);
         formData.append("body",new Blob([data],{type:"application/json"}));
+        $("#loading_edit").modal("show");
         driverUpload(formData);
     }else{
         $("#upload_name").html("");
@@ -635,6 +651,7 @@ function drop(ev) {
             };
             var data = sendMessageEdit(DEFAULT,userid);
             formData.append("body",new Blob([data],{type:"application/json"}));
+            $("#loading_edit").modal("show");
             driverUpload(formData);
         }else{
             alertDialog("请选择.xlsx类型的文件上传！");
@@ -647,6 +664,7 @@ function drop(ev) {
 
 //司机操作结果返回
 function driverEditEnd(flg, result, type){
+    $("#loading_edit").modal("hide");
     var res = "失败";
     var text = "";
     var alert = "";

@@ -113,6 +113,13 @@ var ConsTable = function(){
         });
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
+            //判断是否全选
+            var checklength = $("#gnee_table").find(".checkboxes:checked").length;
+            if(checklength == conList.length){
+                $("#gnee_table").find(".group-checkable").prop("checked",true);
+            }else{
+                $("#gnee_table").find(".group-checkable").prop("checked",false);
+            }
         });
     };
     return {
@@ -204,6 +211,7 @@ var ConsEdit = function(){
                 var genn = $('.register-form').getFormData();
             }
             if($("input[name=edittype]").val() == GENNADD){
+                $("#loading_edit").modal('show');
                 gennAdd(genn);
             }else {
                 var data;
@@ -212,6 +220,7 @@ var ConsEdit = function(){
                         data = conList[i];
                     }
                 }
+                $("#loading_edit").modal('show');
                 geenEdit(genn,GENNEDIT);
             }
         });
@@ -220,7 +229,7 @@ var ConsEdit = function(){
             //清除校验错误信息
             validator.resetForm();
             $(".register-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("新增项目");
+            $(".modal-title").text("新增收货人");
             $(":input",".register-form").not(":button,:reset,:submit,:radio,:input[name=birthday],#evaluationneed").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
@@ -234,7 +243,7 @@ var ConsEdit = function(){
             //清除校验错误信息
             validator.resetForm();
             $(".register-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("编辑项目");
+            $(".modal-title").text("编辑收货人");
             var exclude = [];
             var row = $(this).parents('tr')[0];
             var conid = $("#gnee_table").dataTable().fnGetData(row).conid;
@@ -281,6 +290,7 @@ var GennDelete = function() {
                 var row = $(this).parents('tr')[0];
                 geen.conidlist.push($("#gnee_table").dataTable().fnGetData(row).conid);
             });
+            $("#loading_edit").modal('show');
             gennDelete(geen);
         }
     }
@@ -306,6 +316,7 @@ function getconsigneeidDataEnd(flg, result, callback){
 
 
 function gennEditEnd(flg, result, type){
+    $("#loading_edit").modal('hide');
     var res = "失败";
     var text = "";
     var alert = "";

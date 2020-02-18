@@ -99,6 +99,13 @@ var RoleTable = function () {
 
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
+            //判断是否全选
+            var checklength = $("#role_table").find(".checkboxes:checked").length;
+            if(checklength == roleList.length){
+                $("#role_table").find(".group-checkable").prop("checked",true);
+            }else{
+                $("#role_table").find(".group-checkable").prop("checked",false);
+            }
         });
 
 
@@ -168,8 +175,10 @@ var RoleEdit = function() {
             if ($('.register-form').validate().form()) {
                 var role = $('.register-form').getFormData();
                 if($("input[name=edittype]").val() == ROLEADD){
+                    $("#loading_edit").modal('show');
                     roleAdd(role);
                 }else{
+                    $("#loading_edit").modal('show');
                     roleEdit(role);
                 }
             }
@@ -237,6 +246,7 @@ var RoleDelete = function() {
                 var roleid = $("#role_table").dataTable().fnGetData(row).roleid;
                 rolelist.roleidlist.push(roleid);
             });
+            $("#loading_edit").modal('show');
             roleDelete(rolelist);
         }
     }
@@ -260,6 +270,7 @@ function getRoleDataEnd(flg, result, callback){
 }
 
 function roleInfoEditEnd(flg, result, type){
+    $("#loading_edit").modal('hide');
     var res = "失败";
     var text = "";
     var alert = "";

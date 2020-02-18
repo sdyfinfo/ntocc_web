@@ -5,6 +5,8 @@
 var payeeList = [];
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function () {
+        $(".inquiry-form").find("input[name=payname]").val(payname);
+        $(".inquiry-form").find("input[name=banknumber]").val(banknumber);
         //fun_power();
         //收款人列表
         PayeeTable.init();
@@ -121,6 +123,13 @@ var PayeeTable = function () {
         });
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
+            //判断是否全选
+            var checklength = $("#payee_table").find(".checkboxes:checked").length;
+            if(checklength == payeeList.length){
+                $("#payee_table").find(".group-checkable").prop("checked",true);
+            }else{
+                $("#payee_table").find(".group-checkable").prop("checked",false);
+            }
         });
     };
     return {
@@ -234,6 +243,7 @@ var payeeEdit = function(){
                 var pay = $('.register-form').getFormData();
                 pay.bankname = $("#bankid").find("option:selected").text();
                 if($("input[name=edittype]").val() == PAYEEADD){
+                    $("#loading_edit").modal("show");
                     payeeAdd(pay);
                 }else {
                     var data;
@@ -242,6 +252,7 @@ var payeeEdit = function(){
                             data = payeeList[i];
                         }
                     }
+                    $("#loading_edit").modal("show");
                     payeEdit(pay,PAYEEEDIT);
                 }
             }
@@ -379,6 +390,7 @@ var StatusChange = function(){
     });
     return{
         changeStatus: function(){
+            $("#loading_edit").modal("show");
             payeeState(payee);
         }
     }
@@ -405,6 +417,7 @@ $("#payee_file").change(function(){
         }
         var data = sendMessageEdit(DEFAULT,userid);
         formData.append("body",new Blob([data],{type:"application/json"}));
+        $("#loading_edit").modal("show");
         payeeUpload(formData);
     }else{
         $("#upload_name").html("");
@@ -436,6 +449,7 @@ function drop(ev) {
             };
             var data = sendMessageEdit(DEFAULT,userid);
             formData.append("body",new Blob([data],{type:"application/json"}));
+            $("#loading_edit").modal("show");
             driverUpload(formData);
         }else{
             alertDialog("请选择.xlsx类型的文件上传！");
@@ -449,6 +463,7 @@ function drop(ev) {
 
 
 function payeeEditEnd(flg, result, type){
+    $("#loading_edit").modal("hide");
     var res = "失败";
     var text = "";
     var alert = "";
@@ -508,6 +523,7 @@ var PayeeDelete = function() {
                 var row = $(this).parents('tr')[0];
                 payy.payidlist.push($("#payee_table").dataTable().fnGetData(row).payid);
             });
+            $("#loading_edit").modal("show");
             payeeDelete(payy);
         }
     }

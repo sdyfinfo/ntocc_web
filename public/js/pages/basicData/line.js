@@ -39,9 +39,10 @@ var LineTable = function(){
             "autoWidth": false,
             "ajax":function (data, callback, settings) {
                 var formData = $(".inquiry-form").getFormData();
+                var project_id = $("#projectname").find("option[value='"+formData.project_name+"']").attr("data-proid") || "";
                 var da = {
                     lid:"",
-                    project_id: formData.projec_tname,
+                    project_id:project_id,
                     linename: formData.linename,
                     loading_place:formData.loading_place,
                     unloading_place:formData.unloading_place,
@@ -165,6 +166,13 @@ var LineTable = function(){
         });
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
+            //判断是否全选
+            var checklength = $("#line_table").find(".checkboxes:checked").length;
+            if(checklength == lineList.length){
+                $("#line_table").find(".group-checkable").prop("checked",true);
+            }else{
+                $("#line_table").find(".group-checkable").prop("checked",false);
+            }
         });
     };
     return {
@@ -176,7 +184,6 @@ var LineTable = function(){
         }
     };
 }();
-
 
 //返回线路查询结果
 function getlineDataEnd(flg, result, callback){
@@ -196,7 +203,7 @@ function getlineDataEnd(flg, result, callback){
     }
 }
 
-$("#pro_inquiry").on("click",function(){
+$("#lin_inquiry").on("click",function(){
     //线路查询
     LineTable.init();
 });
@@ -210,7 +217,7 @@ var LineEdit = function(){
             focusInvalid: false, // do not focus the last invalid input
             ignore: "",
             rules: {
-                project_id: {
+                project_name: {
                     required: true
                 },
                 loading_countycode:{
@@ -269,7 +276,7 @@ var LineEdit = function(){
             },
 
             messages: {
-                project_id: {
+                project_name: {
                     required: "请输入项目名称"
                 },
                 loading_countycode:{
@@ -359,6 +366,19 @@ var LineEdit = function(){
             return this.optional(element) || (tel.test(value));
         }, "请正确填写您的联系电话");
 
+        //项目
+        $(".register-form").on('blur','input[name=project_name]',function(){
+            var value = $(this).val();
+            var list = [];
+            for(var i = 0;i<projectList.length;i++){
+                list.push(projectList[i].proname);
+            }
+            if(list.indexOf(value) == -1){  //不存在
+                $(this).val("");
+            }
+        });
+
+
         //货物名称回车键监听
         $("#goodsname").keypress(function (e) {
             if (e.which == 13) {
@@ -425,6 +445,8 @@ var LineEdit = function(){
                     return;
                 }
                 var line = $('.register-form').getFormData();
+                //项目id
+                line.project_id = $('#project_name').find("option[value='"+line.project_name+"']").attr("data-proid") || "";
                 //装货省市区
                 line.loading_province = $("#loading_provincecode").find("option:selected").text();
                 line.loading_city = $("#loading_citycode").find("option:selected").text();
@@ -438,8 +460,10 @@ var LineEdit = function(){
                 line.unit = "10006,"+line.unit;
                 line.goods = goodsList.toString();
                 if($("input[name=edittype]").val() == LINEADD){
+                    $("#loading_edit").modal('show');
                     lineAdd(line);
                 }else {
+                    $("#loading_edit").modal('show');
                     lineEdit(line);
                 }
             }
@@ -532,6 +556,18 @@ var LineEdit = function(){
     };
 }();
 
+//查询框项目
+$(".inquiry-form").on('blur','input[name=project_name]',function(){
+    var value = $(this).val();
+    var list = [];
+    for(var i = 0;i<projectList.length;i++){
+        list.push(projectList[i].proname);
+    }
+    if(list.indexOf(value) == -1){  //不存在
+        $(this).val("");
+    }
+});
+
 //项目状态显示
 function statusFormat(data){
     var content;
@@ -579,6 +615,7 @@ var StatusChange = function(){
     });
     return{
         changeStatus: function(){
+            $("#loading_edit").modal('show');
             lineState(line);
         }
     }
@@ -586,6 +623,7 @@ var StatusChange = function(){
 
 //线路操作返回结果
 function lineEditEnd (flg, result, type){
+    $("#loading_edit").modal('hide');
     var res = "失败";
     var text = "";
     var alert = "";
@@ -643,6 +681,7 @@ var LineDelete = function() {
                 var row = $(this).parents('tr')[0];
                 linelist.lineidlist.push($("#line_table").dataTable().fnGetData(row).lid);
             });
+            $("#loading_edit").modal('show');
             lineDelete(linelist);
         }
     }
@@ -658,8 +697,8 @@ function getProjectDataEnd(flg, result){
             projectList = res.projectlist;
             for(var i = 0; i < projectList.length; i++){
                 if(projectList[i].state == "0"){
-                    $("#project_name").append("<option value='"+projectList[i].proname+"' data-set'"+projectList[i].proid+"'>"+ projectList[i].proname +"</option>");
-                    $("#projectname").append("<option value='"+projectList[i].proname+"'  data-set'"+projectList[i].proid+"'>"+ projectList[i].proname +"</option>");
+                    $("#project_name").append("<option value='"+projectList[i].proname+"' data-proid='"+projectList[i].proid+"'></option>");
+                    $("#projectname").append("<option value='"+projectList[i].proname+"'  data-proid='"+projectList[i].proid+"'></option>");
                 }
             }
             //发货人信息获取
@@ -743,7 +782,7 @@ function getDictDataEnd(flg, result){
                 switch (dictList[i].lx){
                     case "10005":
                         goodsTypeList = dictList;
-                        $("#goods_type").append("<option value='"+dictList[i].value+"' data-set'"+dictList[i].code+"'>"+ dictList[i].value +"</option>");
+                        $("#goods_type").append("<option value='"+dictList[i].code+"'>"+ dictList[i].value +"</option>");
                         break;
                     case "10006":
                         unitList = dictList;
