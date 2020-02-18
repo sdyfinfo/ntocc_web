@@ -7,12 +7,15 @@ if(loginSucc.img_head != ""){
 }
 var menuMake = '<ul class="nav" id="side-menu"><li class="nav-header">' +
         '<div class="profile-element">' +
-        '<a href="#">' +
-        '<span class="clear" style="text-align: center">' +
-            '<span><img alt="image" class="img-circle user-logo" src="' + img_head + '" /></span>' +
-            '<span class="block m-t-xs"><strong class="font-bold">' + loginSucc.userid + '</strong></span>' +
-            '<span class="text-muted text-xs block">' + loginSucc.username + '</span>' +
-        '</span>' +
+        '<a href="updateuser?username=' + loginSucc.userid + '" class="J_menuItem">' +
+            '<span class="nav-label" style="display: none"> 个人信息 </span>' +
+            '<div class="clear" style="text-align: center">' +
+                '<div style="display: inline; float:left"><img alt="image" class="img-circle user-logo" src="' + img_head + '" /></div>' +
+                '<div style="display: inline; float:left; margin-left: 20px">' +
+                    '<div class="block m-t-xs"><strong class="font-bold">' + loginSucc.userid + '</strong></div>' +
+                    '<div class="text-muted text-xs block">' + loginSucc.username + '</div>' +
+                '</div>' +
+            '</div>' +
         '</a>' +
         '</div>' +
     '</li>';
