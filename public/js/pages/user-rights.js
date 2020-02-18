@@ -1946,7 +1946,7 @@ function wayBillEdit(data){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "billedit",    //请求发送到TestServlet处
+        url: businessUrl + "waybilledit",    //请求发送到TestServlet处
         data: sendMessageEdit('', data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -1967,7 +1967,7 @@ function wayBillDelete(data){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "billdelete",    //请求发送到TestServlet处
+        url: businessUrl + "waybilldelete",    //请求发送到TestServlet处
         data: sendMessageEdit('', data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -1989,7 +1989,7 @@ function billUpload(data){
         contentType: false,
         processData:false,
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "vehicleimport",    //请求发送到TestServlet处
+        url: businessUrl + "waybillimport",    //请求发送到TestServlet处
         data: data,
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -2010,7 +2010,28 @@ function wayBillStateChange(data,type){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "billstate",    //请求发送到TestServlet处
+        url: businessUrl + "waybillStateUpdate",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("wayBillStateChange:" + JSON.stringify(result));
+            billEditEnd(true, result, type);
+        },
+        error: function (errorMsg) {
+            console.info("wayBillStateChange-error:" + JSON.stringify(errorMsg));
+            billEditEnd(false, "", type);
+        }
+    });
+}
+
+//运单审验
+function wayBillVerification(data,type){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "verification",    //请求发送到TestServlet处
         data: sendMessageEdit('', data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {

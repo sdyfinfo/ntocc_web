@@ -2,7 +2,7 @@
  * Created by haiyang on 2020/2/13.
  */
 
-var billStateList,payStateList,goodsTypeList,unitList,dictTrue = [];   //字典
+var billStateList,payStateList,goodsTypeList,unitList,verificationList,dictTrue = [];   //字典
 var projectList,driverList,consignorList,consigneeList = [];
 var wayBillList = [];
 var goodsList = [];  //货物名称
@@ -114,10 +114,9 @@ var WayBillTable = function () {
                 { "data": "name" },    //司机
                 { "data": "plate_number"},     //车牌号
                 { "data": "planTime"},
-                { "data": "loading_time"},
                 { "data": "disburden_time"},
                 { "data": "freight"},
-                { "data": "orderMaking_time"},
+                { "data": "addTime"},
                 { "data": "state"},
                 { "data": "verification_status"},
                 { "data": "tips"},
@@ -152,7 +151,7 @@ var WayBillTable = function () {
                 {
                     "targets": [8],
                     "render": function (data, type, row, meta) {
-                        return conferenceDateFormat(data);
+                        return dateTimeFormat(data);
                     }
                 },{
                     "targets": [9],
@@ -162,46 +161,42 @@ var WayBillTable = function () {
                 },{
                     "targets": [10],
                     "render": function (data, type, row, meta) {
-                        return dateTimeFormat(data);
-                    }
-                },{
-                    "targets": [11],
-                    "render": function (data, type, row, meta) {
                         return formatCurrency(data);
                     }
                 },
                 {
-                    "targets": [12],
+                    "targets": [11],
                     "render": function (data, type, row, meta) {
                         return dateTimeFormat(data);
                     }
                 },{
-                    "targets": [13],
+                    "targets": [12],
                     "render": function (data, type, row, meta) {
                         //运单状态
                         var value = "";
                         for(var i in billStateList){
                             if(data == billStateList[i].code){
-                                value =  billStateList[i].name;
+                                value =  billStateList[i].value;
                             }
                         }
                         return value;
                     }
                 },
                 {
-                    "targets": [14],
+                    "targets": [13],
                     "render": function (data, type, row, meta) {
-                        //支付状态
+                        //审验状态
                         var value = "";
-                        for(var i in payStateList){
-                            if(data == payStateList[i].code){
-                                value =  payStateList[i].name;
+                        for(var i in verificationList){
+                            if(data == verificationList[i].code){
+                                value =  verificationList[i].value;
                             }
                         }
                         return value;
                     }
-                },{
-                    "targets": [16],
+                },
+                {
+                    "targets": [15],
                     "render": function (data, type, row, meta) {
                         var edit = '<a href="javascript:;" id="op_edit">编辑</a>';
 //                        if(window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit") && data == "01"){
@@ -703,6 +698,8 @@ var WayBillAdd = function() {
                 var bill = $('.add-form').getFormData();
                 bill.orderMaking_time = $("input[name=orderMaking_time]").val().replace(/-/g,"");
                 bill.project_id = $("#proList_add").find("option[value='"+bill.project_name+"']").attr("data-proid");
+                bill.consignor_id = $("#consignorList").find("option[value='"+bill.consignor+"']").attr("data-conid");
+                bill.consignee_id = $("#consigneeList").find("option[value='"+bill.consignee+"']").attr("data-conid");
                 bill.linename = $("#lineList_add").find("option:selected").text();
                 bill.goods_type = $("#goods_type").val();
                 bill.unit = $("#unit").val();
@@ -849,6 +846,7 @@ var WayBillAdd = function() {
             $("#lineHave").val("");
             $("#project_add").removeAttr("readonly");
             $('.add-form').find("input,textarea,select").attr("disabled", false);
+            goodsList = [];
             $("input[name=edittype]").val(BILLADD);
             $(".modal-title").text("新增运单");
             $('#add_bill').modal('show');
@@ -1006,7 +1004,7 @@ var WayBillSubimt = function() {
                 var state = $("#bill_table").dataTable().fnGetData(row).state;
                 bill.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
             });
-            wayBillStateChange(bill,'提交审验');
+            wayBillVerification(bill,'提交审验');
         }
     }
 }();
@@ -1235,7 +1233,7 @@ function getconsigneeidDataEnd(flg, result, callback){
             }
             //获取字典相关信息
             var data = {};
-            var list = ["10005","10006","10009","10010"];
+            var list = ["10005","10006","10009","10010","10011"];
             for(var i in list){
                 data.lx = list[i];
                 dictQuery(data);
@@ -1243,7 +1241,7 @@ function getconsigneeidDataEnd(flg, result, callback){
         }else{
             //获取字典相关信息
             var data = {};
-            var list = ["10005","10006","10009","10010"];
+            var list = ["10005","10006","10009","10010","10011"];
             for(var i in list){
                 data.lx = list[i];
                 dictQuery(data);
@@ -1252,7 +1250,7 @@ function getconsigneeidDataEnd(flg, result, callback){
     }else{
         //获取字典相关信息
         var data = {};
-        var list = ["10005","10006","10009","10010"];
+        var list = ["10005","10006","10009","10010","10011"];
         for(var i in list){
             data.lx = list[i];
             dictQuery(data);
@@ -1280,12 +1278,15 @@ function getDictDataEnd(flg,result){
                         $("#unit").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
                         break;
                     case "10009":
-                        billStateList = dictlist;
+                        payStateList = dictlist;
                         $("#conductor").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
                         break;
                     case "10010":
-                        payStateList = dictlist;
+                        billStateList = dictlist;
                         $("#state").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
+                        break;
+                    case "10011":
+                        verificationList = dictlist;
                         break;
                 }
             }
@@ -1317,7 +1318,7 @@ function getVehiceDataEnd(flg,result){
 
 //判断是否可以请求运单信息
 function billInfoRequest(){
-    if(dictTrue.length ==  4){
+    if(dictTrue.length ==  5){
         //运单表格
         WayBillTable.init();
     }
