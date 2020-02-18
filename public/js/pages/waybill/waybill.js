@@ -164,6 +164,11 @@ var WayBillTable = function () {
                     "render": function (data, type, row, meta) {
                         return dateTimeFormat(data);
                     }
+                },{
+                    "targets": [11],
+                    "render": function (data, type, row, meta) {
+                        return formatCurrency(data);
+                    }
                 },
                 {
                     "targets": [12],
@@ -199,7 +204,7 @@ var WayBillTable = function () {
                     "targets": [16],
                     "render": function (data, type, row, meta) {
                         var edit = '<a href="javascript:;" id="op_edit">编辑</a>';
-//                        if(window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit") $$ data == "01"){
+//                        if(window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit") && data == "01"){
 //                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
 //                        }else{
 //                            edit = '-';
@@ -606,6 +611,46 @@ var WayBillAdd = function() {
             $(this).remove();
         });
 
+        //货物单价和总发运数量联动运费
+        $("input[name=number]").on("input propertychange",function(){
+            $(this).val($(this).val().replace(/[^\d.]/g, ""));  //清除“数字”和“.”以外的字符
+            $(this).val($(this).val().replace(/\.{2,}/g, ".")); //只保留第一个. 清除多余的
+            $(this).val($(this).val().replace(".", "$#$").replace(/\./g, "").replace("$#$", "."));
+            $(this).val($(this).val().replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'));//只能输入两个小数
+            if ($(this).val().indexOf(".") < 0 && $(this).val() != "") {//以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额
+                $(this).val(parseFloat($(this).val()));
+            }
+            if($(this).val() != ""){
+                var number = $(this).val();
+                var univalence = $("input[name=univalence]").val();
+                if(univalence!=""){
+                    $("input[name=freight]").val(number*univalence);
+                }
+            }else{
+                $("input[name=freight]").val("");
+            }
+
+        });
+        $("input[name=univalence]").on("input propertychange",function(){
+            $(this).val($(this).val().replace(/[^\d.]/g, ""));  //清除“数字”和“.”以外的字符
+            $(this).val($(this).val().replace(/\.{2,}/g, ".")); //只保留第一个. 清除多余的
+            $(this).val($(this).val().replace(".", "$#$").replace(/\./g, "").replace("$#$", "."));
+            $(this).val($(this).val().replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'));//只能输入两个小数
+            if ($(this).val().indexOf(".") < 0 && $(this).val() != "") {//以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额
+                $(this).val(parseFloat($(this).val()));
+            }
+            if($(this).val() != ""){
+                var univalence = $(this).val();
+                var number = $("input[name=number]").val();
+                if(number!=""){
+                    $("input[name=freight]").val(number*univalence);
+                }
+            }else{
+                $("input[name=freight]").val("");
+            }
+
+        });
+
         //选择有无线路，显示相关信息
         $("#lineHave").change(function(){
             var value = $(this).val();
@@ -648,6 +693,11 @@ var WayBillAdd = function() {
                 }
                 if(goodsList.length == 0){
                     alertDialog("获取名称必须输入！");
+                    return;
+                }
+                //货物重量不能大于车载重量
+                if(Number($("input[name=number]").val()) > Number($("input[name=load]").val())){
+                    alertDialog("总发运重量不能大于车载重量！");
                     return;
                 }
                 var bill = $('.add-form').getFormData();
@@ -1084,9 +1134,11 @@ function getProjectDataEnd(flg,result){
             var res = result.response;
             projectList = res.projectlist;
             for(var i in projectList){
-                $("#proList").append("<option data-proid='"+projectList[i].proid+"' value='"+projectList[i].proname+"'></option>");
-                $("#proList_add").append("<option data-proid='"+projectList[i].proid+"' value='"+projectList[i].proname+"'></option>");
-                $("#proList_add1").append("<option data-proid='"+projectList[i].proid+"' value='"+projectList[i].proname+"'></option>");
+                if(projectList[i].state == "0"){
+                    $("#proList").append("<option data-proid='"+projectList[i].proid+"' value='"+projectList[i].proname+"'></option>");
+                    $("#proList_add").append("<option data-proid='"+projectList[i].proid+"' value='"+projectList[i].proname+"'></option>");
+                    $("#proList_add1").append("<option data-proid='"+projectList[i].proid+"' value='"+projectList[i].proname+"'></option>");
+                }
             }
             //获取司机信息
             driverDataGet();
@@ -1276,7 +1328,7 @@ function clearFormInfo(){
     $("#goods").empty();
     $(".modal-footer").show();
     $(".add-form").find(".has-error").removeClass("has-error");
-    $(":input",".add-form").not(":button,:reset,:submit,:radio,#evaluationneed,[name=orderMaking_time],#lineHave").val("")
+    $(":input",".add-form").not(":button,:reset,:submit,:radio,#evaluationneed,[name=orderMaking_time],[name=edittype],#lineHave").val("")
         .removeAttr("checked")
         .removeAttr("selected");
 }

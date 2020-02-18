@@ -122,6 +122,7 @@ const USHEDIT = 85;
 const USHDELETE = 86;
 const USHSTATUS = 87;
 const USHPLOAD = 88;
+const USHCHECK = 90;
 
 
 

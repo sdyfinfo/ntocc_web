@@ -829,30 +829,6 @@ function gennDelete(data){
     });
 }
 
-//获取U盾发货人关联信息
-function cgneeDataGet(data,callback){
-    App.blockUI({target: '#lay-out',boxed: true});
-    if(data == null){
-        data = {conid: "",consignor:"",draw: 1}
-    }
-    $.ajax({
-        type: "post",
-        contentType: "application/json",
-        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "consignorquerybyshield",               //请求发送到TestServlet处
-        data: sendMessageEdit(DEFAULT, data),
-        dataType: "json",        //返回数据形式为json
-        success: function (result) {
-            console.info("consignoridDateGet:" + JSON.stringify(result));
-            getcgneeEnd(true, result, callback);
-        },
-        error: function (errorMsg) {
-            console.info("consignoridDateGet-error:" + JSON.stringify(errorMsg));
-            getcgneeEnd(false, "", callback);
-        }
-    });
-}
-
 //U盾查询
 function ushieldGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
@@ -1949,7 +1925,7 @@ function wayBillAdd(data){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "billadd",    //请求发送到TestServlet处
+        url: businessUrl + "waybilladd",    //请求发送到TestServlet处
         data: sendMessageEdit('', data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
