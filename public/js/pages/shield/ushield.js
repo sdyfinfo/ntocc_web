@@ -2,25 +2,60 @@
  * Created by Lenovo on 2020/2/14.
  */
 
+var consignorList = [];
 var ushList = [];
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function () {
+
+        //时间控件
+        ComponentsDateTimePickers.init();
         //fun_power();
         //收款人列表
         ushTable.init();
-        //
-       ushEdit.init();
-       //获取发货人信息
-       cgneeDataGet();
+        ushEdit.init();
+
+
+
     })
 }
+
+var ComponentsDateTimePickers = function () {
+    var handleDatePickers = function () {
+
+        if (jQuery().datepicker) {
+            var data = {
+                rtl: App.isRTL(),
+                orientation: "auto",
+                autoclose: true,
+                //language:"zh-CN",
+                todayBtn:true,
+                format:"yyyy-mm-dd",
+                todayHighlight: true
+            };
+            $("#startdate").datepicker(data).on('changeDate',function(e){
+                var startTime = e.date;
+                $('#enddate').datepicker('setStartDate',startTime);
+            });
+            $("#enddate").datepicker(data).on('changeDate',function(e){
+                var endTime = e.date;
+                $('#startdate').datepicker('setEndDate',endTime);
+            });
+        }
+    };
+
+    return {
+        init: function () {
+            handleDatePickers();
+        }
+    };
+}();
 
 
 //收货人表格
 var ushTable = function () {
     var initTable = function () {
-        var table = $('#payee_table');
+        var table = $('#ush_table');
         pageLengthInit(table);
         table.dataTable({
             "language": TableLanguage,
@@ -52,11 +87,12 @@ var ushTable = function () {
                 { "data": null},
                 { "data": null},
                 { "data": "shieid",visible: false},
+                { "data": "conid",visible: false },
                 { "data": "unumber"},
                 { "data": "secret_key"},
                 { "data": "check"},
                 { "data": "status"},
-                { "data": "consignee"},
+                { "data": "consignor"},
                 { "data": "updatetime"},
                 { "data": null}
             ],
@@ -75,18 +111,18 @@ var ushTable = function () {
                     }
                 },
                 {
-                    "targets":[5],
+                    "targets":[6],
                     "render":function (data, type, row, meta) {
-                        var check = "是";
-                        if(data == "0"){
-                            check = "否";
+                        var check = "";
+                        if (data == "0") {
+                           return  '<a href="javascript:;" id="op_check">否</a>'
+                        }else{
+                            return  '<a href="javascript:;" id="op_check" onclick="check()">已通过</a>'
                         }
-                        return check;
-                        //return ushFormat(data);
                     }
                 },
                 {
-                    "targets":[6],
+                    "targets":[7],
                     "render":function (data, type, row, meta) {
                         var status = "已绑定";
                         if(data == "0"){
@@ -96,13 +132,13 @@ var ushTable = function () {
                     }
                 },
                 {
-                    "targets":[8],
+                    "targets":[9],
                     "render": function (data, type, row ,meta) {
                         return dateTimeFormat(data);
                     }
                 },
                 {
-                    "targets": [9],
+                    "targets": [10],
                     "render": function (data, type, row, meta) {
                         /*var edit = "";
                          if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
@@ -164,23 +200,15 @@ var ushEdit = function(){
                 },
                 secret_key:{
                     required: true
-                },
-                consigneeid:{
-                    required: true
                 }
             },
 
             messages: {
-                unumber:{
-                    required:"请输入U盾编号"
-
-
+                unumber: {
+                    required: "请输入U盾编号"
                 },
-                secret_key:{
+                secret_key: {
                     required: "请输入U盾秘钥"
-                },
-                consigneeid:{
-                    required: "请选择关联发货人"
                 }
             },
 
@@ -212,28 +240,62 @@ var ushEdit = function(){
                 form.submit();
             }
         });
-        //点击确定按钮
-        $('#register-btn').click(function() {
-            btnDisable($('#register-btn'));
-            if ($('.register-form').validate().form()) {
-                var ush = $('.register-form').getFormData();
-                ush.consignee = $("#consigneeid").find("option:selected").text();
-                ush.unumber = $("input[name=unumber]").val();
-                ush.secret_key = $("input[name=secret_key]").val();
-                if($("input[name=edittype]").val() == USHADD){
-                    ushieldAdd(ush);
-                }else {
-                    var data;
-                    for(var i = 0; i < ushList.length; i++) {
-                        if(ush.payid == ushList[i].shieid){
-                            data = ushList[i];
-                        }
-                    }
-                    ushieldEdit(ush,USHEDIT);
+        //选择发货人或发货人显示
+        $("#number").change(function(){
+            var id = $(this).val();
+            for(var i in ushList){
+                if(id == ushList[i].shieid){
+                    $("input[name=unumber]").val(ushList[i].unumber);
                 }
             }
         });
 
+        $("#consignorid").change(function(){
+            var id = $(this).val();
+            for(var i in ushList){
+                if(id == ushList[i].shieid){
+                    $("input[name=consignorid]").val(ushList[i].consignorid);
+                }
+            }
+        });
+        //点击确定按钮edittype
+        $('#register-btn').click(function() {
+            btnDisable($('#register-btn'));
+            if ($('.register-form').validate().form()) {
+                var ush = $('.register-form').getFormData();
+                ush.consignorid = $("#consignorid").find("option:selected").val();
+                ush.shieid = $("input[name=shieid]").val();
+                ush.organid = $("input[name=organid]").val();
+                ush.secret_key = $("input[name=secret_key]").val();
+                ush.unumber = $("#number").val();
+                ush.passwd = $("#passwd").val();
+                if($("input[name=edittype]").val() == USHADD) {
+                    ushieldAdd(ush);
+                }if($("input[name=edittype]").val() == USHEDIT){
+                    var data;
+                    for (var i = 0; i < ushList.length; i++) {
+                        if (ush.shieid == ushList[i].shieid){
+                            data = ushList[i];
+                        }
+                    }
+                    if (ush.conid == "请选择") {
+                        ush.consignorid = "";
+                    }
+                    for (var j = 0; j < consignorList.length; j++) {
+                        if (ush.consignorid == consignorList[j].conid){
+                            ush.organid = consignorList[j].organid;
+                        }
+                    }
+                    ushieldEdit(ush,USHEDIT);
+                }if($("input[name=edittype]").val() == USHCHECK){
+                    if (ush.passwd == "") {
+                        alertDialog("请输密码！");
+                        return;
+                    }
+                    ushieldCheck(ush, USHCHECK);
+                }
+            }
+        });
         //新增项目
         $('#op_add').click(function() {
             //清除校验错误信息
@@ -243,11 +305,14 @@ var ushEdit = function(){
             $(":input",".register-form").not(":button,:reset,:submit,:radio,:input[name=birthday],#evaluationneed").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
+            ushieldAllone(1);
             $(".register-form").find("input[name=shieid]").attr("readonly", false);
             $("input[name=edittype]").val(USHADD);
             $('#edit_ush').modal('show');
+            $(".con-hide2").hide();
+            $(".con-hide3").hide();
         });
-        //编辑项目
+        //编辑
         $('#ush_table').on('click', '#op_edit', function (e) {
             e.preventDefault();
             //清除校验错误信息
@@ -259,14 +324,72 @@ var ushEdit = function(){
             var shieid = $("#ush_table").dataTable().fnGetData(row).shieid;
             var ushield = new Object();
             for(var i=0; i < ushList.length; i++){
-                if(shieid.shieid == ushList[i].shieid){
+                if(shieid == ushList[i].shieid){
                     ushield = ushList[i];
                 }
+            }
+            //清空发货人
+            $("#consignorid").empty();
+            //获取发货人信息
+            cgneeDataGet();
+            //ushield.consignor = $("#consignorid option:selected").val();
+            //效验通过或者已绑定状态
+            if(ushield.check == "1"){
+                //input只读
+                ushieldAllone(0);
+                //select可编辑
+                ushieldAlltwo(1);
+            }else{
+                //select只读
+                ushieldAlltwo(0);
+                //input可编辑
+                ushieldAllone(1);
             }
             var options = { jsonValue: ushield, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
             $("input[name=edittype]").val(USHEDIT);
             $('#edit_ush').modal('show');
+            $(".con-hide1").show();
+            $(".con-hide2").show();
+            $(".con-hide3").hide();
+        });
+        //输入动态密码
+        $("#ush_table").on('click', "#op_check", function(e){
+            e.preventDefault();
+            //清除校验错误信息
+            validator.resetForm();
+            check();
+            $(".register-form").find(".has-error").removeClass("has-error");
+            $(".modal-title").text("输入动态密码");
+            var exclude = [];
+            var row = $(this).parents('tr')[0];
+            var shieid = $("#ush_table").dataTable().fnGetData(row).shieid;
+            var ushield = new Object();
+            for(var i=0; i < ushList.length; i++){
+                if(shieid == ushList[i].shieid){
+                    ushield = ushList[i];
+                }
+            }
+            if(ushield.check == "0"){
+                //input编辑
+                ushieldAllone(1);
+            }else{
+                //input只读
+                ushieldAllone(0);
+            }
+            if(ushList.passwd == ""){
+                alertDialog("请输密码！");
+                return;
+            }
+            ushield.passwd = $("#passwd").val();
+            var options = { jsonValue: ushield, exclude:exclude,isDebug: false};
+            $(".register-form").initForm(options);
+            $("input[name=edittype]").val(USHCHECK);
+            $('#edit_ush').modal('show');
+            $(".con-hide1").hide();
+            $(".con-hide2").hide();
+            $(".con-hide3").show();
+
         });
     };
     return {
@@ -276,12 +399,37 @@ var ushEdit = function(){
     };
 }();
 
+//效验
+function ushieldAllone(id){
+    if(id == 0){ //不允许
+        //全部只读
+        $(".register-form").find("input").attr("disabled", true);
+    }else{
+        $(".register-form").find("input").attr("disabled", false);
+    }
+}
 
+//发货人
+function ushieldAlltwo(id){
+    if(id == 0){ //不允许
+        //全部只读
+        $(".register-form").find("select").attr("disabled", true);
+    }else{
+        $(".register-form").find("select").attr("disabled", false);
+    }
+}
 
 //查询按钮
 $("#us_inquiry").on("click",function(){
     ushTable.init();
 })
+
+function check(){
+    if(ushList.check == "已通过"){
+
+        $(".con-hide3").hide();
+    }
+}
 
 
 //返回U盾管理结果
@@ -294,11 +442,11 @@ function getushieldDataEnd(flg, result, callback){
             tableDataSet(res.draw, res.totalcount, res.totalcount, res.shielist, callback);
         }else{
             tableDataSet(0, 0, 0, [], callback);
-            alertDialog("开户行信息获取失败！");
+            alertDialog("U盾管理获取失败！");
         }
     }else{
         tableDataSet(0, 0, 0, [], callback);
-        alertDialog("开户行信息获取失败！");
+        alertDialog("U盾管理获取失败！");
     }
 }
 
@@ -308,17 +456,19 @@ function getcgneeEnd(flg, result, callback){
     if(flg){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
-            conList = res.conlist;
-            for(var i = 0; i < conList.length; i++){
-                $("#consigneeid").append("<option value='"+conList[i].conid+"'>" + conList[i].consignor +"</option>");
+            consignorList = res.conlist;
+            $('#consignorid').append('<option value="">请选择</option>');
+            for(var i = 0; i < consignorList.length; i++){
+                $("#consignorid").append("<option value='"+consignorList[i].conid+"'>"+ consignorList[i].consignor +"</option>");
             }
         }else{
-            alertDialog("关联发货人信息获取失败！");
+            alertDialog("发货人信息获取失败！");
         }
     }else{
-        alertDialog("关联发货人信息获取失败！");
+        alertDialog("发货人信息获取失败！");
     }
 }
+
 
 function getushEditEnd(flg, result, type){
     var res = "失败";
@@ -337,6 +487,9 @@ function getushEditEnd(flg, result, type){
         case USHPLOAD:
             text = "导入";
             break;
+        case USHCHECK:
+            text = "效验";
+            break;
     }
     if(flg){
         if(result && result.retcode != SUCCESS){
@@ -354,6 +507,13 @@ function getushEditEnd(flg, result, type){
             alert ="U盾信息"+ text + res + "！";
         }else{
             alert = text + "U盾信息" + res + "！";
+        }
+    }
+    if(alert == ""){
+        if(type == USHCHECK){
+            alert = "效验" + text + res + "！";
+        }else{
+            alert = text + "效验" + res + "！";
         }
     }
     App.unblockUI('#lay-out');
@@ -399,7 +559,8 @@ $("#ush_file").change(function(){
         var formData = new FormData();
         formData.append("file",this.files[0]);
         var userid = {
-            "userid":loginSucc.userid
+            "userid":loginSucc.userid,
+            "organid":loginSucc.organid
         }
         var data = sendMessageEdit(DEFAULT,userid);
         formData.append("body",new Blob([data],{type:"application/json"}));
@@ -430,7 +591,8 @@ function drop(ev) {
             var formData = new FormData();
             formData.append("file",files[0]);
             var userid = {
-                "userid":loginSucc.userid
+                "userid":loginSucc.userid,
+                "organid":loginSucc.organid
             };
             var data = sendMessageEdit(DEFAULT,userid);
             formData.append("body",new Blob([data],{type:"application/json"}));

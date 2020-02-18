@@ -839,7 +839,7 @@ function cgneeDataGet(data,callback){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "consignorquery",               //请求发送到TestServlet处
+        url: businessUrl + "consignorquerybyshield",               //请求发送到TestServlet处
         data: sendMessageEdit(DEFAULT, data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -963,6 +963,51 @@ function ushieldUpload(data){
     });
 }
 
+//更改秘钥
+function ushieldCheck(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "shieldcheck",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("ushieldCheck:" + JSON.stringify(result));
+            getushEditEnd(true, result, USHCHECK);
+        },
+        error: function (errorMsg) {
+            console.info("ushieldCheck-error:" + JSON.stringify(errorMsg));
+            getushEditEnd(false, "", USHCHECK);
+        }
+    });
+}
+
+
+//我的U盾shieldinfo
+function mshieldGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {shieid: "", unumber: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "shieldinfo",                    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("mshieldGet:" + JSON.stringify(result));
+            getmshieldDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("mshieldGet-error:" + JSON.stringify(errorMsg));
+            getmshieldDataEnd(false, "", callback);
+        }
+    });
+}
 
 //货物类型
 function didDateGet(data,callback){

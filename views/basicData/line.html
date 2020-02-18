@@ -119,7 +119,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="col-md-4 control-label">货物名称</label>
+                                            <label class="col-md-4 control-label">货物地名称</label>
                                             <div class="col-md-8">
                                                 <input type="text" class="form-control" placeholder="货物名称" name="goods"/>
                                             </div>
@@ -170,7 +170,7 @@
                                 <tr>
                                     <th style="width: 30px">序号</th>
                                     <th style="width: 30px">
-                                        <input type="checkbox" class="group-checkable" data-set="#line_table .checkbox" />
+                                        <input type="checkbox" class="group-checkable" data-set="#line_table .checkboxes" />
                                     </th>
                                     <th> 线路id </th>
                                     <th> 项目名称 </th>
@@ -182,7 +182,7 @@
                                     <th> 货物类型 </th>
                                     <th> 货物名称 </th>
                                     <th> 计价单位 </th>
-                                    <th> 运货单价 </th>
+                                    <th> 运费单价(元) </th>
                                     <th> 状态 </th>
                                     <th> 创建时间 </th>
                                     <th> 修改时间 </th>
@@ -246,7 +246,7 @@
                             <h3 style="height: 40px">线路信息</h3>
                             <div class="row">
                                 <div class="form-group col-md-12">
-                                    <label class="col-md-2 control-label" style="padding-right: 20px">项目名称<span class="required"> * </span></label>
+                                    <label class="col-md-2 control-label mini-combobox" style="padding-right: 20px">项目名称<span class="required"> * </span></label>
                                     <div class="col-md-10" style="padding-left: 10px;width: 80% ">
                                         <select id="project_name" class="form-control  num_select"  name="project_id">
                                             <option value="">请选择</option>
@@ -256,15 +256,15 @@
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <label class="col-md-4 control-label">装货名称<span class="required"> * </span></label>
+                                    <label class="col-md-4 control-label">装货地名称<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <input type="text"  class="form-control" name="loading_name"  placeholder="装货地址"/>
+                                        <input type="text"  class="form-control" name="loading_name"  placeholder="装货地名称"/>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label class="col-md-4 control-label">卸货名称<span class="required"> * </span></label>
+                                    <label class="col-md-4 control-label">卸货地名称<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <input type="text"  class="form-control" name="unloading_name"  placeholder="卸货地址"/>
+                                        <input type="text"  class="form-control" name="unloading_name"  placeholder="卸货地名称"/>
                                     </div>
                                 </div>
                             </div>
@@ -310,9 +310,9 @@
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <label class="col-md-4 control-label">发货详细地址<span class="required"> * </span></label>
+                                    <label class="col-md-4 control-label">装货详细地址<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <input type="text" class="form-control" placeholder="发货详细地址" name="loading_address">
+                                        <input type="text" class="form-control" placeholder="装货详细地址" name="loading_address">
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -396,9 +396,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label class="col-md-4 control-label" style="padding-right: 20px">货物单价<span class="required"> * </span></label>
+                                    <label class="col-md-4 control-label" style="padding-right: 20px">货物单价(元)<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <input type="text" class="form-control" placeholder="货物单价" name="univalence">
+                                        <input type="text" class="form-control" placeholder="货物单价" name="univalence" id="univalence">
                                     </div>
                                 </div>
                             </div>
@@ -406,7 +406,7 @@
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label">货物名称<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <input class="form-control" id="goodsname"  placeholder="输入后回车,输入内容会显示在右方"/>
+                                        <input class="form-control" id="goodsname" name="goodsname" placeholder="输入后回车,输入内容会显示在右方"/>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -453,7 +453,27 @@
     <script type="text/javascript" src="/public/js/pages/basicData/areaCodeAddress.js"></script>
 
     <script src="/public/js/pages/basicData/line.js"></script>
+    <script>
+        function setValue() {
+            var obj = mini.get("project_name");
+            obj.setValue("usa");
 
+        }
+        function getValue() {
+            var obj = mini.get("project_name");
+            alert(obj.getValue() +":"+ obj.getText());
+        }
+        function enable() {
+            var obj = mini.get("project_name");
+            obj.enable();
+        }
+        function disable() {
+            var obj = mini.get("project_name");
+            obj.disable();
+        }
+
+
+    </script>
 </body>
 
 </html>

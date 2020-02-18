@@ -30,6 +30,36 @@
         var loginSucc = '{{ loginsucc }}';
         loginSucc = JSON.parse(loginSucc.replace(/&quot;/g, "\""));
     </script>
+    <style>
+        #edit_ush img{
+            width: 200px;
+            height: 150px;
+            border: 1px solid #cccccc;
+        }
+        .inner {
+            display: block;
+            width: 70%;
+            height: 20px;
+            padding: 0;
+            line-height: 20px;
+            font-size: 14px;
+            color: white;
+            font-family: Trebuchet, Arial, sans-serif;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+        .on_inner{
+            text-align: center;
+            background-color: #1AB394;
+            color: #FFFFFF;
+        }
+        .off_inner{
+            text-align: center;
+            background-color:#ff0000;
+            color: #FFFFFF;
+        }
+    </style>
+
 
 </head>
 
@@ -110,9 +140,10 @@
                                 <tr>
                                     <th style="width: 30px">序号</th>
                                     <th style="width: 30px">
-                                        <input type="checkbox" class="group-checkable" data-set="#ush_table .checkbox" />
+                                        <input type="checkbox" class="group-checkable" data-set="#ush_table .checkboxes" />
                                     </th>
                                     <th> U盾id </th>
+                                    <th> 发货人id </th>
                                     <th> U盾编号 </th>
                                     <th> U盾秘钥 </th>
                                     <th> 效验通过 </th>
@@ -124,6 +155,7 @@
                                 </thead>
                                 <tbody>
                                 <tr class="odd gradeX">
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -168,27 +200,39 @@
                             <!-- 操作类型隐藏（用来区分新增还是编辑） -->
                             <input type="hidden" name="edittype">
                             <input type="hidden" name="shieid">
-                            <div class="row">
-                                <div class="form-group col-md-12">
-                                    <label class="col-md-2 control-label">U盾编号<span class="required"> * </span></label>
-                                    <div class="col-md-10">
-                                        <input type="text" class="form-control" placeholder="U盾编号" name="unumber"/>
+                            <input type="hidden" name="conid">
+                            <input type="hidden" name="organid">
+                            <div class="row con-hide1">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">U盾编号<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="U盾编号" name="unumber" id="number" />
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="form-group col-md-6">
-                                    <label class="col-md-4 control-label">U盾秘钥<span class="required"> * </span></label>
-                                    <div class="col-md-8">
-                                        <input type="text" class="form-control" placeholder="U盾秘钥" name="secret_key"/>
+                            <div class="row con-hide1">
+                                <div class="form-group col-md-12">
+                                    <label class="col-md-2 control-label">U盾秘钥<span class="required"> * </span></label>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control" placeholder="U盾秘钥" name="secret_key" />
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row con-hide2">
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label">关联发货人<span class="required"> * </span></label>
                                     <div class="col-md-8">
-                                        <select class="form-control" name="consigneeid" id="consigneeid">
-                                            <option value="">请选择</option>
+                                        <select class="form-control" name="consignorid" id="consignorid">
+                                            <option value="0">请选择</option>
                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row con-hide3">
+                                <div class="form-group col-md-12">
+                                    <label class="col-md-2 control-label">动态密码<span class="required"> * </span></label>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control" placeholder="动态密码" name="passwd" id="passwd"/>
                                     </div>
                                 </div>
                             </div>
@@ -201,8 +245,7 @@
                 </div>
             </div>
         </div>
-    </div><!--新增及编辑项目弹框-->
-
+    </div>
 
     <!-- 导入U盾弹框 -->
     <div id="ush_upload" class="modal fade" tabindex="-1" data-width="400" aria-hidden="true" data-backdrop="static">

@@ -233,17 +233,17 @@ var payeeEdit = function(){
             if ($('.register-form').validate().form()) {
                 var pay = $('.register-form').getFormData();
                 pay.bankname = $("#bankid").find("option:selected").text();
-            }
-            if($("input[name=edittype]").val() == PAYEEADD){
-                payeeAdd(pay);
-            }else {
-                var data;
-                for(var i = 0; i < payeeList.length; i++) {
-                    if(pay.payid == payeeList[i].payid){
-                        data = payeeList[i];
+                if($("input[name=edittype]").val() == PAYEEADD){
+                    payeeAdd(pay);
+                }else {
+                    var data;
+                    for(var i = 0; i < payeeList.length; i++) {
+                        if(pay.payid == payeeList[i].payid){
+                            data = payeeList[i];
+                        }
                     }
+                    payeEdit(pay,PAYEEEDIT);
                 }
-                payeEdit(pay,PAYEEEDIT);
             }
         });
         //新增项目

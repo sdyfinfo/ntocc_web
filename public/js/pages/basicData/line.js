@@ -70,8 +70,8 @@ var LineTable = function(){
                 {"data":"univalence"},
                 {"data":"state"},
                 {"data":"addTime"},
-                {"data":"updateTime"},
-                {"data":"number"},
+                {"data":"updateTime",visible: false},
+                {"data":"number",visible: false},
                 {"data":null}
             ],
             columnDefs:[
@@ -107,6 +107,14 @@ var LineTable = function(){
                     }
                 },
                 {
+                    "targets":[12],
+                    "render":function (data, type, row, meta) {
+                        //显示单价
+                        var  b = data .toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                        return b;
+                    }
+                },
+                {
                     "targets":[13],
                     "render":function (data, type, row, meta) {
                         return statusFormat(data);
@@ -138,7 +146,8 @@ var LineTable = function(){
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(4),td:eq(5),td:eq(6),td:eq(7)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(4),td:eq(5),td:eq(6),td:eq(7),td:eq(10),td:eq(17)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(11),td:eq(15)', nRow).attr('style', 'text-align: right;');
             }
         });
         //table.draw( false );
@@ -478,6 +487,7 @@ var LineEdit = function(){
             }
             //项目名称赋值
             fileUploadAllowed(0);
+            $(".modal-footer").hide();
             $("input[name=edittype]").val(LINEEDIT);
             $('#edit_lin').modal('show');
         });
@@ -647,8 +657,12 @@ function getProjectDataEnd(flg, result){
             var res = result.response;
             projectList = res.projectlist;
             for(var i = 0; i < projectList.length; i++){
-                $("#project_name").append("<option value='"+projectList[i].proid+"'>"+ projectList[i].proname +"</option>");
-                $("#projectname").append("<option value='"+projectList[i].proid+"'>"+ projectList[i].proname +"</option>");
+                if(projectList.state == "1"){
+                    $("project_name").hide();
+                }else{
+                    $("#project_name").append("<option value='"+projectList[i].proid+"'>"+ projectList[i].proname +"</option>");
+                    $("#projectname").append("<option value='"+projectList[i].proid+"'>"+ projectList[i].proname +"</option>");
+                }
             }
             //发货人信息获取
             consignorDataGet();
