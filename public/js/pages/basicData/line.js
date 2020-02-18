@@ -110,8 +110,7 @@ var LineTable = function(){
                     "targets":[12],
                     "render":function (data, type, row, meta) {
                         //显示单价
-                        var  b = data .toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
-                        return b;
+                      return   formatCurrency(data);
                     }
                 },
                 {
@@ -177,6 +176,7 @@ var LineTable = function(){
         }
     };
 }();
+
 
 //返回线路查询结果
 function getlineDataEnd(flg, result, callback){
@@ -657,11 +657,9 @@ function getProjectDataEnd(flg, result){
             var res = result.response;
             projectList = res.projectlist;
             for(var i = 0; i < projectList.length; i++){
-                if(projectList.state == "1"){
-                    $("project_name").hide();
-                }else{
-                    $("#project_name").append("<option value='"+projectList[i].proid+"'>"+ projectList[i].proname +"</option>");
-                    $("#projectname").append("<option value='"+projectList[i].proid+"'>"+ projectList[i].proname +"</option>");
+                if(projectList[i].state == "0"){
+                    $("#project_name").append("<option value='"+projectList[i].proname+"' data-set'"+projectList[i].proid+"'>"+ projectList[i].proname +"</option>");
+                    $("#projectname").append("<option value='"+projectList[i].proname+"'  data-set'"+projectList[i].proid+"'>"+ projectList[i].proname +"</option>");
                 }
             }
             //发货人信息获取
@@ -745,7 +743,7 @@ function getDictDataEnd(flg, result){
                 switch (dictList[i].lx){
                     case "10005":
                         goodsTypeList = dictList;
-                        $("#goods_type").append("<option value='"+dictList[i].code+"'>"+ dictList[i].value +"</option>");
+                        $("#goods_type").append("<option value='"+dictList[i].value+"' data-set'"+dictList[i].code+"'>"+ dictList[i].value +"</option>");
                         break;
                     case "10006":
                         unitList = dictList;
