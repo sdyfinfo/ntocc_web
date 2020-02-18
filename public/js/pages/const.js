@@ -123,6 +123,8 @@ const USHDELETE = 86;
 const USHSTATUS = 87;
 const USHPLOAD = 88;
 const USHCHECK = 90;
+const INVREPLACE = 91;
+const INVUPDATE = 92;
 
 
 

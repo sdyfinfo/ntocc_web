@@ -355,7 +355,6 @@ var ushEdit = function(){
             e.preventDefault();
             //清除校验错误信息
             validator.resetForm();
-            check();
             $(".register-form").find(".has-error").removeClass("has-error");
             $(".modal-title").text("输入动态密码");
             var exclude = [];
@@ -421,12 +420,6 @@ $("#us_inquiry").on("click",function(){
     ushTable.init();
 })
 
-function check(){
-    if(ushList.check == "已通过"){
-
-        $(".con-hide3").hide();
-    }
-}
 
 
 //返回U盾管理结果
@@ -580,7 +573,7 @@ function drop(ev) {
         var filesName=files[0].name;
         var extStart=filesName.lastIndexOf(".");
         var ext=filesName.substring(extStart,filesName.length).toUpperCase();
-        if(ext ==".xlsx" || ext ==".XLSX"){ //判断是否是需要的问件类型
+        if(ext ==".text" || ext ==".TEXT"){ //判断是否是需要的问件类型
             //显示上传文件名
             $("#upload_name").show();
             $("#upload_name").html("文件名："+filesName+"   文件大小："+((Number(files[0].size))/1024).toFixed(1)+"KB");
@@ -594,7 +587,7 @@ function drop(ev) {
             formData.append("body",new Blob([data],{type:"application/json"}));
             ushieldUpload(formData);
         }else{
-            alertDialog("请选择.xlsx类型的文件上传！");
+            alertDialog("请选择.text类型的文件上传！");
             return false;
         }
     }else{

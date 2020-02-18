@@ -613,7 +613,7 @@ function discountNumber(data) {
 function fun_power(){
     var list = ["#op_add","#op_del","#user_inquiry","#password_reset","#role_inquiry","#organ_inquiry",
         "#vehice_inquiry","#vehice_import","#pro_inquiry","#driver_inquiry","#driver_import","#consignor_inquiry","#addr_inquiry",
-        "#lin_inquiry","#cons_inquiry","#pay_inquiry","#us_inquiry","#us_import"];
+        "#lin_inquiry","#cons_inquiry","#pay_inquiry","#us_inquiry","#us_import","#inv_inquiry"];
     for(var i in list){
         if(!makeEdit(menu,loginSucc.functionlist,list[i])){
             $(list[i]).hide();
