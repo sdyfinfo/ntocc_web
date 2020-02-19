@@ -346,13 +346,13 @@ router.get('/invoicerise',function(req,res,next){
 var fs = require('fs');
 var path = require('path');
 router.get('/downloadpayeefile', function (req, res, next) {
-    var filename = 'payeeTemplate.xlsx';
+    var filename = '收款人模板.xlsx';
     var filepath = path.join(__dirname, '../upload/' + filename);
     var stats = fs.statSync(filepath);
     if (stats.isFile()) {
         res.set({
             'Content-Type': 'application/octet-stream',
-            'Content-Disposition': 'attachment; filename=' + filename,
+            'Content-Disposition': 'attachment; filename=' + encodeURIComponent(filename),
             "Content-Length": stats.size
         });
         fs.createReadStream(filepath).pipe(res);
@@ -360,7 +360,6 @@ router.get('/downloadpayeefile', function (req, res, next) {
         res.end(404);
     }
 });
-
 //U盾管理
 router.get('/ushield',function(req,res,next){
     console.info(req.url);
@@ -379,13 +378,13 @@ router.get('/ushield',function(req,res,next){
 var fs = require('fs');
 var path = require('path');
 router.get('/downloadushieldfile', function (req, res, next) {
-    var filename = 'ushieldTemplate.xlsx';
+    var filename = 'U盾模板.xlsx';
     var filepath = path.join(__dirname, '../upload/' + filename);
     var stats = fs.statSync(filepath);
     if (stats.isFile()) {
         res.set({
             'Content-Type': 'application/octet-stream',
-            'Content-Disposition': 'attachment; filename=' + filename,
+            'Content-Disposition': 'attachment; filename=' + encodeURIComponent(filename),
             "Content-Length": stats.size
         });
         fs.createReadStream(filepath).pipe(res);
