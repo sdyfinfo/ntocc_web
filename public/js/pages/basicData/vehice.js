@@ -87,14 +87,13 @@ var VehiceTable = function () {
             columns: [//返回的json数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 { "data": null},
                 { "data": null},
-                { "data": "vehid",visible: false },
+                { "data": "vehid", visible: false},
                 { "data": "platenumber"},
                 { "data": "platecolor" },
-                { "data": "addtime" },
-                { "data": "load" },
                 { "data": "vehicletype"},
                 { "data": "conductor"},
-                { "data": "vin"},
+                { "data": "load" },
+                { "data": "proprietor" },
                 { "data": "transport_number"},
                 { "data": "license_key"},
                 { "data": "driving_img"},
@@ -103,55 +102,42 @@ var VehiceTable = function () {
             ],
             columnDefs: [
                 {
-                    "targets": [1],
-                    "render": function (data, type, row, meta) {
-                        return '<input type="checkbox" class="checkboxes" value="1" />';
-                    }
-                },
-                {
                     "targets": [0],
                     "data": null,
                     "render": function (data, type, row, meta) {
                         return meta.settings._iDisplayStart + meta.row + 1;  //行号
+                    }
+
+                },{
+                    "targets": [1],
+                    "render": function (data, type, row, meta) {
+                        return '<input type="checkbox" class="checkboxes" value="1" />';
                     }
                 },{
                     "targets": [3],
                     "render": function (data, type, row, meta) {
                         return '<a href="javascript:;" id="vehice_detail">'+data+'</a>';
                     }
-                },
-                {
+                },{
                     "targets": [4],
                     "render": function (data, type, row, meta) {
                         //车辆颜色
                         return plateColorDisplay(data);
                     }
-                },
-                {
+                },{
                     "targets": [5],
-                    "render": function (data, type, row, meta) {
-                        return dateTimeFormat(data);
-                    }
-                },
-                {
-                    "targets": [8],
-                    "render": function (data, type, row, meta) {
-                        //车长
-                        return conductorDisplay(data);
-                    }
-                },{
-                    "targets": [13],
-                    "render": function (data, type, row, meta) {
-                        return dateTimeFormat(data);
-                    }
-                },{
-                    "targets": [7],
                     "render": function (data, type, row, meta) {
                         //车型
                         return vehiceTypeDisplay(data);
                     }
                 },{
-                    "targets": [12],
+                    "targets": [6],
+                    "render": function (data, type, row, meta) {
+                        //车长
+                        return conductorDisplay(data);
+                    }
+                },{
+                    "targets": [11],
                     "render": function (data, type, row, meta) {
                         if(data == ""){
                             return "暂无图片";
@@ -160,7 +146,12 @@ var VehiceTable = function () {
                         }
                     }
                 },{
-                    "targets": [14],
+                    "targets": [12],
+                    "render": function (data, type, row, meta) {
+                        return dateTimeFormat(data);
+                    }
+                },{
+                    "targets": [13],
                     "render": function (data, type, row, meta) {
                         var edit = '';
                         if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
@@ -173,7 +164,8 @@ var VehiceTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(11),td:eq(13)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(2),td:eq(3),td:eq(4),td:eq(7),td:eq(8),td:eq(9),td:eq(10),td:eq(11),td:eq(12)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(5), td:eq(6)', nRow).attr('style', 'text-align: right;');
             }
         });
         //table.draw( false );
