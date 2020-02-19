@@ -243,8 +243,10 @@ var MenuEdit = function() {
 
                 }
                 if($("input[name=edittype]").val() == MENUADD){
+                    $("#loading_edit").modal('show');
                     menuAdd(menu);
                 }else{
+                    $("#loading_edit").modal('show');
                     menuEdit(menu);
                 }
             }
@@ -327,6 +329,7 @@ var MenuDelete = function() {
             for(var i=0; i<select.length;i++) {
                 menulist.menuidlist.push(select[i].menuid);
             }
+            $("#loading_edit").modal('show');
             menuDelete(menulist);
         }
     }
@@ -357,6 +360,7 @@ function getMenuDataEnd(flg, result, callback){
 }
 
 function menuInfoEditEnd(flg, result, type){
+    $("#loading_edit").modal('hide');
     var res = "失败";
     var text = "";
     var alert = "";
@@ -606,8 +610,10 @@ var FunctionEdit = function() {
                 func.menuid = menuIdGet();
                 if($(".function-form").find("input[name=edittype]").val() == FUNCTIONADD){
                     delete func["functionid"];
+                    $("#loading_edit").modal('show');
                     functionAdd(func);
                 }else{
+                    $("#loading_edit").modal('show');
                     functionEdit(func);
                 }
             }
@@ -683,6 +689,7 @@ var FunctionDelete = function() {
             for(var i=0; i<select.length;i++) {
                 functionlist.functionidlist.push(select[i].functionid);
             }
+            $("#loading_edit").modal('show');
             functionDelete(functionlist);
         }
     }
@@ -709,6 +716,7 @@ function getFunctionDataEnd(flg, result, callback){
 }
 
 function functionInfoEditEnd(flg, result, type){
+    $("#loading_edit").modal('hide');
     var res = "失败";
     var text = "";
     var alert = "";

@@ -9,7 +9,7 @@ var goodsList = [];  //货物名称
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
-        //fun_power();
+        fun_power();
         //时间控件初始化
         ComponentsDateTimePickers.init();
         //获取项目信息
@@ -58,7 +58,7 @@ var WayBillTable = function () {
         table.dataTable({
             "language": TableLanguage,
             "bStateSave": false,
-            "lengthMenu": TableLengthMenu,
+            "lengthMenu": TableLengthMenu[2],
             "destroy": true,
             "pageLength": PageLength,
             //"pagingType": "numbers",
@@ -73,17 +73,21 @@ var WayBillTable = function () {
                 var end_subtime = "";
                 var loading_start_subtime ="";
                 var loading_end_subtime = "";
+                var state = "";
                 if(formData.start_subtime != ""){
-                    start_subtime = formData.start_subtime.replace(/(\/)/g,'')+"000000";
+                    start_subtime = formData.start_subtime.replace(/-/g,'')+"000000";
                 }
                 if(formData.end_subtime != ""){
-                    end_subtime = formData.end_subtime.replace(/(\/)/g,'')+"000000";
+                    end_subtime = formData.end_subtime.replace(/-/g,'')+"000000";
                 }
                 if(formData.loading_start_subtime != ""){
-                    loading_start_subtime = formData.loading_start_subtime.replace(/(\/)/g,'')+"000000";
+                    loading_start_subtime = formData.loading_start_subtime.replace(/-/g,'')+"000000";
                 }
                 if(formData.loading_end_subtime != ""){
-                    loading_end_subtime = formData.loading_end_subtime.replace(/(\/)/g,'')+"000000";
+                    loading_end_subtime = formData.loading_end_subtime.replace(/-/g,'')+"000000";
+                }
+                if(formData.state != ""){
+                    state = "10010,"+formData.state;
                 }
                 var lid = $("#lineList").val();
                 var da = {
@@ -91,12 +95,12 @@ var WayBillTable = function () {
                     end_subtime:end_subtime,
                     loading_start_subtime:loading_start_subtime,
                     loading_end_subtime:loading_end_subtime,
-                    project_id:formData.project_id,
+                    project_id:$("#proList").find("option[value='"+formData.project_id+"']").attr("data-proid") || "",
                     lid:lid,
                     consignor:formData.consignor,
                     platenumber:formData.platenumber,
-                    driver_name:formData.driver_name,
-                    state:formData.state,
+                    name:formData.driver_name,
+                    state:state,
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
@@ -198,18 +202,19 @@ var WayBillTable = function () {
                 {
                     "targets": [15],
                     "render": function (data, type, row, meta) {
-                        var edit = '<a href="javascript:;" id="op_edit">编辑</a>';
-//                        if(window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit") && data == "01"){
-//                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
-//                        }else{
-//                            edit = '-';
-//                        }
+                        var edit = '';
+                        if(window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit") && data == "01"){
+                            edit = '<a href="javascript:;" id="op_edit">编辑</a>';
+                        }else{
+                            edit = '-';
+                        }
                         return edit;
                     }
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(11),td:eq(15)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(6),td:eq(7),td:eq(8),td:eq(10),td:eq(14)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(9)', nRow).attr('style', 'text-align: right;');
             }
         });
         //table.draw( false );
@@ -278,11 +283,11 @@ var WayBillAdd = function() {
                 consignee:{
                     required: true
                 },
-                loading_address:{
+                loading_place:{
                     required: true,
                     address:true
                 },
-                unloading_address:{
+                unloading_place:{
                     required: true,
                     address:true
                 },
@@ -340,10 +345,10 @@ var WayBillAdd = function() {
                 consignee:{
                     required: "收货人必须输入"
                 },
-                loading_address:{
+                loading_place:{
                     required: "发货地址必须输入"
                 },
-                unloading_address:{
+                unloading_place:{
                     required: "卸货地址必须输入"
                 },
                 goods_type:{
@@ -651,7 +656,8 @@ var WayBillAdd = function() {
             var value = $(this).val();
             switch (value){
                 case "0":  //有
-                    $("#line-display,#lineList_add").show();
+                    $("#line-display").show();
+                    $("#lineList_add").parents('.form-group').show();
                     $(".line-display").find("input").attr("readonly","readonly");
                     //总运发重量可修改
                     $("#goodsname,input[name=number]").removeAttr("readonly");
@@ -662,7 +668,7 @@ var WayBillAdd = function() {
                 case "1": //无
                     $("#line-display").show();
                     $(".line-display").find("input").removeAttr("readonly");
-                    $("#lineList_add").hide();
+                    $("#lineList_add").parents('.form-group').hide();
                     $("input[name=consigneeTel],input[name=consignorTel]").attr("readonly","readonly");
                     $(".line-display").find("select").attr("disabled", false);
                     validator.resetForm();
@@ -701,13 +707,16 @@ var WayBillAdd = function() {
                 bill.consignor_id = $("#consignorList").find("option[value='"+bill.consignor+"']").attr("data-conid");
                 bill.consignee_id = $("#consigneeList").find("option[value='"+bill.consignee+"']").attr("data-conid");
                 bill.linename = $("#lineList_add").find("option:selected").text();
-                bill.goods_type = $("#goods_type").val();
+                bill.goods_type = "10005,"+$("#goods_type").val();
                 bill.unit = $("#unit").val();
                 bill.goods = goodsList.toString();
                 if($("input[name=edittype]").val() == BILLADD){
+                    $("#loading_edit").modal("show");
                     wayBillAdd(bill);
                 }else{
                     bill.line_id = $("#lineList_add").val();
+                    bill.state = "10010,01";
+                    $("#loading_edit").modal("show");
                     wayBillEdit(bill);
                 }
 
@@ -739,8 +748,9 @@ var WayBillAdd = function() {
                             $("#lineList_add").append("<option value='"+linelist[j].lineid+"'>"+linelist[j].line+"</option>");
                         }
                     }
-                }
-
+                }$("#lineList_add").parents('.form-group').show();
+            }else{  //隐藏线路输入框
+                $("#lineList_add").parents('.form-group').hide();
             }
             $("#goods").empty();
             var options = { jsonValue: bill, exclude:exclude,isDebug: false};
@@ -773,11 +783,6 @@ var WayBillAdd = function() {
             var exclude = [];
             var row = $(this).parents('tr')[0];
             var wid = $("#bill_table").dataTable().fnGetData(row).wid;
-            var state =  $("#bill_table").dataTable().fnGetData(row).state;
-            if(state != "01"){
-                alertDialog("只有新建的运单可编辑！");
-                return;
-            }
             var bill = new Object();
             for(var i=0; i < wayBillList.length; i++){
                 if(wid == wayBillList[i].wid){
@@ -794,9 +799,9 @@ var WayBillAdd = function() {
                         }
                     }
                 }
-                $("#lineList_add").show();
+                $("#lineList_add").parents('.form-group').show();
             }else{  //隐藏线路输入框
-                $("#lineList_add").hide();
+                $("#lineList_add").parents('.form-group').hide();
             }
             var options = { jsonValue: bill, exclude:exclude,isDebug: false};
             $(".add-form").initForm(options);
@@ -813,7 +818,7 @@ var WayBillAdd = function() {
             //根据是否有线路信息，判断哪些不可编辑
             if(bill.line_id != ""){   //有线路
                 $("#lineHave").val("0");
-                $("#lineList_add").show();
+                $("#lineList_add").parents('.form-group').show();
                 $("#project_add").attr("readonly","readonly");
                 $("#lineList_add,input[name=orderMaking_time]").attr("disabled",true);
                 $(".line-display").find("input").attr("readonly","readonly");
@@ -822,9 +827,10 @@ var WayBillAdd = function() {
                 $("#goodsname,input[name=number]").removeAttr("readonly");
             }else{
                 $("#lineHave").val("1");
-                $("#project_add,input[name=orderMaking_time],#goods_type").attr("disabled",true);
+                $("#project_add").attr("readonly","readonly");
+                $("input[name=orderMaking_time],#goods_type").attr("disabled",true);
                 $(".line-display").find("input").removeAttr("readonly");
-                $("#lineList_add").hide();
+                $("#lineList_add").parents('.form-group').hide();
                 $("input[name=consigneeTel],input[name=consignorTel]").attr("readonly","readonly");
             }
 
@@ -917,6 +923,7 @@ var WayBillDelete = function() {
                     return;
                 }
             });
+            $("#loading_edit").modal("show");
             wayBillDelete(bill);
         }
     }
@@ -945,6 +952,7 @@ $("#bill_file").change(function(){
         }
         var data = sendMessageEdit(DEFAULT,userid);
         formData.append("body",new Blob([data],{type:"application/json"}));
+        $("#loading_edit").modal("show");
         billUpload(formData);
     }else{
         $("#upload_name").html("");
@@ -976,6 +984,7 @@ function drop(ev) {
             }
             var data = sendMessageEdit(DEFAULT,userid);
             formData.append("body",new Blob([data],{type:"application/json"}));
+            $("#loading_edit").modal("show");
             billUpload(formData);
         }else{
             alertDialog("请选择.xlsx类型的文件上传！");
@@ -991,19 +1000,30 @@ var WayBillSubimt = function() {
     $('#bill_submit').click(function() {
         var len = $(".checkboxes:checked").length;
         if(len < 1){
-            alertDialog("至少选中一项！");
+            alertDialog("请选中一项！");
+        }else if(len > 1){
+            alertDialog("只能选中一项！");
         }else{
             confirmDialog("您确定要提交审验吗？", WayBillSubimt.deletePro)
         }
     });
     return{
         deletePro: function(){
-            var bill = {waybillidlist:[],verification_status:"01"};
-            $(".checkboxes:checked").parents("td").each(function () {
-                var row = $(this).parents('tr')[0];
-                var state = $("#bill_table").dataTable().fnGetData(row).state;
-                bill.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
-            });
+            var bill = {wid:"",verification_status:"01",driver_id:""};
+            var checked = $(".checkboxes:checked").parents("td");
+            var row = $(checked).parents('tr')[0];
+            var verification_status = $("#bill_table").dataTable().fnGetData(row).verification_status;
+            if(verification_status == "03"){
+                alertDialog("审核通过的不能提交审验！");
+                return;
+            }
+            bill.wid = $("#bill_table").dataTable().fnGetData(row).wid;
+            for(var i in wayBillList){
+                if(bill.wid == wayBillList[i].wid){
+                    bill.driver_id = wayBillList[i].driver_id;
+                }
+            }
+            $("#loading_edit").modal("show");
             wayBillVerification(bill,'提交审验');
         }
     }
@@ -1021,19 +1041,14 @@ var WayBillDepart = function() {
     });
     return{
         deletePro: function(){
-            var bill = {waybillidlist:[],state:"02","date":getNowDateTime()};
+            var bill = {changetype:"0",waybillidlist:[],state:"02"};
             $(".checkboxes:checked").parents("td").each(function () {
                 var row = $(this).parents('tr')[0];
                 //只有新建和装货中的运单可删除
                 var verification_status = $("#bill_table").dataTable().fnGetData(row).verification_status;
-                if(verification_status == "03"){
-                    bill.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
-                }else{
-                    alertDialog("只有通过审验的运单可发车");
-                    throw new Error("breakForEach");
-                    return;
-                }
+                bill.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
             });
+            $("#loading_edit").modal("show");
             wayBillStateChange(bill,'发车');
         }
     }
@@ -1051,7 +1066,7 @@ var WayBillDone = function() {
     });
     return{
         deletePro: function(){
-            var bill = {waybillidlist:[],state:"03","date":getNowDateTime()};
+            var bill = {changetype:"1",waybillidlist:[],state:"03"};
             $(".checkboxes:checked").parents("td").each(function () {
                 var row = $(this).parents('tr')[0];
                 //只有新建和装货中的运单可删除
@@ -1064,6 +1079,7 @@ var WayBillDone = function() {
                     return;
                 }
             });
+            $("#loading_edit").modal("show");
             wayBillStateChange(bill,'完成');
         }
     }
@@ -1071,6 +1087,7 @@ var WayBillDone = function() {
 
 //运单操作返回结果
 function billEditEnd(flg, result, type){
+    $("#loading_edit").modal("hide");
     var res = "失败";
     var text = "";
     var alert = "";

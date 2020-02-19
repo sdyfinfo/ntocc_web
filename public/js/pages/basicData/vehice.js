@@ -750,8 +750,8 @@ function getDictDataEnd(flg,result){
                         $("#energy_type").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
                         break;
                 }
-                vehiceInfoRequest();
             }
+            vehiceInfoRequest();
         }else{
             dictTrue.push("0");
             vehiceInfoRequest();

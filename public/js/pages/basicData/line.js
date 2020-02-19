@@ -378,7 +378,6 @@ var LineEdit = function(){
             }
         });
 
-
         //货物名称回车键监听
         $("#goodsname").keypress(function (e) {
             if (e.which == 13) {
@@ -433,6 +432,17 @@ var LineEdit = function(){
                 $("#unit_text").html(text);
             }else{
                 $("#unit_text").html("吨");
+            }
+        });
+
+        //总运发数量、单价格式
+        $("input[name=number],input[name=univalence]").on("input propertychange",function(){
+            $(this).val($(this).val().replace(/[^\d.]/g, ""));  //清除“数字”和“.”以外的字符
+            $(this).val($(this).val().replace(/\.{2,}/g, ".")); //只保留第一个. 清除多余的
+            $(this).val($(this).val().replace(".", "$#$").replace(/\./g, "").replace("$#$", "."));
+            $(this).val($(this).val().replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'));//只能输入两个小数
+            if ($(this).val().indexOf(".") < 0 && $(this).val() != "") {//以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额
+                $(this).val(parseFloat($(this).val()));
             }
         });
 
