@@ -1009,6 +1009,74 @@ function mshieldGet(data,callback){
     });
 }
 
+
+//发票抬头查询
+function invoDataGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {invid: "",rise_name:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "invoicequery",                    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("invoDataGet:" + JSON.stringify(result));
+            getinvoDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("invoDataGet-error:" + JSON.stringify(errorMsg));
+            getinvoDataEnd(false, "", callback);
+        }
+    });
+}
+
+//删除
+function invoDeleteEdit(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行
+        url: businessUrl + "invoicedelete",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("invoDeleteEdit:" + JSON.stringify(result));
+            invoEditEnd(true, result, INVUPDATE);
+        },
+        error: function (errorMsg) {
+            console.info("invoDeleteEdit-error:" + JSON.stringify(errorMsg));
+            invoEditEnd(false, "", INVUPDATE);
+        }
+    });
+}
+
+
+//更换邮寄地址/修改抬头信息
+function invoReplaceEdit(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行
+        url: businessUrl + "invoiceedit",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("invoReplaceEdit:" + JSON.stringify(result));
+            invoEditEnd(true, result, INVREPLACE);
+        },
+        error: function (errorMsg) {
+            console.info("invoReplaceEdit-error:" + JSON.stringify(errorMsg));
+            invoEditEnd(false, "", INVREPLACE);
+        }
+    });
+}
+
 //货物类型
 function didDateGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
@@ -1928,7 +1996,7 @@ function billDataGet(data,callback){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: "http://127.0.0.1:8007/ywt/web/front/billquery",    //请求发送到TestServlet处   businessUrl + "billquery"
+        url: businessUrl + "waybillquery",    //请求发送到TestServlet处   businessUrl + "billquery"
         data: sendMessageEdit(DEFAULT, data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -1949,7 +2017,7 @@ function wayBillAdd(data){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "billadd",    //请求发送到TestServlet处
+        url: businessUrl + "waybilladd",    //请求发送到TestServlet处
         data: sendMessageEdit('', data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -1970,7 +2038,7 @@ function wayBillEdit(data){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "billedit",    //请求发送到TestServlet处
+        url: businessUrl + "waybilledit",    //请求发送到TestServlet处
         data: sendMessageEdit('', data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -1991,7 +2059,7 @@ function wayBillDelete(data){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "billdelete",    //请求发送到TestServlet处
+        url: businessUrl + "waybilldelete",    //请求发送到TestServlet处
         data: sendMessageEdit('', data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -2013,7 +2081,7 @@ function billUpload(data){
         contentType: false,
         processData:false,
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "vehicleimport",    //请求发送到TestServlet处
+        url: businessUrl + "waybillimport",    //请求发送到TestServlet处
         data: data,
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -2034,7 +2102,28 @@ function wayBillStateChange(data,type){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "billstate",    //请求发送到TestServlet处
+        url: businessUrl + "waybillStateUpdate",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("wayBillStateChange:" + JSON.stringify(result));
+            billEditEnd(true, result, type);
+        },
+        error: function (errorMsg) {
+            console.info("wayBillStateChange-error:" + JSON.stringify(errorMsg));
+            billEditEnd(false, "", type);
+        }
+    });
+}
+
+//运单审验
+function wayBillVerification(data,type){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "verification",    //请求发送到TestServlet处
         data: sendMessageEdit('', data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {

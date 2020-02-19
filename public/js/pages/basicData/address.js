@@ -109,6 +109,13 @@ var addressTable = function(){
         });
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
+            //判断是否全选
+            var checklength = $("#add_table").find(".checkboxes:checked").length;
+            if(checklength == addressidList.length){
+                $("#add_table").find(".group-checkable").prop("checked",true);
+            }else{
+                $("#add_table").find(".group-checkable").prop("checked",false);
+            }
         });
     };
     return {
@@ -215,6 +222,7 @@ var addressEdit = function(){
                 addr.county = county;
             }
             if($("input[name=edittype]").val() == ADDRADD){
+                $("#loading_edit").modal('show');
                 addrsAdd(addr);
             }else {
                 var data;
@@ -223,6 +231,7 @@ var addressEdit = function(){
                         data = addressidList[i];
                     }
                 }
+                $("#loading_edit").modal('show');
                 addrsEdit(addr,ADDRSEDIT);
             }
         });
@@ -308,6 +317,7 @@ var AddrDelete = function() {
                 var row = $(this).parents('tr')[0];
                 addr.addressidlist.push($("#add_table").dataTable().fnGetData(row).aid);
             });
+            $("#loading_edit").modal('show');
             addrDelete(addr);
         }
     }
@@ -316,6 +326,7 @@ var AddrDelete = function() {
 
 //新增
 function addrEditEnd(flg, result, type){
+    $("#loading_edit").modal('hide');
     var res = "失败";
     var text = "";
     var alert = "";

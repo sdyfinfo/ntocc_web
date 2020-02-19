@@ -178,13 +178,13 @@ router.get('/vehice',function(req,res,next){
 var fs = require('fs');
 var path = require('path');
 router.get('/downloadvehicefile', function (req, res, next) {
-    var filename = 'vehiceTemplate.xlsx';
+    var filename = '车辆模板.xlsx';
     var filepath = path.join(__dirname, '../upload/' + filename);
     var stats = fs.statSync(filepath);
     if (stats.isFile()) {
         res.set({
             'Content-Type': 'application/octet-stream',
-            'Content-Disposition': 'attachment; filename=' + filename,
+            'Content-Disposition': 'attachment; filename=' + encodeURIComponent(filename),
             "Content-Length": stats.size
         });
         fs.createReadStream(filepath).pipe(res);
@@ -197,13 +197,13 @@ router.get('/downloadvehicefile', function (req, res, next) {
 var fs = require('fs');
 var path = require('path');
 router.get('/downloaddriverfile', function (req, res, next) {
-    var filename = 'driverTemplate.xlsx';
+    var filename = '司机模板.xlsx';
     var filepath = path.join(__dirname, '../upload/' + filename);
     var stats = fs.statSync(filepath);
     if (stats.isFile()) {
         res.set({
             'Content-Type': 'application/octet-stream',
-            'Content-Disposition': 'attachment; filename=' + filename,
+            'Content-Disposition': 'attachment; filename=' + encodeURIComponent(filename),
             "Content-Length": stats.size
         });
         fs.createReadStream(filepath).pipe(res);
@@ -248,23 +248,6 @@ router.get('/waybill',function(req,res,next){
         res.render('waybill/waybill', {
             menu: req.url.substr(1),
             loginsucc: req.session["ywtLogin" + uname]
-        });
-    }else{
-        res.redirect('/');
-    }
-});
-
-router.get('/receivables',function(req,res,next){
-    console.info(req.url);
-    var uname = req.query.username;
-    var receivables = req.query.receivables;
-    var bank = req.query.bank;
-    if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
-        res.render('basicData/receivables', {
-            menu: req.url.substr(1),
-            loginsucc: req.session["ywtLogin" + uname],
-            receivables:receivables,
-            bank:bank
         });
     }else{
         res.redirect('/');
@@ -331,10 +314,14 @@ router.get('/consignee',function(req,res,next){
 router.get('/payee',function(req,res,next){
     console.info(req.url);
     var uname = req.query.username;
+    var payname = req.query.payname || "";
+    var banknumber = req.query.banknumber || "";
     if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
         res.render('basicData/payee', {
             menu: req.url.substr(1),
-            loginsucc: req.session["ywtLogin" + uname]
+            loginsucc: req.session["ywtLogin" + uname],
+            payname:payname,
+            banknumber:decodeURI(banknumber)
         });
     }else{
         res.redirect('/');
@@ -421,7 +408,24 @@ router.get('/mshield',function(req,res,next){
     }
 });
 
-
+//派单模板下载
+var fs = require('fs');
+var path = require('path');
+router.get('/downloadbillfile', function (req, res, next) {
+    var filename = "派单模板.xlsx";
+    var filepath = path.join(__dirname, '../upload/' + filename);
+    var stats = fs.statSync(filepath);
+    if (stats.isFile()) {
+        res.set({
+            'Content-Type': 'application/octet-stream',
+            'Content-Disposition': 'attachment; filename=' + encodeURIComponent(filename),
+            "Content-Length": stats.size
+        });
+        fs.createReadStream(filepath).pipe(res);
+    } else {
+        res.end(404);
+    }
+});
 
 router.get('/template',function(req,res,next){
     console.info(req.url);

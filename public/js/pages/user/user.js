@@ -179,6 +179,13 @@ var UserTable = function () {
         });
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
+            //判断是否全选
+            var checklength = $("#user_table").find(".checkboxes:checked").length;
+            if(checklength == userList.length){
+                $("#user_table").find(".group-checkable").prop("checked",true);
+            }else{
+                $("#user_table").find(".group-checkable").prop("checked",false);
+            }
         });
     };
     return {
@@ -320,6 +327,7 @@ var UserEdit = function() {
                 user.organid = ($('#organtree').jstree(true).get_selected(true))[0].id;
             }
             if($("input[name=edittype]").val() == USERADD){
+                $("#loading_edit").modal("show");
                 userAdd(user);
             }else {
 
@@ -337,6 +345,7 @@ var UserEdit = function() {
                 var data1 = sendMessageEdit(DEFAULT, user);
                 formData.append("body",new Blob([data1],{type:"application/json"}));
                 formData.append("rolelist",user.rolelist);
+                $("#loading_edit").modal("show");
                 userEdit(formData);
             }
         });
@@ -428,6 +437,7 @@ var UserDelete = function() {
             $(".checkboxes:checked").parents("td").each(function () {
                 userlist.useridlist.push($(this).siblings().eq(1).text());
             });
+            $("#loading_edit").modal("show");
             userDelete(userlist);
         }
     }
@@ -449,9 +459,11 @@ var PasswordRest = function() {
             $(".checkboxes:checked").parents("td").each(function () {
                 userlist.useridlist.push($(this).siblings().eq(0).text());
             });
+            $("#loading_edit").modal("show");
             passwordReset(userlist);
         },
         passwordRestResult: function(flg){
+            $("#loading_edit").modal("hide");
             var result = "密码重置成功！";
             if(!flg) result = "密码重置失败！";
             alertDialog(result);
@@ -499,6 +511,7 @@ function getOrganDataEnd(flg, result, callback){
 }
 
 function userInfoEditEnd(flg, result, type){
+    $("#loading_edit").modal("hide");
     var res = "失败";
     var text = "";
     var alert = "";

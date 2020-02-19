@@ -111,6 +111,13 @@ var ConsignorTable = function () {
         });
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
+            //判断是否全选
+            var checklength = $("#consignor_table").find(".checkboxes:checked").length;
+            if(checklength == ConsignorList.length){
+                $("#consignor_table").find(".group-checkable").prop("checked",true);
+            }else{
+                $("#consignor_table").find(".group-checkable").prop("checked",false);
+            }
         });
     };
     return {
@@ -216,8 +223,10 @@ var ConsignorEdit = function() {
                     }
                 }
                 if($("input[name=edittype]").val() == CONSIGNORADD){
+                    $("#loading_edit").modal('show');
                     consignorAdd(consignor);
                 }else{
+                    $("#loading_edit").modal('show');
                     consignorEdit(consignor);
                 }
             }
@@ -317,6 +326,7 @@ var ConsignorDelete = function() {
                 var row = $(this).parents('tr')[0];
                 consignor.conidlist.push($("#consignor_table").dataTable().fnGetData(row).conid);
             });
+            $("#loading_edit").modal('show');
             consignorDelete(consignor);
         }
     }
@@ -368,6 +378,7 @@ function getConsignorDataEnd(flg,result,callback){
 
 //发货人操作结果返回
 function consignorEditEnd(flg, result, type){
+    $("#loading_edit").modal('hide');
     var res = "失败";
     var text = "";
     var alert = "";

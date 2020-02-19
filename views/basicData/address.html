@@ -168,16 +168,6 @@
                                     </div>
                                 </div>
                             </div>
-                           <!-- <div class="row">
-                                <div class="form-group col-md-6">
-                                    <label class="col-md-4 control-label"><span class="required"> * </span></label>
-                                    <div class="col-md-8">
-                                        &lt;!&ndash;<input type="text" class="form-control pick-area4" placeholder="邮寄地址" name="mailing_address" id="mailing_address"/>&ndash;&gt;
-
-                                        <div class="pick-area4" name="mailing_address" id="mailing_address"></div>
-                                    </div>
-                                </div>
-                            </div>-->
                             <div class="row">
                                 <div class="form-group col-md-12">
                                     <label class="col-md-2 control-label">详细地址<span class="required"> * </span></label>
@@ -218,7 +208,17 @@
             </div>
         </div>
     </div>
-
+    <!-- 处理遮罩 -->
+    <div class="modal fade" id="loading_edit" role="basic" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="/public/img/loading-spinner-grey.gif" alt="" class="loading">
+                    <span> &nbsp;&nbsp;正在处理中... </span>
+                </div>
+            </div>
+        </div>
+    </div>
     <!--本页面用到插件的JS-->
     <script src="/public/js/jquery.min.js?v=2.1.4"></script>
     <script src="/public/js/bootstrap.min.js?v=3.3.6"></script>

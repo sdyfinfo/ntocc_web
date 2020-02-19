@@ -7,9 +7,10 @@ var ushList = [];
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function () {
-
         //时间控件
         ComponentsDateTimePickers.init();
+        //获取发货人信息
+        consignorDataGet();
         //fun_power();
         //收款人列表
         ushTable.init();
@@ -87,7 +88,7 @@ var ushTable = function () {
                 { "data": null},
                 { "data": null},
                 { "data": "shieid",visible: false},
-                { "data": "conid",visible: false },
+                { "data": "consignorid",visible: false },
                 { "data": "unumber"},
                 { "data": "secret_key"},
                 { "data": "check"},
@@ -115,9 +116,9 @@ var ushTable = function () {
                     "render":function (data, type, row, meta) {
                         var check = "";
                         if (data == "0") {
-                           return  '<a href="javascript:;" id="op_check">否</a>'
+                           return  '<a href="javascript:;" id="op_check">否</a>';
                         }else{
-                            return  '<a href="javascript:;" id="op_check" onclick="check()">已通过</a>'
+                            return  '已通过';
                         }
                     }
                 },
@@ -328,10 +329,6 @@ var ushEdit = function(){
                     ushield = ushList[i];
                 }
             }
-            //清空发货人
-            $("#consignorid").empty();
-            //获取发货人信息
-            cgneeDataGet();
             //ushield.consignor = $("#consignorid option:selected").val();
             //效验通过或者已绑定状态
             if(ushield.check == "1"){
@@ -358,7 +355,6 @@ var ushEdit = function(){
             e.preventDefault();
             //清除校验错误信息
             validator.resetForm();
-            check();
             $(".register-form").find(".has-error").removeClass("has-error");
             $(".modal-title").text("输入动态密码");
             var exclude = [];
@@ -424,12 +420,6 @@ $("#us_inquiry").on("click",function(){
     ushTable.init();
 })
 
-function check(){
-    if(ushList.check == "已通过"){
-
-        $(".con-hide3").hide();
-    }
-}
 
 
 //返回U盾管理结果
@@ -451,13 +441,12 @@ function getushieldDataEnd(flg, result, callback){
 }
 
 //获取发货人信息
-function getcgneeEnd(flg, result, callback){
+function getConsignorDataEnd(flg, result){
     App.unblockUI('#lay-out');
     if(flg){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
             consignorList = res.conlist;
-            $('#consignorid').append('<option value="">请选择</option>');
             for(var i = 0; i < consignorList.length; i++){
                 $("#consignorid").append("<option value='"+consignorList[i].conid+"'>"+ consignorList[i].consignor +"</option>");
             }
@@ -584,7 +573,7 @@ function drop(ev) {
         var filesName=files[0].name;
         var extStart=filesName.lastIndexOf(".");
         var ext=filesName.substring(extStart,filesName.length).toUpperCase();
-        if(ext ==".xlsx" || ext ==".XLSX"){ //判断是否是需要的问件类型
+        if(ext ==".text" || ext ==".TEXT"){ //判断是否是需要的问件类型
             //显示上传文件名
             $("#upload_name").show();
             $("#upload_name").html("文件名："+filesName+"   文件大小："+((Number(files[0].size))/1024).toFixed(1)+"KB");
@@ -598,7 +587,7 @@ function drop(ev) {
             formData.append("body",new Blob([data],{type:"application/json"}));
             ushieldUpload(formData);
         }else{
-            alertDialog("请选择.xlsx类型的文件上传！");
+            alertDialog("请选择.text类型的文件上传！");
             return false;
         }
     }else{

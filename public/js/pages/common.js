@@ -613,10 +613,47 @@ function discountNumber(data) {
 function fun_power(){
     var list = ["#op_add","#op_del","#user_inquiry","#password_reset","#role_inquiry","#organ_inquiry",
         "#vehice_inquiry","#vehice_import","#pro_inquiry","#driver_inquiry","#driver_import","#consignor_inquiry","#addr_inquiry",
-        "#lin_inquiry","#cons_inquiry","#pay_inquiry","#us_inquiry","#us_import"];
+        "#lin_inquiry","#cons_inquiry","#pay_inquiry","#us_inquiry","#us_import","#inv_inquiry"];
     for(var i in list){
         if(!makeEdit(menu,loginSucc.functionlist,list[i])){
             $(list[i]).hide();
         }
     }
+}
+
+
+//省市区格式判断
+function addressCheck(value){
+    var reg = /.+?(省|市|自治区|自治州|县|区|旗)/g;
+    var addresslist = value.match(reg);
+    if(addresslist == null){
+        return false;
+    }else{
+        return true;
+    }
+
+}
+
+//获取时分
+function getNowDateTime() {
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    var hours= date.getHours();
+    var minutes = date.getMinutes();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    if (hours >= 1 && hours <= 9) {
+        hours = "0" + hours;
+    }
+    if (minutes >= 0 && minutes <= 9) {
+        minutes = "0" + minutes;
+    }
+    var value = year + month + strDate + hours + minutes;
+    return value;
 }

@@ -24,6 +24,8 @@
     <script>
         //获取nodejs session中和localStorage中保存的菜单信息、权限信息。配置信息
         var menu = '{{ menu }}';
+        var payname = '{{payname}}';
+        var banknumber = '{{banknumber}}';
         var loginSucc = '{{ loginsucc }}';
         loginSucc = JSON.parse(loginSucc.replace(/&quot;/g, "\""));
     </script>
@@ -258,6 +260,17 @@
                     </div>
                     <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx" id="payee_file" style="display: none">
                     <div style="height: 30px;line-height: 30px" id="upload_name" hidden="hidden"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 处理遮罩 -->
+    <div class="modal fade" id="loading_edit" role="basic" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="/public/img/loading-spinner-grey.gif" alt="" class="loading">
+                    <span> &nbsp;&nbsp;正在处理中... </span>
                 </div>
             </div>
         </div>

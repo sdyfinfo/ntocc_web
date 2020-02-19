@@ -197,6 +197,7 @@ $('#register-btn').click(function() {
         }
         var data = sendMessageEdit(DEFAULT, user);
         formData.append("body",new Blob([data],{type:"application/json"}));
+        $("#loading_edit").modal('show');
         userEdit(formData);
     }
 });
@@ -282,6 +283,7 @@ function getOrganDataEnd(flg, result, callback){
 }
 
 function userInfoEditEnd(flg, result, type){
+    $("#loading_edit").modal('hide');
     var res = "失败";
     var text = "";
     var alert = "";
