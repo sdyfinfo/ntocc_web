@@ -2136,3 +2136,50 @@ function wayBillVerification(data,type){
         }
     });
 }
+
+//运单支付查询
+function paymentDataGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    if(data == null){
+        data = {start_subtime: "",end_subtime:"", loading_start_subtime:"",loading_end_subtime:"",
+            project_id:"",lid:"",consignor:"",platenumber:"",driver_name:"",state:"",
+            currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "paymentquery",    //请求发送到TestServlet处   businessUrl + "billquery"
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("paymentDataGet:" + JSON.stringify(result));
+            getPaymentDataEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("paymentDataGet-error:" + JSON.stringify(errorMsg));
+            getPaymentDataEnd(false, "", callback);
+        }
+    });
+}
+
+//运单支付详情查询
+function paymentDetailGet(data,callback){
+    App.blockUI({target: '#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "paymentdetailquery",    //请求发送到TestServlet处   businessUrl + "billquery"
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("paymentDetailGet:" + JSON.stringify(result));
+            getPaymentDetailEnd(true, result, callback);
+        },
+        error: function (errorMsg) {
+            console.info("paymentDetailGet-error:" + JSON.stringify(errorMsg));
+            getPaymentDetailEnd(false, "", callback);
+        }
+    });
+}

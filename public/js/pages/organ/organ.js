@@ -210,8 +210,10 @@ var OrganEdit = function() {
                     organ.parentorganid = select[0].id;
                 }
                 if($("input[name=edittype]").val() == ORGANADD){
+                    $("#loading_edit").modal("show");
                     organAdd(organ);
                 }else{
+                    $("#loading_edit").modal("show");
                     organEdit(organ);
                 }
             }
@@ -282,6 +284,7 @@ var OrganDelete = function() {
             for(var i=0; i<select.length;i++) {
                 organlist.organidlist.push(select[i].organid);
             }
+            $("#loading_edit").modal("show");
             organDelete(organlist);
         }
     }
@@ -310,6 +313,7 @@ function getOrganDataEnd(flg, result, callback){
 }
 
 function organInfoEditEnd(flg, result, type){
+    $("#loading_edit").modal("hide");
     var res = "失败";
     var text = "";
     var alert = "";

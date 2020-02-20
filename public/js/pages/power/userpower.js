@@ -438,6 +438,7 @@ $('#keep_add').click(function(e) {
                 userid:user_sel[0].userid,
                 menuidlist:menuidlist
             };
+            $("#loading_edit").modal('show');
             userPowerUpdate(data);
             break;
         case 2:         //功能权限保存
@@ -460,6 +461,7 @@ $('#keep_add').click(function(e) {
                 parentmenuid:menu_sel.id,
                 functionidlist:funlist
             };
+            $("#loading_edit").modal('show');
             userFunctionUpdate(data);
             break;
     }
@@ -479,6 +481,7 @@ function getInfoId(){
 }
 
 function userPowerUpdateEnd(flg,result,type){
+    $("#loading_edit").modal('hide');
     var retain = "失败";
     var alert = "";
     if(flg){
@@ -560,6 +563,7 @@ function getFunctionDataEnd(flg, result, callback){
 }
 
 function userFunctionUpdateEnd(flg,result){
+    $("#loading_edit").modal('hide');
     var retain = "失败";
     var alert = "";
     if(flg){

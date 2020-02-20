@@ -410,6 +410,7 @@ $('#keep_add').click(function(e) {
                 roleid:role_sel[0].roleid,
                 menuidlist:menuidlist
             };
+            $("#loading_edit").modal('show');
             rolePowerUpdate(data);
             break;
         case 2:         //功能权限保存
@@ -431,6 +432,7 @@ $('#keep_add').click(function(e) {
                 menuid:menu_sel.id,
                 functionidlist:funlist
             };
+            $("#loading_edit").modal('show');
             roleFunctionUpdate(data);
             break;
     }
@@ -474,6 +476,7 @@ function menuPower(){
 }
 
 function rolePowerUpdateEnd(flg,result){
+    $("#loading_edit").modal('hide');
     var retain = "失败";
     var alert = "";
     if(flg){
@@ -500,6 +503,7 @@ function rolePowerUpdateEnd(flg,result){
 }
 
 function roleFunctionUpdateEnd(flg,result){
+    $("#loading_edit").modal('hide');
     var retain = "失败";
     var alert = "";
     if(flg){

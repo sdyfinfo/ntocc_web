@@ -97,7 +97,7 @@ var DriverTable = function () {
                 { "data": "qualification"},
                 { "data": "id_front"},
                 { "data": "driving_license"},
-                { "data": "payee_name"},
+                { "data": "did"},
                 { "data": "plate_number"},
                 { "data": "state"},
                 { "data": "updateTime"},
@@ -157,7 +157,13 @@ var DriverTable = function () {
                 {
                     "targets": [10],
                     "render": function (data, type, row, meta) {
-                        return '<a href="javascript:;" class="receivables_click">'+data+'</a>';
+                        for(var i in driverList){
+                            if(data == driverList[i].did){
+                                var href = 'payee?username='+loginSucc.userid+"&payname="+encodeURI(driverList[i].payee_name)+"&banknumber="+driverList[i].bank;
+                                return "<a href='"+href+"'>"+driverList[i].payee_name+"</a>";
+                            }
+                        }
+
                     }
                 },{
                     "targets": [12],
@@ -499,15 +505,6 @@ $("#driver_table").on('click',".imgCheck",function(e){
     $("#img_check").find("img").attr('src',src);
     $(".modal-title").text("图片查看");
     $("#img_check").modal('show');
-});
-
-//收款人跳转界面
-$("#driver_table").on('click','.receivables_click',function(){
-    var row = $(this).parents('tr')[0];
-    var receivables_id = $("#driver_table").dataTable().fnGetData(row).receivables_id;
-    var receivables = $(this)[0].innerText;
-    var bank = $("#driver_table").dataTable().fnGetData(row).bank;
-    location.href = 'payee?username='+loginSucc.userid+"&payname="+encodeURI(receivables)+"&banknumber="+bank;
 });
 
 //项目状态显示
