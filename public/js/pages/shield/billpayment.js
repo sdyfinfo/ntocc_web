@@ -13,6 +13,8 @@ if (App.isAngularJsApp() === false) {
         //ComponentsDateTimePickers.init();
         //获取项目信息
         projectDataGet();
+        //支付运费
+        paymentEdit();
     });
 }
 
@@ -85,11 +87,11 @@ var BillPaymentTable = function () {
                 { "data": "disburden_time"},
                 { "data": "name" },    //司机
                 { "data": "plate_number"},     //车牌号
-                { "data": "service"},
-                { "data": "service_state"},
+                { "data": "rate"},
+                { "data": "serviceFee"},
                 { "data": "freight"},
-                { "data": "pay_state"},
-                { "data": "paiedfre"},
+                { "data": "payment_status"},
+                { "data": "payment"},
                 { "data": "updatetime"}
             ],
             columnDefs: [
@@ -110,10 +112,10 @@ var BillPaymentTable = function () {
                     "targets": [5],
                     "render": function (data, type, row, meta) {
                         //显示运单号，发货到卸货地址
-                        for(var i in wayBillList){
-                            if(data == wayBillList[i].wid){
-                                return '<a href="javascript:;" id="bill_detail">'+wayBillList[i].wabill_numbers+'<br>'+
-                                    wayBillList[i].loading_place+'  到  '+wayBillList[i].unloading_place+'</a>';
+                        for(var i in paymentList){
+                            if(data == paymentList[i].wid){
+                                return '<a href="javascript:;" id="bill_detail">'+paymentList[i].wabill_numbers+'<br>'+
+                                    paymentList[i].loading_place+'  到  '+paymentList[i].unloading_place+'</a>';
                             }
                         }
                     }
@@ -133,6 +135,16 @@ var BillPaymentTable = function () {
                             return "";
                         }
                         return dateTimeFormat(data);
+                    }
+                },{
+                    "targets": [10],
+                    "render": function (data, type, row, meta) {
+                        return data+"%";
+                    }
+                },{
+                    "targets": [12],
+                    "render": function (data, type, row, meta) {
+                        return formatCurrency(data);
                     }
                 },{
                     "targets": [13],
@@ -165,8 +177,8 @@ var BillPaymentTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(6),td:eq(7),td:eq(8),td:eq(10),td:eq(14)', nRow).attr('style', 'text-align: center;');
-                $('td:eq(9)', nRow).attr('style', 'text-align: right;');
+                $('td:eq(0),td:eq(1),td:eq(6),td:eq(7),td:eq(8),td:eq(14)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(9),td:eq(10),td:eq(11)', nRow).attr('style', 'text-align: right;');
             }
         });
         //table.draw( false );
@@ -187,7 +199,7 @@ var BillPaymentTable = function () {
             $(this).parents('tr').toggleClass("active");
             //判断是否全选
             var checklength = $("#payment_table").find(".checkboxes:checked").length;
-            if(checklength == wayBillList.length){
+            if(checklength == paymentList.length){
                 $("#payment_table").find(".group-checkable").prop("checked",true);
             }else{
                 $("#payment_table").find(".group-checkable").prop("checked",false);
@@ -249,12 +261,12 @@ $("#project_id").change(function(e){
 $("#payment_table").on('click',"#bill_detail",function(){
     var row = $(this).parents('tr')[0];
     var wid = $("#payment_table").dataTable().fnGetData(row).wid;
-    var data = {wid:wid};
-    billDataGet(data,"");
-});
-
-//运单信息显示
-function billDetailDisplay(data){
+    var data = {};
+    for(var i in paymentList){
+        if(wid == paymentList[i].wid){
+            data =  paymentList[i];
+        }
+    }
     var exclude = [];
     var options = { jsonValue: data, exclude:exclude,isDebug: false};
     $(".bill-form").initForm(options);
@@ -265,8 +277,8 @@ function billDetailDisplay(data){
         $("#goodsname").append(div);
     }
     $(".bill-form").find("input,select,textarea").attr("disabled",true);
-    $("#bill_detail").modal('show');
-}
+    $("#detail_bill").modal('show');
+});
 
 //查看运单支付明细
 $("#payment_table").on('click',"#payment_detail",function(){
@@ -334,29 +346,133 @@ $("#payment_table").on('click',"#payment_detail",function(){
     });
 });
 
-//一键支付
-$("#bill_payment").click(function(){
-    var len = $(".checkboxes:checked").length;
-    if(len < 1){
-        alertDialog("至少选中一项！");
-        return;
-    }
-    var result = true;
-    $(".checkboxes:checked").parents("td").each(function () {
-        var row = $(this).parents('tr')[0];
-        //已支付的运单不可一键支付
-        var pay_state = $("#payment_table").dataTable().fnGetData(row).pay_state;
-        if(pay_state == '03'){
-            alertDialog("已支付的运单不可做一键支付！");
-            result = false;
-            return false;
-        }else{
+//支付运单
+var paymentEdit = function() {
+    var handleRegister = function() {
+        var validator = $('.bill-form').validate({
+            errorElement: 'span', //default input error message container
+            errorClass: 'help-block', // default input error message class
+            focusInvalid: false, // do not focus the last invalid input
+            ignore: "",
+            rules: {
+                amount: {
+                    required: true
+                },
+                ushield: {
+                    required: true
+                }
+            },
 
+            messages: {
+                amount: {
+                    required: "支付金额必须输入"
+                },
+                ushield: {
+                    required: "U盾口令必须输入"
+                }
+            },
+
+            invalidHandler: function(event, validator) { //display error alert on form submit
+
+            },
+
+            highlight: function(element) { // hightlight error inputs
+                $(element)
+                    .closest('.form-group').addClass('has-error'); // set error class to the control group
+            },
+
+            success: function(label) {
+                label.closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+
+            errorPlacement: function(error, element) {
+                if (element.attr("name") == "tnc") { // insert checkbox errors after the container
+                    error.insertAfter($('#register_tnc_error'));
+                } else if (element.closest('.input-icon').size() === 1) {
+                    error.insertAfter(element.closest('.input-icon'));
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
+
+        // 手机号码验证
+        jQuery.validator.addMethod("phone", function(value, element) {
+            var tel = /^1[3456789]\d{9}$/;
+            return this.optional(element) || (tel.test(value));
+        }, "请正确填写您的手机号码");
+
+        //点击确定按钮
+        $('#payment-btn').click(function() {
+            btnDisable($('#payment-btn'));
+            if ($('.payment-form').validate().form()) {
+                var payment = $('.payment-form').getFormData();
+
+            }
+        });
+        //一键支付
+        $("#bill_payment").click(function(){
+            validator.resetForm();
+            $(".edit-form").find(".has-error").removeClass("has-error");
+            var len = $(".checkboxes:checked").length;
+            if(len < 1){
+                alertDialog("至少选中一项！");
+                return;
+            }
+            var result = true;
+            var freight = 0; //司机运费
+            var payment = 0;//已支付运费
+            var serviceFee = 0;//平台服务费
+            $(".checkboxes:checked").parents("td").each(function () {
+                var row = $(this).parents('tr')[0];
+                //已支付的运单不可一键支付
+                var pay_state = $("#payment_table").dataTable().fnGetData(row).pay_state;
+                if(pay_state == '03'){
+                    alertDialog("已支付的运单不可一键支付！");
+                    result = false;
+                    return false;
+                }else{
+                    var driver = $("#payment_table").dataTable().fnGetData(row).freight;
+                    var paied = $("#payment_table").dataTable().fnGetData(row).paiedfre;
+                    var service = $("#payment_table").dataTable().fnGetData(row).serviceFee;
+                    //累加司机运费
+                    freight += Number(driver);
+                    //累加已支付运费
+                    payment += Number(paied);
+                    //累加平台服务费
+                    serviceFee += Number(service);
+                }
+            });
+            var amount = Number(freight)-Number(payment);
+            $("input[name=freight]").val(freight);
+            $("input[name=payment]").val(payment);
+            //支付金额=运费-已支付
+            $("input[name=amount]").val(amount);
+            $("input[name=serviceFee]").val(serviceFee);
+            //合计支付=支付金额+服务费
+            var fare = Number(amount)+Number(serviceFee);
+            $("input[name=fare]").val(fare);
+            $("#len").val(len);
+            $("#payment_len").html("共选择了"+len+"个运单");
+            if(len == 1){  //选择一个运单，显示已支付金额，支付金额可修改
+                $("input[name=payment]").show();
+                $("input[name=amount]").removeAttr("readonly");
+            }else{
+
+            }
+        });
+    };
+    return {
+        init: function() {
+            handleRegister();
         }
-
-
-    });
-});
+    };
+}();
 
 //运单支付信息获取结果返回
 function getPaymentDataEnd(flg,result,callback){
@@ -364,7 +480,7 @@ function getPaymentDataEnd(flg,result,callback){
     if(flg){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
-            paymentList = res.list[0];
+            paymentList = res.list;
             tableDataSet(res.draw, res.totalcount, res.totalcount, paymentList, callback);
         }else{
             tableDataSet(0, 0, 0, [], callback);
@@ -373,22 +489,6 @@ function getPaymentDataEnd(flg,result,callback){
     }else{
         tableDataSet(0, 0, 0, [], callback);
         alertDialog("运单支付信息获取失败！");
-    }
-}
-
-//运单信息获取结果返回
-function getBillDataEnd(flg,result){
-    App.unblockUI('#lay-out');
-    if(flg){
-        if (result && result.retcode == SUCCESS) {
-            var res = result.response;
-            var wayBillList = res.list;
-            billDetailDisplay(wayBillList);
-        }else{
-            alertDialog("运单信息获取失败！");
-        }
-    }else{
-        alertDialog("运单信息获取失败！");
     }
 }
 

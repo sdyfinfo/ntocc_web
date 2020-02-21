@@ -1,19 +1,17 @@
-/**
+ï»¿/**
  * Created by Lenovo on 2020/2/17.
  */
 
 var invocerList = [];
-var addressidList = [];
+var addressidList,bankList = [];
 var invlist = [];
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function () {
-        //fun_power();
-        //»ñÈ¡Ò³ÃæĞÅÏ¢
-        invocreTable.init();
-        invEdit.init();
-        //»ñÈ¡ÓÊ¼ÄµØÖ·
+        fun_power();
+        //è·å–é‚®å¯„åœ°å€
         addressDataGet();
-
+        //å¼€ç¥¨ä¿¡æ¯æ“ä½œ
+        invEdit.init();
     })
 }
 
@@ -37,7 +35,6 @@ var invocreTable = function () {
                 var formData = $(".inquiry-form").getFormData();
                 var da = {
                     rise_name: formData.rise_name,
-                    invid: formData.invid,
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
@@ -45,14 +42,14 @@ var invocreTable = function () {
                 };
                 invoDataGet(da, callback);
             },
-            columns: [//·µ»ØµÄjsonÊı¾İÔÚÕâÀïÌî³ä£¬×¢ÒâÒ»¶¨ÒªÓëÉÏÃæµÄ<th>ÊıÁ¿¶ÔÓ¦£¬·ñÔòÅÅ°æ³öÏÖÅ¤Çú
+            columns: [//è¿”å›çš„jsonæ•°æ®åœ¨è¿™é‡Œå¡«å……ï¼Œæ³¨æ„ä¸€å®šè¦ä¸ä¸Šé¢çš„<th>æ•°é‡å¯¹åº”ï¼Œå¦åˆ™æ’ç‰ˆå‡ºç°æ‰­æ›²
                 {"data":null},
                 {"data":null},
                 { "data": "invid",visible: false},
-                { "data": "invids "},//Ì§Í·Ãû³Æ
-                { "data": "invid"},//·¢Æ±ÓÊ¼ÄĞÅÏ¢
-                { "data": "invid"},//·¢Æ±½ğ¶î
-                { "data": "invid"} //¸üĞÂÊ±¼ä
+                { "data": "invid"},//æŠ¬å¤´åç§°
+                { "data": "invid"},//å‘ç¥¨é‚®å¯„ä¿¡æ¯
+                { "data": "invid"},//å‘ç¥¨é‡‘é¢
+                { "data": "invid"} //æ›´æ–°æ—¶é—´
             ],
             columnDefs: [
                 {
@@ -65,16 +62,20 @@ var invocreTable = function () {
                     "targets": [0],
                     "data": null,
                     "render": function (data, type, row, meta) {
-                        return meta.settings._iDisplayStart + meta.row + 1;  //ĞĞºÅ
+                        return meta.settings._iDisplayStart + meta.row + 1;  //è¡Œå·
                     }
                 },
                 {
                     "targets":[3],
                     "render": function (data, type, row ,meta) {
-                        //ÏÔÊ¾·¢Æ±Ì§Í·
+                        //æ˜¾ç¤ºå‘ç¥¨æŠ¬å¤´
                         for(var i in invocerList){
-                            if(data == invocerList[i].invids){
-                                return "<b>"+"Ì§Í·Ãû³Æ:     "+"</b>"+invocerList[i].rise_name +"<br>"+"<b>"+"ÄÉË°ÈËÊ¶±ğºÅ:     "+"</b>"+ invocerList[i].taxpayer +"<br>"+"<b>"+"µØÖ·/µç»°:     "+"</b>"+invocerList[i].address_phone +"<br>"+"<b>"+"¿ª»§ĞĞ¼°ÕËºÅ:     "+"</b>"+ invocerList[i].bank_name + "<br>" +"<a href='javascript:;' id='invoice'>"+"ĞŞ¸ÄÌ§Í·ĞÅÏ¢"+"</a>";
+                            if(data == invocerList[i].invid){
+                                return "<b>"+"æŠ¬å¤´åç§°:"+"</b>"+invocerList[i].rise_name +"<br>"+
+                                    "<b>"+"çº³ç¨äººè¯†åˆ«å·:"+"</b>"+ invocerList[i].taxpayer +"<br>"+
+                                    "<b>"+"åœ°å€/ç”µè¯:"+"</b>"+invocerList[i].address_phone +"<br>"+
+                                    "<b>"+"å¼€æˆ·è¡ŒåŠè´¦å·:"+"</b>"+ bankDisplay(invocerList[i].bank_id) + invocerList[i].bank + "<br>"+
+                                    "<a href='javascript:;' id='invoice'>"+"ä¿®æ”¹æŠ¬å¤´ä¿¡æ¯"+"</a>";
                             }
                         }
                     }
@@ -82,10 +83,14 @@ var invocreTable = function () {
                 {
                     "targets":[4],
                     "render": function (data, type, row ,meta) {
-                        //ÓÊ¼ÄµØÖ·
+                        //é‚®å¯„åœ°å€
                         for(var i in invocerList) {
                             if (data == invocerList[i].invid) {
-                                return "<b>"+"ÓÊ¼ÄµØÖ·:     "+"</b>"+invocerList[i].address +"<br>"+"<b>"+"ÊÕ¼şÈË:     "+"</b>"+ invocerList[i].addressee +"<br>"+"<b>"+"µç»°:     "+"</b>"+ invocerList[i].addresseeTel +"<br>"+"<b>"+"ÓÊÏä:     "+"</b>"+ invocerList[i].email + "<br>" +"<a href='javascript:;' id='mail'>"+"¸ü»»ÓÊ¼ÄµØÖ·"+"</a>";
+                                return "<b>"+"é‚®å¯„åœ°å€:"+"</b>"+invocerList[i].address +"<br>"+
+                                    "<b>"+"æ”¶ä»¶äºº"+"</b>"+ invocerList[i].addressee +"<br>"+
+                                    "<b>"+"ç”µè¯:"+"</b>"+ invocerList[i].addresseeTel +"<br>"+
+                                    "<b>"+"é‚®ç®±:"+"</b>"+ invocerList[i].email + "<br>"+
+                                    "<a href='javascript:;' id='mail'>"+"æ›´æ¢é‚®å¯„åœ°å€"+"</a>";
                             }
                         }
                     }
@@ -93,7 +98,7 @@ var invocreTable = function () {
                 {
                     "targets":[5],
                     "render": function (data, type, row ,meta) {
-                        //·¢Æ±½ğ¶î
+                        //å‘ç¥¨é‡‘é¢
                         for(var i in invocerList) {
                             if (data == invocerList[i].invid) {
                                 return formatCurrency(invocerList[i].invoice_amount);
@@ -104,7 +109,7 @@ var invocreTable = function () {
                 {
                     "targets":[6],
                     "render": function (data, type, row ,meta) {
-                        //¸üĞÂÊ±¼ä
+                        //æ›´æ–°æ—¶é—´
                         for(var i in invocerList) {
                             if (data == invocerList[i].invid) {
                                 return dateTimeFormat(invocerList[i].updatetime);
@@ -114,7 +119,7 @@ var invocreTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1)',nRow).attr('style','text-align:center');
+                $('td:eq(0),td:eq(1),td:eq(5)',nRow).attr('style','text-align:center');
                 $('td:eq(2),td:eq(3)', nRow).attr('style', 'text-align: left;');
                 $('td:eq(4)',nRow).attr('style','text-align:right');
             }
@@ -135,7 +140,7 @@ var invocreTable = function () {
         });
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
-            //ÅĞ¶ÏÊÇ·ñÈ«Ñ¡
+            //åˆ¤æ–­æ˜¯å¦å…¨é€‰
             var checklength = $("#inv_table").find(".checkboxes:checked").length;
             if(checklength == invocerList.length){
                 $("#inv_table").find(".group-checkable").prop("checked",true);
@@ -164,10 +169,14 @@ var invEdit = function(){
             focusInvalid: false, // do not focus the last invalid input
             ignore: "",
             rules: {
-                address_phone:{
+                invoicerise_address:{
+                    required: true,
+                    address:true
+                },
+                invoicerise_tel:{
                     required: true
                 },
-                bank_name:{
+                bank_id:{
                     required: true
                 },
                 bank:{
@@ -177,14 +186,17 @@ var invEdit = function(){
             },
 
             messages: {
-                address_phone:{
-                    required: "ÇëÊäÈëµØÖ·µç»°"
+                invoicerise_address:{
+                    required: "è¯·è¾“å…¥åœ°å€"
+                },
+                invoicerise_tel:{
+                    required: "è¯·è¾“å…¥ç”µè¯"
                 },
                 bank_name:{
-                    required: "ÇëÊäÈë¿ª»§ĞĞ"
+                    required: "è¯·è¾“å…¥å¼€æˆ·è¡Œ"
                 },
                 bank:{
-                    required: "ÇëÊäÈëÒøĞĞ¿¨ºÅ"
+                    required: "è¯·è¾“å…¥é“¶è¡Œå¡å·"
                 }
             },
 
@@ -216,29 +228,111 @@ var invEdit = function(){
                 form.submit();
             }
         });
-        // ÊÖ»úºÅÂëÑéÖ¤
+        var address_validator = $('.address-form').validate({
+            errorElement: 'span', //default input error message container
+            errorClass: 'help-block', // default input error message class
+            focusInvalid: false, // do not focus the last invalid input
+            ignore: "",
+            rules: {
+                addrid:{
+                    required: true
+                },
+                addressee:{
+                    required: true
+                },
+                addresseeTel:{
+                    required: true,
+                    payphone:true
+                },
+                email:{
+                    required: true,
+                    email:true
+                }
+            },
+
+            messages: {
+                addrid:{
+                    required: "é‚®å¯„åœ°å€å¿…é¡»é€‰æ‹©"
+                },
+                addressee:{
+                    required: "æ”¶ä»¶äººå¿…é¡»è¾“å…¥"
+                },
+                addresseeTel:{
+                    required: "ç”µè¯å¿…é¡»è¾“å…¥"
+                },
+                email:{
+                    required: "é‚®ç®±å¿…é¡»è¾“å…¥"
+                }
+            },
+
+            invalidHandler: function(event, validator) { //display error alert on form submit
+
+            },
+
+            highlight: function(element) { // hightlight error inputs
+                $(element)
+                    .closest('.form-group').addClass('has-error'); // set error class to the control group
+            },
+
+            success: function(label) {
+                label.closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+
+            errorPlacement: function(error, element) {
+                if (element.attr("name") == "tnc") { // insert checkbox errors after the container
+                    error.insertAfter($('#register_tnc_error'));
+                } else if (element.closest('.input-icon').size() === 1) {
+                    error.insertAfter(element.closest('.input-icon'));
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
+
+        // æ‰‹æœºå·ç éªŒè¯
+        jQuery.validator.addMethod("payphone", function(value, element) {
+            var tel = /^1[3456789]\d{9}$/;
+            return this.optional(element) || (tel.test(value));
+        }, "è¯·æ­£ç¡®å¡«å†™ç”µè¯");
+
+        // é‚®ç®±éªŒè¯
         jQuery.validator.addMethod("email", function(value, element) {
             var tel = /^\w+@[a-z0-9]+\.[a-z]+$/i;
             return this.optional(element) || (tel.test(value));
-        }, "ÇëÕıÈ·ÌîĞ´ÄúµÄÓÊÏä");
+        }, "è¯·æ­£ç¡®å¡«å†™é‚®ç®±");
 
         jQuery.validator.addMethod("bank", function(value, element) {
             var reg = /^([1-9]{1})(\d{14}|\d{18})$/;
             return this.optional(element) || (reg.test(value));
-        }, "ÇëÕıÈ·ÌîĞ´ÄúµÄÒøĞĞ¿¨ºÅ");
+        }, "è¯·æ­£ç¡®å¡«å†™æ‚¨çš„é“¶è¡Œå¡å·");
 
-        //Ñ¡ÔñÓÊ¼ÄµØÖ·£¬ÏÔÊ¾ÊÕ¼şÈË¡¢µç»°¡¢ÓÊÏä
+        jQuery.validator.addMethod("address", function(value, element) {
+            var rate = /^[\u4e00-\u9fa5a-zA-Z0-9]+$/;
+            return this.optional(element) || (rate.test(value));
+        }, "ä¸èƒ½å«æœ‰ç‰¹æ®Šå­—ç¬¦");
+
+        //é€‰æ‹©é‚®å¯„åœ°å€ï¼Œæ˜¾ç¤ºæ”¶ä»¶äººã€ç”µè¯ã€é‚®ç®±
         $("#addrid").change(function(){
             var id = $(this).val();
-            for(var i in addressidList){
-                if(id == addressidList[i].aid){
-                    $("input[name=addressee]").val(addressidList[i].addressee);
-                    $("input[name=addresseeTel]").val(addressidList[i].addresseeTel);
-                    $("input[name=email]").val(addressidList[i].email);
+            if(id != ""){
+                for(var i in addressidList){
+                    if(id == addressidList[i].aid){
+                        $("input[name=addressee]").val(addressidList[i].addressee);
+                        $("input[name=addresseeTel]").val(addressidList[i].addresseeTel);
+                        $("input[name=email]").val(addressidList[i].email);
+                    }
                 }
+            }else{
+                $("input[name=addressee],input[name=addresseeTel],input[name=email]").val("");
             }
+
         });
-        //Ñ¡Ôñ·¢»õÈË»ò·¢»õÈËÏÔÊ¾
+        //é€‰æ‹©å‘è´§äººæˆ–å‘è´§äººæ˜¾ç¤º
         $("#addrid").change(function(){
             var id = $(this).val();
             for(var i in addressidList){
@@ -248,28 +342,24 @@ var invEdit = function(){
             }
         });
 
-        //µã»÷È·¶¨°´Å¥
+        //ç‚¹å‡»ä¿®æ”¹æŠ¬å¤´ä¿¡æ¯ç¡®å®šæŒ‰é’®
         $('#register-update').click(function() {
             btnDisable($('#register-update'));
             if ($('.register-form').validate().form()) {
                 var inv = $('.register-form').getFormData();
-                var data;
-                for(var i = 0; i < invocerList.length; i++) {
-                    if(inv.invid == invocerList[i].invid){
-                        data = invocerList[i];
-                    }
-                }
+                inv.address_phone = inv.invoicerise_address+"/"+inv.invoicerise_tel;
                 $("#loading_edit").modal("show");
                 invoReplaceEdit(inv);
             }
         });
-        //ĞŞ¸ÄÌ§Í·ĞÅÏ¢
+
+        //ä¿®æ”¹æŠ¬å¤´ä¿¡æ¯
         $('#inv_table').on('click', '#invoice', function (e) {
             e.preventDefault();
-            //Çå³ıĞ£Ñé´íÎóĞÅÏ¢
+            //æ¸…é™¤æ ¡éªŒé”™è¯¯ä¿¡æ¯
             validator.resetForm();
             $(".register-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("±à¼­·¢Æ±Ì§Í·");
+            $(".modal-title").text("ç¼–è¾‘å‘ç¥¨æŠ¬å¤´");
             var exclude = [];
             var row = $(this).parents('tr')[0];
             var invid = $("#inv_table").dataTable().fnGetData(row).invid;
@@ -281,38 +371,33 @@ var invEdit = function(){
             }
             var options = { jsonValue: inv, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
+            //åœ°å€ã€ç”µè¯
+            if(inv.address_phone != ""){
+                var addresseeTel = (inv.address_phone.replace("/",",")).split(",");
+                $("input[name=invoicerise_address]").val(addresseeTel[0]);
+                $("input[name=invoicerise_tel]").val(addresseeTel[1]);
+            }
             $("input[name=edittype]").val(INVREPLACE);
             $('#edit_update').modal('show');
         });
-        //µã»÷È·¶¨°´Å¥
+
+        //ç‚¹å‡»æ›´æ¢é‚®å¯„åœ°å€ç¡®å®šæŒ‰é’®
         $('#register-replace').click(function() {
             btnDisable($('#register-replace'));
-            if ($('.register-form').validate().form()) {
-                var inv = $('.register-form').getFormData();
-                inv.addrid = $("input[name=addrid]").val();
-                inv.address = $("#address").find("option:selected").text();
-                var data;
-                for(var i = 0; i < invocerList.length; i++) {
-                    if(inv.invid == invocerList[i].invid){
-                        data = invocerList[i];
-                    }
-                }
-                for (var j = 0; j < invocerList.length; j++) {
-                    if (inv.address == invocerList[j].addrid){
-                        inv.addrid = invocerList[j].addrid;
-                    }
-                }
+            if ($('.address-form').validate().form()) {
+                var inv = $('.address-form').getFormData();
                 $("#loading_edit").modal("show");
                 invoReplaceEdit(inv);
             }
         });
-        //¸ü»»ÓÊ¼ÄµØÖ·
+
+        //æ›´æ¢é‚®å¯„åœ°å€
         $('#inv_table').on('click', '#mail', function (e) {
             e.preventDefault();
-            //Çå³ıĞ£Ñé´íÎóĞÅÏ¢
-            validator.resetForm();
-            $(".register-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("Ñ¡ÔñµØÖ·");
+            //æ¸…é™¤æ ¡éªŒé”™è¯¯ä¿¡æ¯
+            address_validator.resetForm();
+            $(".address-form").find(".has-error").removeClass("has-error");
+            $(".modal-title").text("é€‰æ‹©åœ°å€");
             var exclude = [];
             var row = $(this).parents('tr')[0];
             var invid = $("#inv_table").dataTable().fnGetData(row).invid;
@@ -323,7 +408,7 @@ var invEdit = function(){
                 }
             }
             var options = { jsonValue: invo, exclude:exclude,isDebug: false};
-            $(".register-form").initForm(options);
+            $(".address-form").initForm(options);
             $("input[name=edittype]").val(INVREPLACE);
             $('#edit_replace').modal('show');
         });
@@ -337,7 +422,7 @@ var invEdit = function(){
 
 
 
-//»ñ·µ»Ø½á¹û
+//è·è¿”å›ç»“æœ
 function getinvoDataEnd(flg, result, callback){
     App.unblockUI('#lay-out');
     if(flg){
@@ -348,36 +433,37 @@ function getinvoDataEnd(flg, result, callback){
         }else{
 
             tableDataSet(0, 0, 0, [], callback);
-            alertDialog("·¢Æ±Ì§Í·»ñÈ¡Ê§°Ü£¡");
+            alertDialog("å‘ç¥¨æŠ¬å¤´è·å–å¤±è´¥ï¼");
         }
     }else{
         tableDataSet(0, 0, 0, [], callback);
-        alertDialog("·¢Æ±Ì§Í·»ñÈ¡Ê§°Ü£¡");
+        alertDialog("å‘ç¥¨æŠ¬å¤´è·å–å¤±è´¥ï¼");
     }
 }
 
-//²éÑ¯
+//æŸ¥è¯¢
 $("#inv_inquiry").on('click',function(){
     invocreTable.init();
-})
+});
 
 function invoEditEnd(flg, result, type){
-    var res = "Ê§°Ü";
+    $("#loading_edit").modal("hide");
+    var res = "å¤±è´¥";
     var text = "";
     var alert = "";
     switch (type){
         case INVUPDATE:
-            text = "ĞŞ¸Ä";
+            text = "ä¿®æ”¹";
             break;
         case INVREPLACE:
-            text = "¸ü¸Ä";
+            text = "æ›´æ”¹";
             break;
     }
     if(flg){
         if(result && result.retcode != SUCCESS){
             alert = result.retmsg;
         }if (result && result.retcode == SUCCESS) {
-            res = "³É¹¦";
+            res = "æˆåŠŸ";
             invocreTable.init();
             $('#edit_update').modal('hide');
             $('#edit_replace').modal('hide');
@@ -385,23 +471,23 @@ function invoEditEnd(flg, result, type){
     }
     if(alert == ""){
         if(type == INVUPDATE){
-            alert = "ĞŞ¸Ä" + text + res + "£¡";
+            alert = "ä¿®æ”¹" + text + res + "ï¼";
         }else{
-            alert = text + "ĞŞ¸Ä" + res + "£¡";
+            alert = text + "ä¿®æ”¹" + res + "ï¼";
         }
     }
     App.unblockUI('#lay-out');
     alertDialog(alert);
 }
 
-//É¾³ı
+//åˆ é™¤
 var invoDelete = function() {
     $('#op_del').click(function() {
         var len = $(".checkboxes:checked").length;
         if(len < 1){
-            alertDialog("ÖÁÉÙÑ¡ÖĞÒ»Ïî£¡");
+            alertDialog("è‡³å°‘é€‰ä¸­ä¸€é¡¹ï¼");
         }else{
-            confirmDialog("Êı¾İÉ¾³ıºó½«²»¿É»Ö¸´£¬ÄúÈ·¶¨ÒªÉ¾³ıÂğ£¿", invoDelete.deleteivo)
+            confirmDialog("æ•°æ®åˆ é™¤åå°†ä¸å¯æ¢å¤ï¼Œæ‚¨ç¡®å®šè¦åˆ é™¤å—ï¼Ÿ", invoDelete.deleteivo)
         }
     });
     return{
@@ -417,7 +503,7 @@ var invoDelete = function() {
 }();
 
 
-//·µ»ØÓÊ¼ÄµØÖ·½á¹û
+//è¿”å›é‚®å¯„åœ°å€ç»“æœ
 function getaddressDataEnd(flg, result, callback){
     App.unblockUI('#lay-out');
     if(flg){
@@ -427,10 +513,51 @@ function getaddressDataEnd(flg, result, callback){
             for(var i = 0; i < addressidList.length; i++){
                 $("#addrid").append("<option value='"+addressidList[i].aid+"'>" + addressidList[i].ress+"</option>");
             }
+            //è·å–é“¶è¡Œ
+            bankNameDataGet();
         }else{
-            alertDialog("ÓÊ¼ÄµØÖ·»ñÈ¡Ê§°Ü£¡");
+            //è·å–é“¶è¡Œ
+            bankNameDataGet();
+            alertDialog("é‚®å¯„åœ°å€è·å–å¤±è´¥ï¼");
         }
     }else{
-        alertDialog("ÓÊ¼ÄµØÖ·»ñÈ¡Ê§°Ü£¡");
+        //è·å–é“¶è¡Œ
+        bankNameDataGet();
+        alertDialog("é‚®å¯„åœ°å€è·å–å¤±è´¥ï¼");
     }
+}
+
+//è¿”å›å¼€æˆ·è¡Œç»“æœ
+function getbankNameDataEnd(flg, result){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+            var res = result.response;
+            bankList = res.banklist;
+            for(var i = 0; i < bankList.length; i++){
+                $("#bank_name").append("<option value='"+bankList[i].bankid+"'>" + bankList[i].bankname +"</option>");
+            }
+            //è·å–å¼€ç¥¨ä¿¡æ¯
+            invocreTable.init();
+        }else{
+            //è·å–å¼€ç¥¨ä¿¡æ¯
+            invocreTable.init();
+            alertDialog("å¼€æˆ·è¡Œä¿¡æ¯è·å–å¤±è´¥ï¼");
+        }
+    }else{
+        //è·å–å¼€ç¥¨ä¿¡æ¯
+        invocreTable.init();
+        alertDialog("å¼€æˆ·è¡Œä¿¡æ¯è·å–å¤±è´¥ï¼");
+    }
+}
+
+//æ˜¾ç¤ºå¼€æˆ·è¡Œ
+function bankDisplay(data){
+    var value = "";
+    for(var i in bankList){
+        if(data == bankList[i].bankid){
+            value = bankList[i].bankname;
+        }
+    }
+    return value;
 }

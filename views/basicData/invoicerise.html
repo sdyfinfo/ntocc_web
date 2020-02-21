@@ -81,41 +81,42 @@
                                         </div>
                                         <div class="btn-group">
                                             <button id="op_del" class="btn btn-danger"> 删除
-                                                <i class="fa -fa-remove"></i>
+                                                <i class="fa fa-remove"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
 
                             </div>
+                            <!-- 项目表表格 -->
+                            <table class="table table-striped table-bordered table-hover table-checkable order-column" id="inv_table">
+                                <thead>
+                                <tr>
+                                    <th style="width: 30px">序号</th>
+                                    <th style="width: 30px">
+                                        <input type="checkbox" class="group-checkable" data-set="#inv_table .checkboxes" />
+                                    </th>
+                                    <th> id </th>
+                                    <th> 抬头名称 </th>
+                                    <th> 发票邮寄信息 </th>
+                                    <th> 发票金额 </th>
+                                    <th> 更新时间 </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="odd gradeX">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <!-- 项目表表格 -->
-                        <table class="table table-striped table-bordered table-hover table-checkable order-column" id="inv_table">
-                            <thead>
-                            <tr>
-                                <th style="width: 30px">序号</th>
-                                <th style="width: 30px">
-                                    <input type="checkbox" class="group-checkable" data-set="#inv_table .checkboxes" />
-                                </th>
-                                <th> id </th>
-                                <th> 抬头名称 </th>
-                                <th> 发票邮寄信息 </th>
-                                <th> 发票金额 </th>
-                                <th> 更新时间 </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr class="odd gradeX">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>抬头名称：<br> 识别号：<br> 地址/电话：<br> 行及账号：<br> 修改抬头信息：</td>
-                                <td>邮寄地址：<br> 收件人：<br> 电话：<br> 邮箱：<br> 更换邮寄地址：</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            </tbody>
-                        </table>
+
                         <!-- 处理中遮罩 -->
                         <div class="modal fade" id="loading" role="basic" aria-hidden="true" data-backdrop="static">
                             <div class="modal-dialog">
@@ -165,8 +166,12 @@
                             <div class="row ">
                                 <div class="form-group col-md-12">
                                     <label class="col-md-2 control-label">地址/电话<span class="required"> * </span></label>
-                                    <div class="col-md-10">
-                                        <input type="text" class="form-control" placeholder="地址/电话" name="address_phone" />
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control" placeholder="地址" name="invoicerise_address">
+                                    </div>
+                                    <div style="float:left;font-size: 25px;margin-left: -5px">/</div>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" placeholder="电话" name="invoicerise_tel">
                                     </div>
                                 </div>
                             </div>
@@ -174,7 +179,9 @@
                                 <div class="form-group col-md-12">
                                     <label class="col-md-2 control-label">开户银行<span class="required"> * </span></label>
                                     <div class="col-md-10">
-                                        <input type="text" class="form-control" placeholder="开户银行" name="bank_name" />
+                                        <select type="text" class="form-control" placeholder="开户银行" name="bank_id" id="bank_name">
+                                            <option value="">请选择</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -205,12 +212,11 @@
                     <h4 class="modal-title">选择地址</h4>
                 </div>
                 <div class="modal-body">
-                    <form class="register-form form-horizontal" role="form">
+                    <form class="address-form form-horizontal" role="form">
                         <div class="form-body">
                             <!-- 操作类型隐藏（用来区分新增还是编辑） -->
                             <input type="hidden" name="edittype">
                             <input type="hidden" name="invid">
-                            <input type="hidden" name="addrid">
                             <div class="row ">
                                 <div class="form-group col-md-12">
                                     <label class="col-md-2 control-label">邮寄地址<span class="required"> * </span></label>
@@ -233,7 +239,7 @@
                                 <div class="form-group col-md-12">
                                     <label class="col-md-2 control-label">电话<span class="required"> * </span></label>
                                     <div class="col-md-10">
-                                        <input type="text" class="form-control" placeholder="电话" name="addresseeTel" />
+                                        <input type="text" class="form-control" placeholder="电话" name="addresseeTel" maxlength="11"/>
                                     </div>
                                 </div>
                             </div>

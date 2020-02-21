@@ -26,6 +26,11 @@
         var loginSucc = '{{ loginsucc }}';
         loginSucc = JSON.parse(loginSucc.replace(/&quot;/g, "\""));
     </script>
+    <style>
+        .tab_error{
+            border: 1px solid #e02222!important;
+        }
+    </style>
 
 </head>
 
@@ -192,23 +197,19 @@
                                         <div class="form-group col-md-12">
                                             <label class="col-md-3 control-label">统一社会信用代码<span class="required"> * </span></label>
                                             <div class="col-md-8">
-                                                <input type="text" class="form-control" placeholder="统一社会信用代码" name="socialcode">
+                                                <input type="text" class="form-control" placeholder="统一社会信用代码" name="taxpayer">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-md-12">
-                                            <label class="col-md-3 control-label">地址</label>
-                                            <div class="col-md-8">
-                                                <input type="text" class="form-control" placeholder="地址" name="address">
+                                            <label class="col-md-3 control-label">地址/电话</label>
+                                            <div class="col-md-4">
+                                                <input type="text" class="form-control" placeholder="地址" name="invoicerise_address">
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-md-12">
-                                            <label class="col-md-3 control-label">电话</label>
-                                            <div class="col-md-8">
-                                                <input type="text" class="form-control" placeholder="电话" name="phone">
+                                            <div style="float:left;font-size: 25px;margin-left: -5px">/</div>
+                                            <div class="col-md-4">
+                                                <input type="text" class="form-control" placeholder="电话" name="invoicerise_tel">
                                             </div>
                                         </div>
                                     </div>
@@ -216,7 +217,9 @@
                                         <div class="form-group col-md-12">
                                             <label class="col-md-3 control-label">开户银行</label>
                                             <div class="col-md-8">
-                                                <input type="text" class="form-control" placeholder="开户银行" name="bank">
+                                                <select class="form-control" name="bank_id" id="bank_name">
+                                                    <option value="">请选择</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -224,8 +227,17 @@
                                         <div class="form-group col-md-12">
                                             <label class="col-md-3 control-label">银行账号</label>
                                             <div class="col-md-8">
-                                                <input type="text" class="form-control" placeholder="银行账号" name="account">
+                                                <input type="text" class="form-control" placeholder="银行账号" name="bank">
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="rate">
+                                        <div class="form-group col-md-12">
+                                            <label class="col-md-3 control-label">服务费率<span class="required"> * </span></label>
+                                            <div class="col-md-3">
+                                                <input type="text" class="form-control" placeholder="服务费率" name="rate">
+                                            </div>
+                                            <div style="float:left;font-size: 20px;margin-left: -5px;padding-top: 5px">%</div>
                                         </div>
                                     </div>
                                 </div>

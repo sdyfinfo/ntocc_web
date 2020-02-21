@@ -29,6 +29,7 @@
     </script>
     <style>
         .goods_check{height: 20px;float: left;border: 1px solid #e5e6e7;line-height: 20px;margin-top: 5px;margin-left: 5px}
+        .bill-form .form-group{margin-bottom:5px!important;}
     </style>
 </head>
 <body class="gray-bg">
@@ -209,7 +210,7 @@
         </div>
     </div>
     <!-- 查看运单信息  -->
-    <div id="bill_detail" class="modal fade" tabindex="-1" data-width="400" aria-hidden="true" data-backdrop="static">
+    <div id="detail_bill" class="modal fade" tabindex="-1" data-width="400" aria-hidden="true" data-backdrop="static">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -230,7 +231,7 @@
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label">所属路线</label>
                                     <div class="col-md-8">
-                                        <input type="text" class="form-control"  name="line_name" autocomplete="off">
+                                        <input type="text" class="form-control"  name="linename" autocomplete="off">
                                     </div>
                                 </div>
                             </div>
@@ -336,8 +337,8 @@
                             <div class="row">
                                 <div class="form-group col-md-12">
                                     <label class="col-md-2 control-label">货物名称<span class="required"> * </span></label>
-                                    <div class="col-md-10">
-                                        <div class="form-control" id="goodsname"></div>
+                                    <div class="col-md-9">
+                                        <div class="form-control" id="goodsname" style="padding: 0px 5px"></div>
                                     </div>
                                 </div>
                             </div>
@@ -407,12 +408,15 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title">一键支付</h4>
+                    <h4 class="modal-title">支付运费</h4>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="length"/>
+                    <div style="height: 30px;line-height: 30px" id="payment_len"></div>
                     <form class="bill-form form-horizontal" role="form">
                         <div class="form-body">
+                           <input type="hidden" id="len"/>
+                           <input type="hidden" name="verification_status"/>
+                           <input type="hidden" name="state"/>
                            <h4 style="height: 30px;line-height: 30px">司机运费</h4>
                            <div class="row">
                                <div class="form-group col-md-12">
@@ -426,7 +430,7 @@
                                <div class="form-group col-md-12">
                                    <label class="col-md-2 control-label">已支付金额</label>
                                    <div class="col-md-8">
-                                       <input type="text" class="form-control"  name="paiedfre" autocomplete="off">
+                                       <input type="text" class="form-control"  name="payment" autocomplete="off" readonly>
                                    </div>
                                </div>
                            </div>
@@ -438,12 +442,12 @@
                                    </div>
                                </div>
                            </div>
-                           <h4 style="height: 30px;line-height: 30px">服务费</h4>
+                           <h4 style="height: 30px;line-height: 30px">服务费<span style="color: #e02222">(支付运费时将扣除对应的服务费)</span></h4>
                            <div class="row" >
                                <div class="form-group col-md-12">
                                    <label class="col-md-2 control-label">平台服务费</label>
                                    <div class="col-md-8">
-                                       <input class="form-control" type="text"  name="sevice"/>
+                                       <input class="form-control" type="text"  name="serviceFee" readonly/>
                                    </div>
                                </div>
                            </div>
@@ -451,7 +455,7 @@
                                <div class="form-group col-md-12">
                                    <label class="col-md-2 control-label"><b>合计支付</b></label>
                                    <div class="col-md-8">
-                                       <input class="form-control" type="text"  name="consignee"/>
+                                       <input class="form-control" type="text"  name="fare" readonly/>
                                    </div>
                                </div>
                            </div>
@@ -465,6 +469,21 @@
                            </div>
                        </div>
                     </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-danger btn-outline">取消</button>
+                    <button type="submit" id="payment-btn" class="btn btn-success">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 处理遮罩 -->
+    <div class="modal fade" id="loading_edit" role="basic" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="/public/img/loading-spinner-grey.gif" alt="" class="loading">
+                    <span> &nbsp;&nbsp;正在处理中... </span>
                 </div>
             </div>
         </div>

@@ -504,7 +504,7 @@ function getOrganDataEnd(flg, result, callback){
     if(flg){
         if (result && result.retcode == SUCCESS) {
 
-            var organList = result.response.organlist;
+            var organList = result.response.list;
             organNameSelectBuild(organList, $("#organtreequery, #organtree"));
         }
     }

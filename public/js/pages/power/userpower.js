@@ -327,7 +327,7 @@ function getOrganDataEnd(flg, result, callback){
     App.unblockUI('#lay-out');
     if(flg){
         if (result && result.retcode == SUCCESS) {
-            var organList = result.response.organlist;
+            var organList = result.response.list;
             var data = [];
             organListTreeDataMake(organList, data);
             $("#organtreequery").jstree({

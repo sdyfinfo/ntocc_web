@@ -5,7 +5,8 @@ var organList = [];
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
         fun_power();
-        OrganTable.init();
+        //获取银行
+        bankNameDataGet();
         //新增和编辑
         OrganEdit.init();
     });
@@ -145,7 +146,7 @@ var OrganEdit = function() {
                     required: true
                 },
                 organ: {
-                    organ: true
+                    //organ: true
                 },
                 sort: {
                     required: true
@@ -171,9 +172,11 @@ var OrganEdit = function() {
             highlight: function(element) { // hightlight error inputs
                 $(element)
                     .closest('.form-group').addClass('has-error'); // set error class to the control group
+                $("#href1").addClass('tab_error');
             },
 
             success: function(label) {
+                $("#href1").removeClass('tab_error');
                 label.closest('.form-group').removeClass('has-error');
                 label.remove();
             },
@@ -190,6 +193,65 @@ var OrganEdit = function() {
                 form.submit();
             }
         });
+        var invoicerise_validator = $('.invoicerise-form').validate({
+            errorElement: 'span', //default input error message container
+            errorClass: 'help-block', // default input error message class
+            focusInvalid: false, // do not focus the last invalid input
+            ignore: "",
+            rules: {
+                taxpayer: {
+                    required: true
+                },
+                rate: {
+                    required: true,
+                    rate:true
+                },
+                invoicerise_address:{
+                    address:true
+                },
+                bank:{
+                    bank:true
+                }
+            },
+
+            messages: {
+                taxpayer: {
+                    required: "统一社会信用代码必须输入"
+                },
+                rate: {
+                    required: "服务费率必须输入"
+                }
+            },
+
+            invalidHandler: function(event, validator) { //display error alert on form submit
+
+            },
+
+            highlight: function(element) { // hightlight error inputs
+                $(element)
+                    .closest('.form-group').addClass('has-error'); // set error class to the control group
+                $("#href2").addClass('tab_error');
+            },
+
+            success: function(label) {
+                $("#href2").removeClass('tab_error');
+                label.closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+
+            errorPlacement: function(error, element) {
+                if (element.closest('.input-icon').size() === 1) {
+                    error.insertAfter(element.closest('.input-icon'));
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+
+            submitHandler: function(form) {
+                form.submit();
+            }
+
+        });
 
         //所属机构验证，选择所属机构的时候，不能选择自身，也不能选择自身的子机构
         jQuery.validator.addMethod("organ", function(value, element) {
@@ -200,15 +262,37 @@ var OrganEdit = function() {
             return this.optional(element) || !same;
         }, "不能选择自身和自身的子机构作为所属机构");
 
+        //服务费率
+        jQuery.validator.addMethod("rate", function(value, element) {
+            var rate = /^(\d|[1-9]\d|100)(\.\d{1,2})?$/;
+            return this.optional(element) || (rate.test(value));
+        }, "请输入0-100且小数点后最多两位的数字");
+
+        jQuery.validator.addMethod("address", function(value, element) {
+            var rate = /^[\u4e00-\u9fa5a-zA-Z0-9]+$/;
+            return this.optional(element) || (rate.test(value));
+        }, "不能含有特殊字符");
+
+        jQuery.validator.addMethod("bank", function(value, element) {
+            var reg = /^([1-9]{1})(\d{14}|\d{18})$/;
+            return this.optional(element) || (reg.test(value));
+        }, "请正确填写您的银行卡号");
+
         //确定按钮按下
         $('#register-btn').click(function() {
-            if ($('.register-form').validate().form()) {
+            if (($('.register-form').validate().form()) && ($('.invoicerise-form').validate().form())) {
                 var organ = $('.register-form').getFormData();
                 organ.parentorganid = "";
                 var select = $('#organtree').jstree(true).get_selected(true);
                 if( select.length > 0){
                     organ.parentorganid = select[0].id;
                 }
+                var invoicerise = $('.invoicerise-form').getFormData();
+                organ.taxpayer = invoicerise.taxpayer;
+                organ.address_phone = invoicerise.invoicerise_address+"/"+invoicerise.invoicerise_tel;
+                organ.bank_id = invoicerise.bank_id;
+                organ.bank = invoicerise.bank;
+                organ.rate = invoicerise.rate;
                 if($("input[name=edittype]").val() == ORGANADD){
                     $("#loading_edit").modal("show");
                     organAdd(organ);
@@ -221,11 +305,15 @@ var OrganEdit = function() {
         //增加机构
         $('#op_add').click(function() {
             validator.resetForm();
+            invoicerise_validator.resetForm();
             $(".register-form").find(".has-error").removeClass("has-error");
+            $(".invoicerise-form").find(".has-error").removeClass("has-error");
             $(".modal-title").text("新增机构");
-            $(":input",".register-form").not(":button,:reset,:submit,:radio").val("")
+            $(":input",".register-form,.invoicerise-form").not(":button,:reset,:submit,:radio").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
+            $("#href1,#href2").removeClass('tab_error');
+            $("#rate").show();
             //清空机构输入框
             clearSelect($("#organtree"));
             //操作类型
@@ -236,7 +324,10 @@ var OrganEdit = function() {
         $("#organ_table").on('click', '#op_edit', function (e) {
             e.preventDefault();
             validator.resetForm();
+            invoicerise_validator.resetForm();
             $(".register-form").find(".has-error").removeClass("has-error");
+            $(".invoicerise-form").find(".has-error").removeClass("has-error");
+            $("#href1,#href2").removeClass('tab_error');
             $(".modal-title").text("编辑机构");
             var exclude = ["organ"];
             var organid = $(this).attr("organid");
@@ -249,6 +340,15 @@ var OrganEdit = function() {
             }
             var options = { jsonValue: organ, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
+            $(".invoicerise-form").initForm(options);
+            //地址、电话
+            if(organ.address_phone != ""){
+                var addresseeTel = (organ.address_phone.replace("/",",")).split(",");
+                $("input[name=invoicerise_address]").val(addresseeTel[0]);
+                $("input[name=invoicerise_tel]").val(addresseeTel[1]);
+            }else{
+                $("input[name=invoicerise_address],input[name=invoicerise_tel]").val("");
+            }
             //所属机构初始化
             clearSelectCheck($("#organtree"));
             if(organ.parentid != 0){
@@ -256,6 +356,12 @@ var OrganEdit = function() {
             }
             //操作类型
             $("input[name=edittype]").val(ORGANEDIT);
+            //运营方不显示服务率
+            if(organ.types == "0"){
+                $("#rate").hide();
+            }else{
+                $("#rate").show();
+            }
             $('#edit_organ').modal('show');
         })
     };
@@ -295,11 +401,11 @@ function getOrganDataEnd(flg, result, callback){
     if(flg){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
-            organList = res.organlist;
+            organList = res.list;
             //做成新增或者删除机构的树形结构
             organNameSelectBuild(organList, $("#organtree"));
             //给页面上的table赋值
-            bootstrapTreeTableDataSet(res.totalcount, res.organlist, "organlist", "organid", callback);
+            bootstrapTreeTableDataSet(res.totalcount, res.list, "organlist", "organid", callback);
         }else{
             //给页面上的table赋值
             bootstrapTreeTableDataSet(0, [], "organlist", "organid", callback);
@@ -386,5 +492,29 @@ function parentOrSelf(node, checkId){
         }else{
             return false;
         }
+    }
+}
+
+//返回开户行结果
+function getbankNameDataEnd(flg, result){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+            var res = result.response;
+            bankList = res.banklist;
+            for(var i = 0; i < bankList.length; i++){
+                $("#bank_name").append("<option value='"+bankList[i].bankid+"'>" + bankList[i].bankname +"</option>");
+            }
+            //获取开票信息
+            OrganTable.init();
+        }else{
+            //获取开票信息
+            OrganTable.init();
+            alertDialog("开户行信息获取失败！");
+        }
+    }else{
+        //获取开票信息
+        OrganTable.init();
+        alertDialog("开户行信息获取失败！");
     }
 }
