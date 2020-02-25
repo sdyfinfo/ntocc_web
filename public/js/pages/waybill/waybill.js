@@ -1242,8 +1242,10 @@ function getDriverDataEnd(flg, result){
             var res = result.response;
             driverList = res.list;
             for(var i in driverList){
-                var value = driverList[i].name+driverList[i].id_number;
-                $("#driverList").append("<option data-did='"+driverList[i].did+"' value='"+value+"'></option>");
+                if(driverList[i].state == "0"){
+                    var value = driverList[i].name+driverList[i].id_number;
+                    $("#driverList").append("<option data-did='"+driverList[i].did+"' value='"+value+"'></option>");
+                }
             }
             //获取发货人信息
             consignorDataGet();

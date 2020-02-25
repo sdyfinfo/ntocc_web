@@ -14,7 +14,9 @@ if (App.isAngularJsApp() === false) {
         //获取项目信息
         projectDataGet();
         //支付运费
-        paymentEdit();
+        paymentEdit.init();
+        //获取用户余额
+        getUserBalance();
     });
 }
 
@@ -91,7 +93,7 @@ var BillPaymentTable = function () {
                 { "data": "serviceFee"},
                 { "data": "freight"},
                 { "data": "payment_status"},
-                { "data": "payment"},
+                { "data": "paid"},
                 { "data": "updatetime"}
             ],
             columnDefs: [
@@ -164,6 +166,8 @@ var BillPaymentTable = function () {
                         //已支付运费查看
                         if(data != "0"){
                             return '<a href="javascript:;" id="payment_detail">'+data+'</a>'
+                        }else{
+                            return data;
                         }
                     }
                 },{
@@ -177,8 +181,8 @@ var BillPaymentTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(6),td:eq(7),td:eq(8),td:eq(14)', nRow).attr('style', 'text-align: center;');
-                $('td:eq(9),td:eq(10),td:eq(11)', nRow).attr('style', 'text-align: right;');
+                $('td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(8),td:eq(14)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(9),td:eq(10),td:eq(11),td:eq(13)', nRow).attr('style', 'text-align: right;');
             }
         });
         //table.draw( false );
@@ -349,16 +353,20 @@ $("#payment_table").on('click',"#payment_detail",function(){
 //支付运单
 var paymentEdit = function() {
     var handleRegister = function() {
-        var validator = $('.bill-form').validate({
+        var validator = $('.payment-form').validate({
             errorElement: 'span', //default input error message container
             errorClass: 'help-block', // default input error message class
             focusInvalid: false, // do not focus the last invalid input
             ignore: "",
             rules: {
                 amount: {
-                    required: true
+                    required: true,
+                    amount:true
                 },
                 ushield: {
+                    required: true
+                },
+                fare:{
                     required: true
                 }
             },
@@ -369,6 +377,9 @@ var paymentEdit = function() {
                 },
                 ushield: {
                     required: "U盾口令必须输入"
+                },
+                fare:{
+                    required: "合计支付不能为空"
                 }
             },
 
@@ -407,27 +418,89 @@ var paymentEdit = function() {
             return this.optional(element) || (tel.test(value));
         }, "请正确填写您的手机号码");
 
+        //已支付金额+支付金额合计不可大于司机运费,且不能输入0
+        jQuery.validator.addMethod("amount", function(value, element) {
+            var result = true;
+            var payment = $("input[name=payment]").val();
+            var freight = $('.payment-form').find("input[name=freight]").val();
+            if((Number(value)+Number(payment))>Number(freight)){
+                result = false;
+            }
+            if(Number(value)==0){
+                result = false;
+            }
+            return this.optional(element) || result;
+        }, "已支付金额和支付金额合计不可大于司机运费且支付金额不能为0");
+
+        //支付金额联动合计支付
+        $("input[name=amount]").on("input propertychange",function(){
+            $(this).val($(this).val().replace(/[^\d.]/g, ""));  //清除“数字”和“.”以外的字符
+            $(this).val($(this).val().replace(/\.{2,}/g, ".")); //只保留第一个. 清除多余的
+            $(this).val($(this).val().replace(".", "$#$").replace(/\./g, "").replace("$#$", "."));
+            $(this).val($(this).val().replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'));//只能输入两个小数
+            if ($(this).val().indexOf(".") < 0 && $(this).val() != "") {//以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额
+                $(this).val(parseFloat($(this).val()));
+            }
+            if($(this).val() != ""){
+                var number = $(this).val();
+                //计算平台服务费
+                var rate = $("input[name=rate]").val();
+                var serviceFee = subStringNum(((number/(1-(rate/100)))*(rate/100)),2);
+                $("input[name=serviceFee]").val(serviceFee);
+                var total = subStringNum((Number(number)+Number(serviceFee)),2);
+                $("input[name=total]").val(total);
+            }else{
+                $("input[name=total],input[name=serviceFee]").val("");
+            }
+        });
+
         //点击确定按钮
         $('#payment-btn').click(function() {
             btnDisable($('#payment-btn'));
             if ($('.payment-form').validate().form()) {
-                var payment = $('.payment-form').getFormData();
-
+                var paymentData = $('.payment-form').getFormData();
+                var len = $("#len").val();
+                if(len == 1){  //选择一条数据，如果运单未通过审核或状态不是完成时不可以全部支付
+                    if((Number(paymentData.amount)+Number(paymentData.payment)) == Number(paymentData.freight)){   //全部支付
+                        if(paymentData.verification_status == '02'){
+                            alertDialog("运单未通过审核，不能全部支付！");
+                            return;
+                        }
+                        if(paymentData.status != '03'){
+                            alertDialog("运单状态不是完成状态，不能全部支付！");
+                            return;
+                        }
+                    }
+                }
+                paymentData.widlist = paymentData.widlist.split(',');
+                paymentData.paid = paymentData.paidlist.split(',');
+                paymentData.userid = loginSucc.userid;
+                delete paymentData.paidlist;
+                $("#loading_edit").modal("show");
+                billPayment(paymentData);
             }
         });
         //一键支付
         $("#bill_payment").click(function(){
             validator.resetForm();
-            $(".edit-form").find(".has-error").removeClass("has-error");
+            $(".payment-form").find(".has-error").removeClass("has-error");
             var len = $(".checkboxes:checked").length;
             if(len < 1){
                 alertDialog("至少选中一项！");
                 return;
             }
             var result = true;
-            var freight = 0; //司机运费
-            var payment = 0;//已支付运费
-            var serviceFee = 0;//平台服务费
+            var data = {
+                freight: 0, //司机运费
+                paid: 0,//已支付运费
+                serviceFee: 0,//平台服务费
+                state: "",  //运单状态
+                verification_status:"",  //审核状态
+                widlist:[],
+                amount:0,       //支付金额，
+                total:0,          //合计支付
+                paidlist:[]     //已支付金额集合
+            }
             $(".checkboxes:checked").parents("td").each(function () {
                 var row = $(this).parents('tr')[0];
                 //已支付的运单不可一键支付
@@ -438,33 +511,38 @@ var paymentEdit = function() {
                     return false;
                 }else{
                     var driver = $("#payment_table").dataTable().fnGetData(row).freight;
-                    var paied = $("#payment_table").dataTable().fnGetData(row).paiedfre;
-                    var service = $("#payment_table").dataTable().fnGetData(row).serviceFee;
+                    var paied = $("#payment_table").dataTable().fnGetData(row).paid;
+                    data.widlist.push($("#payment_table").dataTable().fnGetData(row).wid);
+                    data.rate = $("#payment_table").dataTable().fnGetData(row).rate;
+                    data.verification_status = $("#payment_table").dataTable().fnGetData(row).verification_status;
+                    data.state = $("#payment_table").dataTable().fnGetData(row).state;
+                    data.paidlist.push(paied);
                     //累加司机运费
-                    freight += Number(driver);
+                    data.freight += Number(driver);
                     //累加已支付运费
-                    payment += Number(paied);
-                    //累加平台服务费
-                    serviceFee += Number(service);
+                    data.paid += Number(paied);
                 }
             });
-            var amount = Number(freight)-Number(payment);
-            $("input[name=freight]").val(freight);
-            $("input[name=payment]").val(payment);
             //支付金额=运费-已支付
-            $("input[name=amount]").val(amount);
-            $("input[name=serviceFee]").val(serviceFee);
+            data.amount = Number(data.freight)-Number(data.paid);
+            //平台服务费=支付金额/(1-费率)*费率
+            data.serviceFee = subStringNum(((data.amount)/(1-(data.rate)/100))*((data.rate)/100),2);
             //合计支付=支付金额+服务费
-            var fare = Number(amount)+Number(serviceFee);
-            $("input[name=fare]").val(fare);
+            data.total = subStringNum(Number(data.amount)+Number(data.serviceFee),2);
+            var exclude = [];
+            var options = { jsonValue: data, exclude:exclude,isDebug: false};
+            $(".payment-form").initForm(options);
+
             $("#len").val(len);
             $("#payment_len").html("共选择了"+len+"个运单");
             if(len == 1){  //选择一个运单，显示已支付金额，支付金额可修改
-                $("input[name=payment]").show();
+                $("input[name=paid]").parents('.form-group').show();
                 $("input[name=amount]").removeAttr("readonly");
-            }else{
-
+            }else{   //多个运单，已支付金额不显示，支付金额不可修改
+                $("input[name=paid]").parents('.form-group').hide();
+                $("input[name=amount]").attr("readonly","readonly");
             }
+            $("#payment_edit").modal('show');
         });
     };
     return {
@@ -500,17 +578,58 @@ function getPaymentDetailEnd(flg,result,callback){
             var res = result.response;
             var paymentDetailList = res.list[0];
             tableDataSet(res.draw, res.totalcount, res.totalcount, paymentDetailList, callback);
-            $("#payment_detail").modal('show');
+            $("#edit_detail").modal('show');
         }else{
             tableDataSet(0, 0, 0, [], callback);
-            $("#payment_detail").modal('show');
+            $("#edit_detail").modal('show');
             alertDialog("运单支付明细获取失败！");
         }
     }else{
         tableDataSet(0, 0, 0, [], callback);
-        $("#payment_detail").modal('show');
+        $("#edit_detail").modal('show');
         alertDialog("运单支付明细获取失败！");
     }
+}
+
+//一键支付结果返回
+function billPaymentEnd(flg,result){
+    $("#loading_edit").modal("hide");
+    var res = "失败";
+    var text = "一键支付";
+    var alert = "";
+    if(flg){
+        if(result && result.retcode != SUCCESS){
+            alert = result.retmsg || "";
+        }
+        if (result && result.retcode == SUCCESS) {
+            res = "成功";
+            BillPaymentTable.init();
+            getUserBalance();
+            $('#payment_edit').modal('hide');
+        }
+    }
+    if(alert == "") alert = text + res + "！";
+    App.unblockUI('#lay-out');
+    alertDialog(alert);
+}
+
+//获取账户余额返回结果
+function getUserBalanceEnd(flg,result){
+    var res = "失败";
+    var text = "获取账户余额";
+    var alert = "";
+    if(flg){
+        if(result && result.retcode != SUCCESS){
+            alert = result.retmsg || "";
+        }
+        if (result && result.retcode == SUCCESS) {
+            res = "成功";
+            $("#balance").val(formatCurrency(result.response.balance));
+        }
+    }
+    if(alert == "") alert = text + res + "！";
+    App.unblockUI('#lay-out');
+    alertDialog(alert);
 }
 
 //项目信息获取结果返回

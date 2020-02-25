@@ -2,6 +2,7 @@
  * Created by Administrator on 2019/2/22.
  */
 var organList = [];
+var bankList = [];
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
         fun_power();
@@ -278,27 +279,69 @@ var OrganEdit = function() {
             return this.optional(element) || (reg.test(value));
         }, "请正确填写您的银行卡号");
 
+        //选择所属机构事件
+        $("#organtree").on('changed.jstree',function(e,data){
+            var id = data.instance.get_node(data.selected[0]).id || "";
+            if(id == ""){
+                //没有所属机构为一级机构，显示开票信息
+                $("#href2").parents('li').show();
+            }else{
+                $("#href2").parents('li').hide();
+            }
+        });
+
         //确定按钮按下
         $('#register-btn').click(function() {
-            if (($('.register-form').validate().form()) && ($('.invoicerise-form').validate().form())) {
-                var organ = $('.register-form').getFormData();
-                organ.parentorganid = "";
-                var select = $('#organtree').jstree(true).get_selected(true);
-                if( select.length > 0){
-                    organ.parentorganid = select[0].id;
+            if(($('#organtree').jstree(true).get_selected(true)).length != 0){  //子级
+                if($('.register-form').validate().form()){
+                    var organ = $('.register-form').getFormData();
+                    organ.parentorganid = "";
+                    var select = $('#organtree').jstree(true).get_selected(true);
+                    if( select.length > 0){
+                        organ.parentorganid = select[0].id;
+                    }
+                    organ.taxpayer = "";
+                    organ.address_phone = "";
+                    organ.bank_id = "";
+                    organ.bank = "";
+                    organ.banknumber = "";
+                    organ.bankname = "";
+                    organ.rate = "";
+                    if($("input[name=edittype]").val() == ORGANADD){
+                        $("#loading_edit").modal("show");
+                        organAdd(organ);
+                    }else{
+                        $("#loading_edit").modal("show");
+                        organEdit(organ);
+                    }
                 }
-                var invoicerise = $('.invoicerise-form').getFormData();
-                organ.taxpayer = invoicerise.taxpayer;
-                organ.address_phone = invoicerise.invoicerise_address+"/"+invoicerise.invoicerise_tel;
-                organ.bank_id = invoicerise.bank_id;
-                organ.bank = invoicerise.bank;
-                organ.rate = invoicerise.rate;
-                if($("input[name=edittype]").val() == ORGANADD){
-                    $("#loading_edit").modal("show");
-                    organAdd(organ);
-                }else{
-                    $("#loading_edit").modal("show");
-                    organEdit(organ);
+            }else{
+                if (($('.register-form').validate().form()) && ($('.invoicerise-form').validate().form())) {
+                    var organ = $('.register-form').getFormData();
+                    organ.parentorganid = "";
+                    var select = $('#organtree').jstree(true).get_selected(true);
+                    if( select.length > 0){
+                        organ.parentorganid = select[0].id;
+                    }
+                    var invoicerise = $('.invoicerise-form').getFormData();
+                    organ.taxpayer = invoicerise.taxpayer;
+                    organ.address_phone = invoicerise.invoicerise_address+"/"+invoicerise.invoicerise_tel;
+                    organ.bank_id = invoicerise.bank_id;
+                    organ.bank = invoicerise.bank;
+                    for(var i in bankList){
+                        if(organ.bank_id == bankList[i].bankid){
+                            organ.banknumber = bankList[i].banknumber;
+                            organ.bankname = bankList[i].bankname;
+                        }
+                    }
+                    organ.rate = invoicerise.rate;
+                    if($("input[name=edittype]").val() == ORGANADD){
+                        $("#loading_edit").modal("show");
+                        organAdd(organ);
+                    }else{
+                        $("#loading_edit").modal("show");
+                        organEdit(organ);
+                    }
                 }
             }
         });
@@ -318,6 +361,8 @@ var OrganEdit = function() {
             clearSelect($("#organtree"));
             //操作类型
             $("input[name=edittype]").val(ORGANADD);
+            //tab显示
+            tabDisplay();
             $('#edit_organ').modal('show');
         });
         //编辑机构
@@ -339,6 +384,11 @@ var OrganEdit = function() {
                 }
             }
             var options = { jsonValue: organ, exclude:exclude,isDebug: false};
+            if(organ.fjdid == ''){   //一级机构
+                $("#href2").parents('li').show();
+            }else{
+                $("#href2").parents('li').hide();
+            }
             $(".register-form").initForm(options);
             $(".invoicerise-form").initForm(options);
             //地址、电话
@@ -362,6 +412,8 @@ var OrganEdit = function() {
             }else{
                 $("#rate").show();
             }
+            //tab显示
+            tabDisplay();
             $('#edit_organ').modal('show');
         })
     };
@@ -517,4 +569,14 @@ function getbankNameDataEnd(flg, result){
         OrganTable.init();
         alertDialog("开户行信息获取失败！");
     }
+}
+
+//tab显示
+function tabDisplay(){
+    $("#href2").parents('li').removeClass('active');
+    $("#href1").parents('li').addClass('active');
+    $("#tab_1_2").removeClass('active');
+    $("#tab_1_2").removeClass('in');
+    $("#tab_1_1").addClass('active');
+    $("#tab_1_1").addClass('in');
 }

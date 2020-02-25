@@ -146,8 +146,8 @@ var LineTable = function(){
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(4),td:eq(5),td:eq(6),td:eq(7),td:eq(10),td:eq(17)', nRow).attr('style', 'text-align: center;');
-                $('td:eq(11),td:eq(15)', nRow).attr('style', 'text-align: right;');
+                $('td:eq(0),td:eq(1),td:eq(10),td:eq(12),td:eq(13),td:eq(14)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(11)', nRow).attr('style', 'text-align: right;');
             }
         });
         //table.draw( false );

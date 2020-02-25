@@ -614,7 +614,7 @@ function fun_power(){
     var list = ["#op_add","#op_del","#user_inquiry","#password_reset","#role_inquiry","#organ_inquiry",
         "#vehice_inquiry","#vehice_import","#pro_inquiry","#driver_inquiry","#driver_import","#consignor_inquiry","#addr_inquiry",
         "#lin_inquiry","#cons_inquiry","#pay_inquiry","#us_inquiry","#us_import","#inv_inquiry","#bill_inquiry",
-        "#bill_import","#bill_submit","#bill_depart","#bill_done"];
+        "#bill_import","#bill_submit","#bill_depart","#bill_done","#payment_inquiry","#bill_payment","#invoice_inquiry","#invoice_apply"];
     for(var i in list){
         if(!makeEdit(menu,loginSucc.functionlist,list[i])){
             $(list[i]).hide();
@@ -657,4 +657,21 @@ function getNowDateTime() {
     }
     var value = year + month + strDate + hours + minutes;
     return value;
+}
+
+
+//保留两位小数，不四舍五入
+function subStringNum(a,num) {
+    var a_type = typeof(a);
+    if(a_type == "number"){
+        var aStr = a.toString();
+        var aArr = aStr.split('.');
+    }else if(a_type == "string"){
+        var aArr = a.split('.');
+    }
+
+    if(aArr.length > 1) {
+        a = aArr[0] + "." + aArr[1].substr(0, num);
+    }
+    return a
 }

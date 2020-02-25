@@ -2170,7 +2170,7 @@ function paymentDetailGet(data,callback){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: businessUrl + "paymentdetailquery",    //请求发送到TestServlet处   businessUrl + "billquery"
+        url: businessUrl + "transdetails",    //请求发送到TestServlet处   businessUrl + "billquery"
         data: sendMessageEdit(DEFAULT, data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -2180,6 +2180,49 @@ function paymentDetailGet(data,callback){
         error: function (errorMsg) {
             console.info("paymentDetailGet-error:" + JSON.stringify(errorMsg));
             getPaymentDetailEnd(false, "", callback);
+        }
+    });
+}
+
+//运单一键支付
+function billPayment(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "payment",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("billPayment:" + JSON.stringify(result));
+            billPaymentEnd(true, result);
+        },
+        error: function (errorMsg) {
+            console.info("billPayment-error:" + JSON.stringify(errorMsg));
+            billPaymentEnd(false, "");
+        }
+    });
+}
+
+//获取账户余额
+function getUserBalance(){
+    App.blockUI({target:'#lay-out',boxed: true});
+    var data = {userid:loginSucc.userid,orid: loginSucc.organid};
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "balance",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("getUserBalance:" + JSON.stringify(result));
+            getUserBalanceEnd(true, result);
+        },
+        error: function (errorMsg) {
+            console.info("getUserBalance-error:" + JSON.stringify(errorMsg));
+            getUserBalanceEnd(false, "");
         }
     });
 }

@@ -39,8 +39,7 @@ var PayeeTable = function () {
                 var formData = $(".inquiry-form").getFormData();
                 var da = {
                     payname: formData.payname,
-                    banknumber:formData.banknumber,
-                    bankid:formData.bankid,
+                    bank:formData.banknumber,
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
@@ -104,7 +103,7 @@ var PayeeTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(3),td:eq(4),td:eq(7),td:eq(8),td:eq(9)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );

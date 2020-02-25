@@ -95,6 +95,7 @@ $('#register-btn').click(function() {
         if(ush.passwd.length != 6){
             alert("请输入6位数动态密码");
         }
+        $("#loading_edit").modal('show');
         ushieldCheck(ush);
     }
 });
@@ -119,6 +120,7 @@ function getmshieldDataEnd(flg, result, callback){
 }
 
 function getushEditEnd(flg, result, type){
+    $("#loading_edit").modal('hide');
     var res = "失败";
     var text = "";
     var alert = "";

@@ -74,11 +74,24 @@ var DriverTable = function () {
             "bAutoWidth": false,
             "ajax":function (data, callback, settings) {
                 var formData = $(".inquiry-form").getFormData();
+                var payid = $("#payeeList").find("option[value='"+formData.payeename+"']").attr('data-payid') || "";
+                var payee_name = "";
+                for(var i in payeeList){
+                    if(payid == payeeList[i].payid){
+                        payee_name = payeeList[i].payname;
+                    }
+                }
+                var vehicle_id = "";
+                for(var i in vehicleList){
+                    if(formData.platenumber == vehicleList[i].platenumber){
+                        vehicle_id = vehicleList[i].vehid;
+                    }
+                }
                 var da = {
                     name: formData.name,
                     id_number:formData.id_number,
-                    plate_number:formData.platenumber,
-                    payee_name:formData.payeename,
+                    vehicle_id:vehicle_id,
+                    payid:payid,
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
@@ -160,7 +173,7 @@ var DriverTable = function () {
                         for(var i in driverList){
                             if(data == driverList[i].did){
                                 var href = 'payee?username='+loginSucc.userid+"&payname="+encodeURI(driverList[i].payee_name)+"&banknumber="+driverList[i].bank;
-                                return "<a href='"+href+"'>"+driverList[i].payee_name+"</a>";
+                                return "<a href='"+href+"' class='payeeClick' data-index='fbb06b4f909f4cb78fc63735509a86c1' data-text='收款人管理' target='iframe0'>"+driverList[i].payee_name+"</a>";
                             }
                         }
 
@@ -185,7 +198,7 @@ var DriverTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(11),td:eq(13)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(3),td:eq(4),td:eq(7),td:eq(8),td:eq(10),td:eq(11),td:eq(12),td:eq(13)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );
@@ -227,6 +240,10 @@ var DriverTable = function () {
 //司机查询
 $("#driver_inquiry").on("click", function(){
     DriverTable.init();
+});
+
+$("#driver_table").on('click',".payeeClick",function(){
+    menuItem("",this);
 });
 
 //司机操作
@@ -350,7 +367,7 @@ var DriverEdit = function() {
             var value = $(this).val();
             var list = [];
             for(var i = 0;i<payeeList.length;i++){
-                list.push(payeeList[i].payname);
+                list.push(payeeList[i].payname+payeeList[i].banknumber);
             }
             if(list.indexOf(value) == -1){  //不存在
                 $(this).val("");
@@ -370,9 +387,10 @@ var DriverEdit = function() {
                         driver.vehicle_id = vehicleList[i].vehid;
                     }
                 }
+                driver.payid = $("#payeeList_edit").find("option[value='"+driver.payee_name+"']").attr('data-payid') || "";
                 for(var i in payeeList){
-                    if(driver.payee_name == payeeList[i].payname){
-                        driver.payid = payeeList[i].payid;
+                    if(driver.payid == payeeList[i].payid){
+                        driver.payee_name = payeeList[i].payname;
                     }
                 }
                 delete driver.id_front;
@@ -417,6 +435,11 @@ var DriverEdit = function() {
                     driver = driverList[i];
                 }
             }
+            for(var i in payeeList){
+                if(driver.payid == payeeList[i].payid){
+                    driver.payee_name = payeeList[i].payname+payeeList[i].banknumber;
+                }
+            }
             var options = { jsonValue: driver, exclude:exclude,isDebug: false};
             $(".edit-form").initForm(options);
             //日期框赋值
@@ -448,6 +471,11 @@ var DriverEdit = function() {
             for(var i=0; i < driverList.length; i++){
                 if(did == driverList[i].did){
                     driver = driverList[i];
+                }
+            }
+            for(var i in payeeList){
+                if(driver.payid == payeeList[i].payid){
+                    driver.payee_name = payeeList[i].payname+payeeList[i].banknumber;
                 }
             }
             var options = { jsonValue: driver, exclude:exclude,isDebug: false};
@@ -756,8 +784,10 @@ function getPayeeDataEnd(flg,result){
             payeeList = res.payeelist;
             //给关联车辆datalist赋值
             for(var i = 0;i<payeeList.length;i++){
-                $("#payeeList").append("<option>"+payeeList[i].payname+"</option>");
-                $("#payeeList_edit").append("<option>"+payeeList[i].payname+"</option>");
+                if(payeeList[i].state == "0"){  //启用
+                    $("#payeeList").append("<option data-payid='"+payeeList[i].payid+"' value='"+payeeList[i].payname+payeeList[i].banknumber+"'></option>");
+                    $("#payeeList_edit").append("<option data-payid='"+payeeList[i].payid+"' value='"+payeeList[i].payname+payeeList[i].banknumber+"'></option>");
+                }
             }
         }
     }

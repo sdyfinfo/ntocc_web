@@ -15,9 +15,6 @@ if (App.isAngularJsApp() === false) {
         //收款人列表
         ushTable.init();
         ushEdit.init();
-
-
-
     })
 }
 
@@ -154,7 +151,7 @@ var ushTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(2),td:eq(3),td:eq(4),td:eq(5),td:eq(6),td:eq(7)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(2),td:eq(3),td:eq(4),td:eq(5),td:eq(7),td:eq(8)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );
@@ -271,6 +268,7 @@ var ushEdit = function(){
                 ush.unumber = $("#number").val();
                 ush.passwd = $("#passwd").val();
                 if($("input[name=edittype]").val() == USHADD) {
+                    $("#loading_edit").modal('show');
                     ushieldAdd(ush);
                 }if($("input[name=edittype]").val() == USHEDIT){
                     var data;
@@ -287,12 +285,14 @@ var ushEdit = function(){
                             ush.organid = consignorList[j].organid;
                         }
                     }
+                    $("#loading_edit").modal('show');
                     ushieldEdit(ush,USHEDIT);
                 }if($("input[name=edittype]").val() == USHCHECK){
                     if (ush.passwd == "") {
                         alertDialog("请输密码！");
                         return;
                     }
+                    $("#loading_edit").modal('show');
                     ushieldCheck(ush, USHCHECK);
                 }
             }
@@ -418,7 +418,7 @@ function ushieldAlltwo(id){
 //查询按钮
 $("#us_inquiry").on("click",function(){
     ushTable.init();
-})
+});
 
 
 
@@ -460,6 +460,7 @@ function getConsignorDataEnd(flg, result){
 
 
 function getushEditEnd(flg, result, type){
+    $("#loading_edit").modal('hide');
     var res = "失败";
     var text = "";
     var alert = "";
@@ -526,6 +527,7 @@ var UshDelete = function() {
                 var row = $(this).parents('tr')[0];
                 ush.shieidlist.push($("#ush_table").dataTable().fnGetData(row).shieid);
             });
+            $("#loading_edit").modal('show');
             ushieldDelete(ush);
         }
     }
@@ -553,6 +555,7 @@ $("#ush_file").change(function(){
         }
         var data = sendMessageEdit(DEFAULT,userid);
         formData.append("body",new Blob([data],{type:"application/json"}));
+        $("#loading_edit").modal('show');
         payeeUpload(formData);
     }else{
         $("#upload_name").html("");
@@ -585,6 +588,7 @@ function drop(ev) {
             };
             var data = sendMessageEdit(DEFAULT,userid);
             formData.append("body",new Blob([data],{type:"application/json"}));
+            $("#loading_edit").modal('show');
             ushieldUpload(formData);
         }else{
             alertDialog("请选择.text类型的文件上传！");

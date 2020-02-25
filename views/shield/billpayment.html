@@ -30,6 +30,7 @@
     <style>
         .goods_check{height: 20px;float: left;border: 1px solid #e5e6e7;line-height: 20px;margin-top: 5px;margin-left: 5px}
         .bill-form .form-group{margin-bottom:5px!important;}
+        .balance{margin-left:20px;font-size: 15px;color: #e02222;font-weight: bold}
     </style>
 </head>
 <body class="gray-bg">
@@ -144,6 +145,9 @@
                                         <button id="bill_payment" class="btn btn-primary"> 一键支付
                                             <i class="fa fa-rmb"></i>
                                         </button>
+                                    </div>
+                                    <div class="btn-group balance">
+                                        可用余额<span id="balance">0.00</span>元
                                     </div>
                                 </div>
                             </div>
@@ -372,7 +376,7 @@
         </div>
     </div>
     <!-- 查看支付明细  -->
-    <div id="payment_detail" class="modal fade" tabindex="-1" data-width="400" aria-hidden="true" data-backdrop="static">
+    <div id="edit_detail" class="modal fade" tabindex="-1" data-width="400" aria-hidden="true" data-backdrop="static">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -411,16 +415,19 @@
                     <h4 class="modal-title">支付运费</h4>
                 </div>
                 <div class="modal-body">
-                    <div style="height: 30px;line-height: 30px" id="payment_len"></div>
-                    <form class="bill-form form-horizontal" role="form">
+                    <div style="height: 20px;line-height: 20px;font-weight: bold" id="payment_len"></div>
+                    <form class="payment-form form-horizontal" role="form">
                         <div class="form-body">
                            <input type="hidden" id="len"/>
                            <input type="hidden" name="verification_status"/>
                            <input type="hidden" name="state"/>
+                           <input type="hidden" name="rate"/>
+                           <input type="hidden" name="widlist"/>
+                            <input type="hidden" name="paidlist"/>
                            <h4 style="height: 30px;line-height: 30px">司机运费</h4>
                            <div class="row">
                                <div class="form-group col-md-12">
-                                   <label class="col-md-2 control-label">司机运费</label>
+                                   <label class="col-md-3 control-label">司机运费</label>
                                    <div class="col-md-8">
                                        <input type="text" class="form-control"  name="freight" autocomplete="off" readonly>
                                    </div>
@@ -428,24 +435,25 @@
                            </div>
                            <div class="row">
                                <div class="form-group col-md-12">
-                                   <label class="col-md-2 control-label">已支付金额</label>
+                                   <label class="col-md-3 control-label">已支付金额</label>
                                    <div class="col-md-8">
-                                       <input type="text" class="form-control"  name="payment" autocomplete="off" readonly>
+                                       <input type="text" class="form-control"  name="paid" autocomplete="off" readonly>
                                    </div>
                                </div>
                            </div>
                            <div class="row" >
                                <div class="form-group col-md-12">
-                                   <label class="col-md-2 control-label">支付金额</label>
+                                   <label class="col-md-3 control-label">支付金额</label>
                                    <div class="col-md-8">
                                        <input class="form-control" type="text"  name="amount"/>
                                    </div>
                                </div>
                            </div>
                            <h4 style="height: 30px;line-height: 30px">服务费<span style="color: #e02222">(支付运费时将扣除对应的服务费)</span></h4>
+                           <span style="height: 30px;line-height: 30px;margin-left: 40px">服务费=支付金额/(1-费率)*费率.(保留两位小数，不四舍五入)</span>
                            <div class="row" >
                                <div class="form-group col-md-12">
-                                   <label class="col-md-2 control-label">平台服务费</label>
+                                   <label class="col-md-3 control-label">平台服务费</label>
                                    <div class="col-md-8">
                                        <input class="form-control" type="text"  name="serviceFee" readonly/>
                                    </div>
@@ -453,15 +461,15 @@
                            </div>
                            <div class="row">
                                <div class="form-group col-md-12">
-                                   <label class="col-md-2 control-label"><b>合计支付</b></label>
+                                   <label class="col-md-3 control-label"><b>合计支付</b></label>
                                    <div class="col-md-8">
-                                       <input class="form-control" type="text"  name="fare" readonly/>
+                                       <input class="form-control" type="text"  name="total" readonly/>
                                    </div>
                                </div>
                            </div>
                            <div class="row">
-                               <div class="form-group col-md-6">
-                                   <label class="col-md-4 control-label"><b>U盾支付口令</b></label>
+                               <div class="form-group col-md-12">
+                                   <label class="col-md-3 control-label"><b>U盾支付口令</b></label>
                                    <div class="col-md-8">
                                        <input class="form-control" type="text"  name="ushield"/>
                                    </div>
