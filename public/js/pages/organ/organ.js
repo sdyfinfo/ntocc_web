@@ -211,7 +211,7 @@ var OrganEdit = function() {
                     address:true
                 },
                 bank:{
-                    bank:true
+                    bank_validator:true
                 }
             },
 
@@ -274,8 +274,8 @@ var OrganEdit = function() {
             return this.optional(element) || (rate.test(value));
         }, "不能含有特殊字符");
 
-        jQuery.validator.addMethod("bank", function(value, element) {
-            var reg = /^([1-9]{1})(\d{14}|\d{18})$/;
+        jQuery.validator.addMethod("bank_validator", function(value, element) {
+            var reg = /^[0-9]*$/;
             return this.optional(element) || (reg.test(value));
         }, "请正确填写您的银行卡号");
 
