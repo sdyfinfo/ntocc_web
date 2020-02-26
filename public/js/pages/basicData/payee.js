@@ -156,16 +156,19 @@ var payeeEdit = function(){
                     required: true
                 },
                 idcard:{
-                    required: true
+                    required: true,
+                    idcard:true
                 },
                 addresseeTel:{
                     required: true
                 },
                 payphone:{
-                    required: true
+                    required: true,
+                    phone:true
                 },
                 bank:{
-                    required: true
+                    required: true,
+                    bank:true
                 },
                 bankname:{
                     required: true
@@ -220,7 +223,7 @@ var payeeEdit = function(){
             }
         });
         // 手机号码验证
-        jQuery.validator.addMethod("payphone", function(value, element) {
+        jQuery.validator.addMethod("phone", function(value, element) {
             var tel = /^1[3456789]\d{9}$/;
             return this.optional(element) || (tel.test(value));
         }, "请正确填写您的联系电话");
@@ -261,7 +264,7 @@ var payeeEdit = function(){
             //清除校验错误信息
             validator.resetForm();
             $(".register-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("新增项目");
+            $(".modal-title").text("新增收款人信息");
             $(":input",".register-form").not(":button,:reset,:submit,:radio,:input[name=birthday],#evaluationneed").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
@@ -275,7 +278,7 @@ var payeeEdit = function(){
             //清除校验错误信息
             validator.resetForm();
             $(".register-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("编辑项目");
+            $(".modal-title").text("编辑收款人信息");
             var exclude = [];
             var row = $(this).parents('tr')[0];
             var payid = $("#payee_table").dataTable().fnGetData(row).payid;

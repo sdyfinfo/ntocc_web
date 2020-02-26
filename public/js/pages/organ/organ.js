@@ -147,7 +147,7 @@ var OrganEdit = function() {
                     required: true
                 },
                 organ: {
-                    //organ: true
+                    organ: true
                 },
                 sort: {
                     required: true
@@ -292,7 +292,7 @@ var OrganEdit = function() {
 
         //确定按钮按下
         $('#register-btn').click(function() {
-            if(($('#organtree').jstree(true).get_selected(true)).length != 0){  //子级
+            if(($('#organtree').jstree(true).get_selected(true)).length != 0){  //子级，只有基本信息
                 if($('.register-form').validate().form()){
                     var organ = $('.register-form').getFormData();
                     organ.parentorganid = "";
@@ -315,7 +315,7 @@ var OrganEdit = function() {
                         organEdit(organ);
                     }
                 }
-            }else{
+            }else{  //非子级，有基本信息和开票信息
                 if (($('.register-form').validate().form()) && ($('.invoicerise-form').validate().form())) {
                     var organ = $('.register-form').getFormData();
                     organ.parentorganid = "";
@@ -440,6 +440,10 @@ var OrganDelete = function() {
             var organlist = {organidlist:[]};
             var select = $("#organ_table").bootstrapTable('getSelections');
             for(var i=0; i<select.length;i++) {
+                if(select[i].types == "0"){
+                    alertDialog("运营方不可进行删除操作！");
+                    return;
+                }
                 organlist.organidlist.push(select[i].organid);
             }
             $("#loading_edit").modal("show");
@@ -571,7 +575,7 @@ function getbankNameDataEnd(flg, result){
     }
 }
 
-//tab显示
+//tab显示(默认显示tab_1_1)
 function tabDisplay(){
     $("#href2").parents('li').removeClass('active');
     $("#href1").parents('li').addClass('active');

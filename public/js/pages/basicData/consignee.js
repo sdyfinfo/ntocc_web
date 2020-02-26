@@ -145,10 +145,12 @@ var ConsEdit = function(){
                     required: true
                 },
                 mobile:{
-                    required: true
+                    required: true,
+                    phone:true
                 },
                 credit_code:{
-                    required: true
+                    required: true,
+                    creditCode:true
                 }
 
             },
@@ -194,12 +196,12 @@ var ConsEdit = function(){
             }
         });
         // 手机号码验证
-        jQuery.validator.addMethod("mobile", function(value, element) {
+        jQuery.validator.addMethod("phone", function(value, element) {
             var tel = /^1[3456789]\d{9}$/;
             return this.optional(element) || (tel.test(value));
-        }, "请正确填写您的联系电话");
+        }, "请正确填写您的手机号码");
 
-        jQuery.validator.addMethod("credit_code", function(value, element) {
+        jQuery.validator.addMethod("creditCode", function(value, element) {
             var reg =/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
             return this.optional(element) || (reg.test(value));
         }, "请正确填写您的社会信用代码(或身份证号)");
@@ -209,20 +211,21 @@ var ConsEdit = function(){
             btnDisable($('#register-btn'));
             if ($('.register-form').validate().form()) {
                 var genn = $('.register-form').getFormData();
-            }
-            if($("input[name=edittype]").val() == GENNADD){
-                $("#loading_edit").modal('show');
-                gennAdd(genn);
-            }else {
-                var data;
-                for(var i = 0; i < conList.length; i++) {
-                    if(genn.conid == conList[i].conid){
-                        data = conList[i];
+                if($("input[name=edittype]").val() == GENNADD){
+                    $("#loading_edit").modal('show');
+                    gennAdd(genn);
+                }else {
+                    var data;
+                    for(var i = 0; i < conList.length; i++) {
+                        if(genn.conid == conList[i].conid){
+                            data = conList[i];
+                        }
                     }
+                    $("#loading_edit").modal('show');
+                    geenEdit(genn,GENNEDIT);
                 }
-                $("#loading_edit").modal('show');
-                geenEdit(genn,GENNEDIT);
             }
+
         });
         //新增项目
         $('#op_add').click(function() {

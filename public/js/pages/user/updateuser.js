@@ -186,7 +186,11 @@ $('#register-btn').click(function() {
     if ($('.register-form').validate().form()) {
         var user = $('.register-form').getFormData();
         user.birthday = user.birthday.replace(/-/g, '');
-        user.organid = ($('#organtree').jstree(true).get_selected(true))[0].id;
+        if(($('#organtree').jstree(true).get_selected(true)).length != 0){
+            user.organid = ($('#organtree').jstree(true).get_selected(true))[0].id;
+        }else{
+            user.organid = "";
+        }
         var rolelist = [];
         rolelist.push(userList.roleid);
         user.rolelist = rolelist;

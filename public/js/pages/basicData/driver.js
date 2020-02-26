@@ -7,10 +7,12 @@ var vehicleList = [];
 var payeeList = [];
 var dictlist = [];
 var imgInit = "/public/img/img_upload.png";
-
+var payeeMenuId = "";
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
         fun_power();
+        //获取收款人菜单id，点击收款人一栏能用到
+        payeeMenuIdGet();
         //获取车辆信息
         vehiceDataGet();
         //获取字典信息
@@ -173,7 +175,8 @@ var DriverTable = function () {
                         for(var i in driverList){
                             if(data == driverList[i].did){
                                 var href = 'payee?username='+loginSucc.userid+"&payname="+encodeURI(driverList[i].payee_name)+"&banknumber="+driverList[i].bank;
-                                return "<a href='"+href+"' class='payeeClick' data-index='fbb06b4f909f4cb78fc63735509a86c1' data-text='收款人管理' target='iframe0'>"+driverList[i].payee_name+"</a>";
+                                var target = 'iframe'+payeeMenuId;
+                                return "<a href='"+href+"' class='payeeClick' data-index='"+payeeMenuId+"' data-text='收款人管理' target='"+target+"'>"+driverList[i].payee_name+"</a>";
                             }
                         }
 
@@ -842,5 +845,20 @@ function getDictDataEnd(flg,result){
     }else{
         //司机表格
         DriverTable.init();
+    }
+}
+
+//获取收款人菜单id，点击收款人一栏能用到
+function payeeMenuIdGet(){
+    var menuList = loginSucc.menulist;
+    for(var i in menuList){
+        if(menuList[i].url == "basicdata"){  //找到其父菜单：基础管理信息
+            var menulist = menuList[i].menulist;
+            for(var j in menulist){
+                if(menulist[j].url == "payee"){  //找到收款人菜单
+                    payeeMenuId = menulist[j].menuid;
+                }
+            }
+        }
     }
 }

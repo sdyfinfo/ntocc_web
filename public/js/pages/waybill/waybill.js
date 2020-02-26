@@ -72,23 +72,11 @@ var WayBillTable = function () {
             "ajax":function (data, callback, settings) {
                 if(selectType == "0"){
                     var formData = $(".inquiry-form").getFormData();
-                    var start_subtime = "";
-                    var end_subtime = "";
-                    var loading_start_subtime ="";
-                    var loading_end_subtime = "";
+                    var start_subtime = formData.start_subtime.replace(/-/g,'');
+                    var end_subtime = formData.end_subtime.replace(/-/g,'');
+                    var loading_start_subtime =formData.loading_start_subtime.replace(/-/g,'');
+                    var loading_end_subtime = formData.loading_end_subtime.replace(/-/g,'');
                     var state = "";
-                    if(formData.start_subtime != ""){
-                        start_subtime = formData.start_subtime.replace(/-/g,'')+"000000";
-                    }
-                    if(formData.end_subtime != ""){
-                        end_subtime = formData.end_subtime.replace(/-/g,'')+"000000";
-                    }
-                    if(formData.loading_start_subtime != ""){
-                        loading_start_subtime = formData.loading_start_subtime.replace(/-/g,'')+"000000";
-                    }
-                    if(formData.loading_end_subtime != ""){
-                        loading_end_subtime = formData.loading_end_subtime.replace(/-/g,'')+"000000";
-                    }
                     if(formData.state != ""){
                         state = "10010,"+formData.state;
                     }
@@ -489,7 +477,9 @@ var WayBillAdd = function() {
                         if(id == projectList[i].proid){
                             var linelist = projectList[i].linelist;
                             for(var j in linelist){
-                                $("#lineList_add").append("<option value='"+linelist[j].lineid+"'>"+linelist[j].line+"</option>");
+                                if(linelist[j].state == "0"){
+                                    $("#lineList_add").append("<option value='"+linelist[j].lineid+"'>"+linelist[j].line+"</option>");
+                                }
                             }
                         }
                     }
@@ -944,20 +934,20 @@ var WayBillDelete = function() {
             var bill = {waybillidlist:[]};
             $(".checkboxes:checked").parents("td").each(function () {
                 var row = $(this).parents('tr')[0];
-                //只有新建和装货中的运单可删除
+                //只有新建的运单可删除
                 var state = $("#bill_table").dataTable().fnGetData(row).state;
-                if(state == "01" || state == "02"){
+                if(state == "01"){
                     bill.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
                 }else{
-                    alertDialog("只有新建和装货中的运单可删除");
                     result = false;
-                    return false;
                 }
             });
-            if(result){
-                $("#loading_edit").modal("show");
-                wayBillDelete(bill);
+            if(!result){
+                alertDialog("只有新建运单可删除");
+                return;
             }
+            $("#loading_edit").modal("show");
+            wayBillDelete(bill);
         }
     }
 }();
@@ -1074,13 +1064,22 @@ var WayBillDepart = function() {
     });
     return{
         deletePro: function(){
+            var result = true;
             var bill = {changetype:"0",waybillidlist:[],state:"02"};
             $(".checkboxes:checked").parents("td").each(function () {
                 var row = $(this).parents('tr')[0];
-                //只有新建和装货中的运单可删除
-                var verification_status = $("#bill_table").dataTable().fnGetData(row).verification_status;
-                bill.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
+                //只有新建的运单可发车
+                var state = $("#bill_table").dataTable().fnGetData(row).state;
+                if(state == "01"){
+                    bill.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
+                }else{
+                    result = false;
+                }
             });
+            if(!result){
+                alertDialog("只有新建的运单可发车");
+                return;
+            }
             $("#loading_edit").modal("show");
             wayBillStateChange(bill,'发车');
         }
@@ -1099,21 +1098,24 @@ var WayBillDone = function() {
     });
     return{
         deletePro: function(){
+            var result = true;
             var bill = {changetype:"1",waybillidlist:[],state:"03"};
             $(".checkboxes:checked").parents("td").each(function () {
                 var row = $(this).parents('tr')[0];
-                //只有新建和装货中的运单可删除
+                //只有已发车中的运单可完成
                 var state = $("#bill_table").dataTable().fnGetData(row).state;
                 if(state == "02"){
                     bill.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
                 }else{
-                    alertDialog("只有已发车的运单可完成");
-                    throw new Error("breakForEach");
-                    return;
+                    result = false;
                 }
             });
+            if(!result){
+                alertDialog("只有已发车的运单可签收");
+                return;
+            }
             $("#loading_edit").modal("show");
-            wayBillStateChange(bill,'完成');
+            wayBillStateChange(bill,'签收');
         }
     }
 }();
@@ -1190,8 +1192,8 @@ function getProjectDataEnd(flg,result){
             var res = result.response;
             projectList = res.projectlist;
             for(var i in projectList){
+                $("#proList").append("<option data-proid='"+projectList[i].proid+"' value='"+projectList[i].proname+"'></option>");
                 if(projectList[i].state == "0"){
-                    $("#proList").append("<option data-proid='"+projectList[i].proid+"' value='"+projectList[i].proname+"'></option>");
                     $("#proList_add").append("<option data-proid='"+projectList[i].proid+"' value='"+projectList[i].proname+"'></option>");
                     $("#proList_add1").append("<option data-proid='"+projectList[i].proid+"' value='"+projectList[i].proname+"'></option>");
                 }

@@ -489,6 +489,9 @@ var LineEdit = function(){
                 .removeAttr("selected");
             $("input[name=edittype]").val(LINEADD);
             fileUploadAllowed(1);
+            goodsList = [];
+            $("#goods").empty();
+            $(".modal-footer").show();
             $('#edit_lin').modal('show');
         });
         //查看
@@ -556,6 +559,7 @@ var LineEdit = function(){
             }
             fileUploadAllowed(1);
             $("input[name=edittype]").val(LINEEDIT);
+            $(".modal-footer").show();
             $('#edit_lin').modal('show');
         });
     };

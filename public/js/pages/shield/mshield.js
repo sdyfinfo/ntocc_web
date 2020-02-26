@@ -93,7 +93,8 @@ $('#register-btn').click(function() {
         ush.unumber = $("#number").val();
         ush.passwd = $("#passwd").val();
         if(ush.passwd.length != 6){
-            alert("请输入6位数动态密码");
+            alertDialog("请输入6位数动态密码");
+            return;
         }
         $("#loading_edit").modal('show');
         ushieldCheck(ush);

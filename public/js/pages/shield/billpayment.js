@@ -45,16 +45,16 @@ var BillPaymentTable = function () {
                 var loading_end_subtime = "";
                 var state = "";
                 if(formData.start_subtime != ""){
-                    start_subtime = formData.start_subtime.replace(/-/g,'')+"000000";
+                    start_subtime = formData.start_subtime.replace(/\//g,'')+"000000";
                 }
                 if(formData.end_subtime != ""){
-                    end_subtime = formData.end_subtime.replace(/-/g,'')+"000000";
+                    end_subtime = formData.end_subtime.replace(/\//g,'')+"000000";
                 }
                 if(formData.loading_start_subtime != ""){
-                    loading_start_subtime = formData.loading_start_subtime.replace(/-/g,'')+"000000";
+                    loading_start_subtime = formData.loading_start_subtime.replace(/\//g,'')+"000000";
                 }
                 if(formData.loading_end_subtime != ""){
-                    loading_end_subtime = formData.loading_end_subtime.replace(/-/g,'')+"000000";
+                    loading_end_subtime = formData.loading_end_subtime.replace(/\//g,'')+"000000";
                 }
                 if(formData.state != ""){
                     state = "10010,"+formData.state;

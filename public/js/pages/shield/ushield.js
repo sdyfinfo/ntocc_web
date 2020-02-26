@@ -2,15 +2,15 @@
  * Created by Lenovo on 2020/2/14.
  */
 
-var consignorList = [];
+var organList = [];
 var ushList = [];
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function () {
         //时间控件
         ComponentsDateTimePickers.init();
-        //获取发货人信息
-        consignorDataGet();
+        //获取机构信息
+        organDataGet();
         //fun_power();
         //收款人列表
         ushTable.init();
@@ -69,9 +69,11 @@ var ushTable = function () {
             "bAutoWidth": false,
             "ajax":function (data, callback, settings) {
                 var formData = $(".inquiry-form").getFormData();
+                var startdate = formData.startdate.replace(/-/g,'');
+                var enddate = formData.enddate.replace(/-/g,'');
                 var da = {
-                    startdate: formData.startdate,
-                    enddate:formData.enddate,
+                    startdate: startdate,
+                    enddate:enddate,
                     unumber:formData.unumber,
                     shieid: formData.shieid,
                     currentpage: (data.start / data.length) + 1,
@@ -85,13 +87,12 @@ var ushTable = function () {
                 { "data": null},
                 { "data": null},
                 { "data": "shieid",visible: false},
-                { "data": "consignorid",visible: false },
                 { "data": "unumber"},
                 { "data": "secret_key"},
                 { "data": "check"},
                 { "data": "status"},
-                { "data": "consignor"},
-                { "data": "updatetime"},
+                { "data": "uname"},
+                { "data": "addtime"},
                 { "data": null}
             ],
             columnDefs: [
@@ -109,9 +110,8 @@ var ushTable = function () {
                     }
                 },
                 {
-                    "targets":[6],
+                    "targets":[5],
                     "render":function (data, type, row, meta) {
-                        var check = "";
                         if (data == "0") {
                            return  '<a href="javascript:;" id="op_check">否</a>';
                         }else{
@@ -120,7 +120,7 @@ var ushTable = function () {
                     }
                 },
                 {
-                    "targets":[7],
+                    "targets":[6],
                     "render":function (data, type, row, meta) {
                         var status = "已绑定";
                         if(data == "0"){
@@ -130,23 +130,21 @@ var ushTable = function () {
                     }
                 },
                 {
-                    "targets":[9],
+                    "targets":[8],
                     "render": function (data, type, row ,meta) {
                         return dateTimeFormat(data);
                     }
                 },
                 {
-                    "targets": [10],
+                    "targets": [9],
                     "render": function (data, type, row, meta) {
-                        /*var edit = "";
+                         var edit = "";
                          if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
                          edit = '-';
                          }else{
                          edit = '<a href="javascript:;" id="op_edit">编辑</a>';
                          }
-                         return edit;*/
-                        //if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")) return '-';
-                        return '<a href="javascript:;" id="op_edit">编辑</a>'
+                         return edit;
                     }
                 }
             ],
@@ -238,53 +236,22 @@ var ushEdit = function(){
                 form.submit();
             }
         });
-        //选择发货人或发货人显示
-        $("#number").change(function(){
-            var id = $(this).val();
-            for(var i in ushList){
-                if(id == ushList[i].shieid){
-                    $("input[name=unumber]").val(ushList[i].unumber);
-                }
-            }
-        });
 
-        $("#consignorid").change(function(){
-            var id = $(this).val();
-            for(var i in ushList){
-                if(id == ushList[i].shieid){
-                    $("input[name=consignorid]").val(ushList[i].consignorid);
-                }
-            }
-        });
         //点击确定按钮edittype
         $('#register-btn').click(function() {
             btnDisable($('#register-btn'));
             if ($('.register-form').validate().form()) {
                 var ush = $('.register-form').getFormData();
-                ush.consignorid = $("#consignorid").find("option:selected").val();
-                ush.shieid = $("input[name=shieid]").val();
-                ush.organid = $("input[name=organid]").val();
-                ush.secret_key = $("input[name=secret_key]").val();
-                ush.unumber = $("#number").val();
-                ush.passwd = $("#passwd").val();
+                ush.organid = $("#organid").val();
                 if($("input[name=edittype]").val() == USHADD) {
                     $("#loading_edit").modal('show');
                     ushieldAdd(ush);
                 }if($("input[name=edittype]").val() == USHEDIT){
-                    var data;
-                    for (var i = 0; i < ushList.length; i++) {
-                        if (ush.shieid == ushList[i].shieid){
-                            data = ushList[i];
-                        }
+                    if(ush.organid_before == ush.organid){
+                        alertDialog("请选择您要修改的其他关联机构！");
+                        return;
                     }
-                    if (ush.conid == "请选择") {
-                        ush.consignorid = "";
-                    }
-                    for (var j = 0; j < consignorList.length; j++) {
-                        if (ush.consignorid == consignorList[j].conid){
-                            ush.organid = consignorList[j].organid;
-                        }
-                    }
+                    delete ush.organid_before;
                     $("#loading_edit").modal('show');
                     ushieldEdit(ush,USHEDIT);
                 }if($("input[name=edittype]").val() == USHCHECK){
@@ -309,9 +276,10 @@ var ushEdit = function(){
             ushieldAllone(1);
             $(".register-form").find("input[name=shieid]").attr("readonly", false);
             $("input[name=edittype]").val(USHADD);
+            //隐藏关联一级机构和动态密码
+            $(".con-hide2,.con-hide3").hide();
+            $(".con-hide1").show();
             $('#edit_ush').modal('show');
-            $(".con-hide2").hide();
-            $(".con-hide3").hide();
         });
         //编辑
         $('#ush_table').on('click', '#op_edit', function (e) {
@@ -329,7 +297,6 @@ var ushEdit = function(){
                     ushield = ushList[i];
                 }
             }
-            //ushield.consignor = $("#consignorid option:selected").val();
             //效验通过或者已绑定状态
             if(ushield.check == "1"){
                 //input只读
@@ -344,11 +311,11 @@ var ushEdit = function(){
             }
             var options = { jsonValue: ushield, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
+            $("input[name=organid_before]").val(ushield.organid);
             $("input[name=edittype]").val(USHEDIT);
-            $('#edit_ush').modal('show');
-            $(".con-hide1").show();
-            $(".con-hide2").show();
+            $(".con-hide1,.con-hide2").show();
             $(".con-hide3").hide();
+            $('#edit_ush').modal('show');
         });
         //输入动态密码
         $("#ush_table").on('click', "#op_check", function(e){
@@ -366,26 +333,12 @@ var ushEdit = function(){
                     ushield = ushList[i];
                 }
             }
-            if(ushield.check == "0"){
-                //input编辑
-                ushieldAllone(1);
-            }else{
-                //input只读
-                ushieldAllone(0);
-            }
-            if(ushList.passwd == ""){
-                alertDialog("请输密码！");
-                return;
-            }
-            ushield.passwd = $("#passwd").val();
             var options = { jsonValue: ushield, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
             $("input[name=edittype]").val(USHCHECK);
-            $('#edit_ush').modal('show');
-            $(".con-hide1").hide();
-            $(".con-hide2").hide();
+            $(".con-hide1,.con-hide2").hide();
             $(".con-hide3").show();
-
+            $('#edit_ush').modal('show');
         });
     };
     return {
@@ -399,9 +352,9 @@ var ushEdit = function(){
 function ushieldAllone(id){
     if(id == 0){ //不允许
         //全部只读
-        $(".register-form").find("input").attr("disabled", true);
+        $(".register-form").find("input").attr("readonly", "readonly");
     }else{
-        $(".register-form").find("input").attr("disabled", false);
+        $(".register-form").find("input").removeAttr("readonly");
     }
 }
 
@@ -440,21 +393,21 @@ function getushieldDataEnd(flg, result, callback){
     }
 }
 
-//获取发货人信息
-function getConsignorDataEnd(flg, result){
+//获取机构信息
+function getOrganDataEnd(flg, result){
     App.unblockUI('#lay-out');
     if(flg){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
-            consignorList = res.conlist;
-            for(var i = 0; i < consignorList.length; i++){
-                $("#consignorid").append("<option value='"+consignorList[i].conid+"'>"+ consignorList[i].consignor +"</option>");
+            organList = res.list;
+            for(var i = 0; i < organList.length; i++){
+                $("#organid").append("<option value='"+organList[i].organid+"'>"+ organList[i].organname +"</option>");
             }
         }else{
-            alertDialog("发货人信息获取失败！");
+            alertDialog("机构信息获取失败！");
         }
     }else{
-        alertDialog("发货人信息获取失败！");
+        alertDialog("机构信息获取失败！");
     }
 }
 
