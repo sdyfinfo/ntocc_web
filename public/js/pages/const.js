@@ -11,8 +11,8 @@
 //     "gramtuWebUrl": hostIp + "8002/gramtu/web/"                       // web端URL
 // };
 
-var hostIp = "http://ntocc.natapp1.cc";
-var operatorIp = "http://8hsdk3.natappfree.cc";
+var hostIp = "http://39.107.68.137";                       
+var operatorIp = "http://39.107.68.137";   
 
 var regulateSucc = {
     "uploadFolder" : "/home/yfdev/src/ywt_web",                       // 上传文件所在文件夹
