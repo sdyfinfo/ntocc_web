@@ -26,7 +26,7 @@ var RoleTable = function () {
             showRefresh : false,//刷新按钮
             idField: 'roleid',
             checkboxHeader: false,
-            height: 350,
+            height: $(window).height() - 250,
             singleSelect:true,//单选
             ajax :function (e) {
                 //因为需要做成菜单选择的树形菜单，所以一次获取所有数据，前端分页
@@ -97,6 +97,8 @@ var RoleTable = function () {
     };
 }();
 
+$("#menutree").css('height',$(window).height() - 250);
+
 
 //模块权限相关
 var MenuTable = function () {
@@ -111,7 +113,7 @@ var MenuTable = function () {
             showRefresh : false,//刷新按钮
             idField: 'menuid',
             checkboxHeader: false,
-            height:350,
+            height:$(window).height() - 250,
             ajax :function (e) {
                 //因为需要做成菜单选择的树形菜单，所以一次获取所有数据，前端分页
                 var callback = e.success;
@@ -181,21 +183,21 @@ var MenuTable = function () {
             onCheck:function(row){
                 var datas = table.bootstrapTable('getData');
                 //勾选子类
-                selectChilds(datas,row,"menuid","parentid",true);
+                selectChilds(datas,row,"menuid","parentid",true,'#menu_table');
                 // 勾选父类
-                selectParentChecked(datas,row,"menuid","parentid");
+                selectParentChecked(datas,row,"menuid","parentid",'#menu_table');
                 //修改power的值
                 changeDataPower(datas);
                 // 刷新数据
-                table.bootstrapTable('load', datas);
+                //table.bootstrapTable('load', datas);
             },
             onUncheck:function(row){
                 var datas = table.bootstrapTable('getData');
-                selectChilds(datas,row,"menuid","parentid",false);
+                selectChilds(datas,row,"menuid","parentid",false,'#menu_table');
                 //修改power的值
                 changeDataPower(datas);
                 // 刷新数据
-                table.bootstrapTable('load', datas);
+                //table.bootstrapTable('load', datas);
             }
         });
     };

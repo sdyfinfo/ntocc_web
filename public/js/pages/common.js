@@ -166,19 +166,21 @@ function notifyTypeFormat(type){
     return str;
 }
 
-function selectChilds(datas,row,id,pid,checked) {
+function selectChilds(datas,row,id,pid,checked,table) {
     for(var i in datas){
         if(datas[i][pid] == row[id]){
             datas[i].check=checked;
+            $(table+' tbody').find('tr').eq(i).find('input[type=checkbox]').prop('checked',checked);
             selectChilds(datas,datas[i],id,pid,checked);
         }
     }
 }
 
-function selectParentChecked(datas,row,id,pid){
+function selectParentChecked(datas,row,id,pid,table){
     for(var i in datas){
         if(datas[i][id] == row[pid]){
             datas[i].check=true;
+            $(table+' tbody').find('tr').eq(i).find('input[type=checkbox]').prop('checked',true);
             selectParentChecked(datas,datas[i],id,pid);
         }
     }

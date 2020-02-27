@@ -73,7 +73,6 @@ var mshEdit = function(){
         var ser = mshList;
         var options = {jsonValue: ser, exclude: exclude, isDebug: false};
         $(".register-form").initForm(options);
-        $(".register-form").find("input[name=shieid]").attr("readonly", true);
     };
     return {
         init: function() {
@@ -109,13 +108,10 @@ function getmshieldDataEnd(flg, result, callback){
             mshList = result.response;
             //新增编辑用户控件初始化
             mshEdit.init();
-
         }else{
-            tableDataSet(0, 0, 0, [], callback);
-            alertDialog("我的U盾信息获取失败！");
+            alertDialog(result.retmsg);
         }
     }else{
-        tableDataSet(0, 0, 0, [], callback);
         alertDialog("我的U盾信息获取失败！");
     }
 }

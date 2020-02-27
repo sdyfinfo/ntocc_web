@@ -176,7 +176,7 @@ var invEdit = function(){
                 invoicerise_tel:{
                     required: true
                 },
-                bank_id:{
+                bank_name:{
                     required: true
                 },
                 bank:{
@@ -342,11 +342,24 @@ var invEdit = function(){
             }
         });
 
+        //输入开户行事件
+        $("#bank_name").blur(function(){
+            var value = $(this).val();
+            var list = [];
+            for(var i = 0;i<bankList.length;i++){
+                list.push(bankList[i].bankname);
+            }
+            if(list.indexOf(value) == -1){  //不存在
+                $(this).val("");
+            }
+        });
+
         //点击修改抬头信息确定按钮
         $('#register-update').click(function() {
             btnDisable($('#register-update'));
             if ($('.register-form').validate().form()) {
                 var inv = $('.register-form').getFormData();
+                inv.bank_id = $("#bankList").find("option[value='"+inv.bank_name+"']").attr('data-bankid');
                 inv.address_phone = inv.invoicerise_address+"/"+inv.invoicerise_tel;
                 $("#loading_edit").modal("show");
                 invoReplaceEdit(inv);
@@ -367,6 +380,12 @@ var invEdit = function(){
             for(var i=0; i < invocerList.length; i++){
                 if(invid == invocerList[i].invid){
                     inv = invocerList[i];
+                }
+            }
+            inv.bank_name = "";
+            for(var i in bankList){
+                if(inv.bank_id == bankList[i].bankid){
+                    inv.bank_name = bankList[i].bankname;
                 }
             }
             var options = { jsonValue: inv, exclude:exclude,isDebug: false};
@@ -535,7 +554,7 @@ function getbankNameDataEnd(flg, result){
             var res = result.response;
             bankList = res.banklist;
             for(var i = 0; i < bankList.length; i++){
-                $("#bank_name").append("<option value='"+bankList[i].bankid+"'>" + bankList[i].bankname +"</option>");
+                $("#bankList").append("<option data-bankid='"+bankList[i].bankid+"' value='"+bankList[i].bankname+"'></option>");
             }
             //获取开票信息
             invocreTable.init();

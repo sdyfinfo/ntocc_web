@@ -3,6 +3,7 @@
  */
 
 var payeeList = [];
+var bankList = [];
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function () {
         $(".inquiry-form").find("input[name=payname]").val(payname);
@@ -238,12 +239,24 @@ var payeeEdit = function(){
             return this.optional(element) || (ard.test(value));
         }, "请正确填写您的身份证号");
 
+        //输入开户行事件
+        $("#bankname").blur(function(){
+            var value = $(this).val();
+            var list = [];
+            for(var i = 0;i<bankList.length;i++){
+                list.push(bankList[i].bankname);
+            }
+            if(list.indexOf(value) == -1){  //不存在
+                $(this).val("");
+            }
+        });
+
         //点击确定按钮
         $('#register-btn').click(function() {
             btnDisable($('#register-btn'));
             if ($('.register-form').validate().form()) {
                 var pay = $('.register-form').getFormData();
-                pay.bankname = $("#bankid").find("option:selected").text();
+                pay.bankid = $("#bankList").find("option[value='"+pay.bankname+"']").attr('data-bankid');
                 if($("input[name=edittype]").val() == PAYEEADD){
                     $("#loading_edit").modal("show");
                     payeeAdd(pay);
@@ -334,7 +347,7 @@ function getbankNameDataEnd(flg, result, callback){
             var res = result.response;
             bankList = res.banklist;
             for(var i = 0; i < bankList.length; i++){
-                $("#bankid").append("<option value='"+bankList[i].bankid+"'>" + bankList[i].bankname +"</option>");
+                $("#bankList").append("<option data-bankid='"+bankList[i].bankid+"' value='"+bankList[i].bankname+"'></option>");
             }
         }else{
             alertDialog("开户行信息获取失败！");

@@ -26,7 +26,7 @@ var OrganTable = function () {
             showRefresh : false,//刷新按钮
             idField: 'organid',
             checkboxHeader: false,
-            height: 320,
+            height: $(window).height() - 220,
             ajax :function (e) {
                 //因为需要做成机构选择的树形机构，所以一次获取所有数据，前端分页
                 var data = e.data;
@@ -290,6 +290,18 @@ var OrganEdit = function() {
             }
         });
 
+        //输入开户行事件
+        $("#bank_name").blur(function(){
+            var value = $(this).val();
+            var list = [];
+            for(var i = 0;i<bankList.length;i++){
+                list.push(bankList[i].bankname);
+            }
+            if(list.indexOf(value) == -1){  //不存在
+                $(this).val("");
+            }
+        });
+
         //确定按钮按下
         $('#register-btn').click(function() {
             if(($('#organtree').jstree(true).get_selected(true)).length != 0){  //子级，只有基本信息
@@ -326,14 +338,9 @@ var OrganEdit = function() {
                     var invoicerise = $('.invoicerise-form').getFormData();
                     organ.taxpayer = invoicerise.taxpayer;
                     organ.address_phone = invoicerise.invoicerise_address+"/"+invoicerise.invoicerise_tel;
-                    organ.bank_id = invoicerise.bank_id;
+                    organ.bankname = invoicerise.bankname;
+                    organ.bank_id = $("#bank_list").find("option[value='"+invoicerise.bankname+"']").attr("data-bankid");
                     organ.bank = invoicerise.bank;
-                    for(var i in bankList){
-                        if(organ.bank_id == bankList[i].bankid){
-                            organ.banknumber = bankList[i].banknumber;
-                            organ.bankname = bankList[i].bankname;
-                        }
-                    }
                     organ.rate = invoicerise.rate;
                     if($("input[name=edittype]").val() == ORGANADD){
                         $("#loading_edit").modal("show");
@@ -381,6 +388,12 @@ var OrganEdit = function() {
             for(var i=0; i < organlist.length; i++){
                 if(organid == organlist[i].organid){
                     organ = organlist[i];
+                }
+            }
+            organ.bankname = "";
+            for(var i in bankList){
+                if(organ.bank_id == bankList[i].bankid){
+                    organ.bankname = bankList[i].bankname;
                 }
             }
             var options = { jsonValue: organ, exclude:exclude,isDebug: false};
@@ -559,7 +572,7 @@ function getbankNameDataEnd(flg, result){
             var res = result.response;
             bankList = res.banklist;
             for(var i = 0; i < bankList.length; i++){
-                $("#bank_name").append("<option value='"+bankList[i].bankid+"'>" + bankList[i].bankname +"</option>");
+                $("#bank_list").append("<option data-bankid='"+bankList[i].bankid+"' value='"+bankList[i].bankname+"'></option>");
             }
             //获取开票信息
             OrganTable.init();

@@ -80,7 +80,7 @@ var RoleTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-            $('td:eq(1)', nRow).attr('style', 'text-align: center;');
+            $('td:eq(0),td:eq(1),td:eq(5),td:eq(7)', nRow).attr('style', 'text-align: center;');
         }
         });
         table.find('.group-checkable').change(function () {
