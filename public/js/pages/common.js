@@ -248,6 +248,7 @@ function dateFormat(date, sep){
     if(date == undefined || date == "" || typeof(date) != "string"){
         return getNowFormatDate();
     }
+    date = date.replace(/\//g,'');
     return date.substr(0,4) + sep + date.substr(4, 2) + sep + date.substr(6, 2);
 }
 

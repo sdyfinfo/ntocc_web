@@ -420,8 +420,12 @@ var VehiceEdit = function() {
             var options = { jsonValue: vehice, exclude:exclude,isDebug: false};
             $(".edit-form").initForm(options);
             //日期框赋值
-            $("input[name=regdate]").datepicker("setDate",dateFormat(vehice.regdate, "-"));
-            $("input[name=issue_date]").datepicker("setDate",dateFormat(vehice.issue_date, "-"));
+            if(vehice.regdate!=""){
+                $("input[name=regdate]").datepicker("setDate",dateFormat(vehice.regdate, "-"));
+            }
+            if(vehice.issue_date!=""){
+                $("input[name=issue_date]").datepicker("setDate",dateFormat(vehice.issue_date, "-"));
+            }
             //清空文件
             clearFile();
             //显示图片
@@ -454,8 +458,12 @@ var VehiceEdit = function() {
             var options = { jsonValue: vehice, exclude:exclude,isDebug: false};
             $(".edit-form").initForm(options);
             //日期框赋值
-            $("input[name=regdate]").datepicker("setDate",dateFormat(vehice.regdate, "-"));
-            $("input[name=issue_date]").datepicker("setDate",dateFormat(vehice.issue_date, "-"));
+            if(vehice.regdate!=""){
+                $("input[name=regdate]").datepicker("setDate",dateFormat(vehice.regdate, "-"));
+            }
+            if(vehice.issue_date!=""){
+                $("input[name=issue_date]").datepicker("setDate",dateFormat(vehice.issue_date, "-"));
+            }
             //清空文件
             clearFile();
             //显示图片
