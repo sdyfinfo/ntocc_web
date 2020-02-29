@@ -147,11 +147,12 @@ var ConsEdit = function(){
                 mobile:{
                     required: true,
                     phone:true
-                },
-                credit_code:{
-                    required: true,
-                    creditCode:true
                 }
+                //,
+                //credit_code:{
+                //    required: true,
+                //    creditCode:true
+                //}
 
             },
 
@@ -161,10 +162,11 @@ var ConsEdit = function(){
                 },
                 mobile:{
                     required: "请输入收货人电话"
-                },
-                credit_code:{
-                    required: "请输入社会信用代码(或身份证号)"
                 }
+                //,
+                //credit_code:{
+                //    required: "请输入社会信用代码(或身份证号)"
+                //}
             },
 
             invalidHandler: function(event, validator) { //display error alert on form submit

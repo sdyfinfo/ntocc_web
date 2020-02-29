@@ -260,9 +260,9 @@ var VehiceEdit = function() {
                 transport_number:{
                     required: true
                 },
-                licensekey:{
-                    required: true
-                },
+                //licensekey:{
+                //    required: true
+                //},
                 driving_img: {
                     required: true
                 }
@@ -323,9 +323,9 @@ var VehiceEdit = function() {
                 transport_number:{
                     required: "道路运输证号必须输入"
                 },
-                licensekey:{
-                    required: "道路经营许可证号必须输入"
-                },
+                //licensekey:{
+                //    required: "道路经营许可证号必须输入"
+                //},
                 driving_img: {
                     required: "行驶证必须上传"
                 }

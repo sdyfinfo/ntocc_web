@@ -268,9 +268,9 @@ var DriverEdit = function() {
                 quasi_driving:{
                     required: true
                 },
-                qualification:{
-                    required: true
-                },
+                //qualification:{
+                //    required: true
+                //},
                 phone:{
                     required: true,
                     phone:true
@@ -296,9 +296,9 @@ var DriverEdit = function() {
                 quasi_driving:{
                     required: "准驾车型必须选择"
                 },
-                qualification:{
-                    required: "从业资格证号必须输入"
-                },
+                //qualification:{
+                //    required: "从业资格证号必须输入"
+                //},
                 phone:{
                     required: "手机号必须输入"
                 },

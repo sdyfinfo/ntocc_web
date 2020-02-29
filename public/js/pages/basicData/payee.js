@@ -156,10 +156,10 @@ var payeeEdit = function(){
                 payname:{
                     required: true
                 },
-                idcard:{
-                    required: true,
-                    idcard:true
-                },
+                //idcard:{
+                //    required: true,
+                //    idcard:true
+                //},
                 addresseeTel:{
                     required: true
                 },
@@ -181,9 +181,9 @@ var payeeEdit = function(){
                 payname:{
                     required: "请输入银行开户户名"
                 },
-                idcard:{
-                    required: "请输入身份证号"
-                },
+                //idcard:{
+                //    required: "请输入身份证号"
+                //},
                 payphone:{
                     required: "请输入收款人手机号"
                 },
