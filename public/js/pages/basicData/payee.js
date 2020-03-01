@@ -156,10 +156,9 @@ var payeeEdit = function(){
                 payname:{
                     required: true
                 },
-                //idcard:{
-                //    required: true,
-                //    idcard:true
-                //},
+                idcard:{
+                    idcard:true
+                },
                 addresseeTel:{
                     required: true
                 },

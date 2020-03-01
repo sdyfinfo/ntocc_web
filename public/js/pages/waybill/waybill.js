@@ -3,7 +3,7 @@
  */
 
 var billStateList,payStateList,goodsTypeList,unitList,verificationList,dictTrue = [];   //字典
-var projectList,driverList,consignorList,consigneeList = [];
+var projectList,driverList,vehiceList,consignorList,consigneeList = [];
 var wayBillList = [];
 var goodsList = [];  //货物名称
 var selectType = '0';
@@ -504,7 +504,7 @@ var WayBillAdd = function() {
             }
         });
 
-        //司机信息联动车辆信息
+        //司机信息联动
         $("#driver_add").blur(function(){
             var value = $(this).val();
             var list = [];
@@ -513,30 +513,49 @@ var WayBillAdd = function() {
             }
             if(list.indexOf(value) == -1){  //不存在
                 $(this).val("");
-                $("input[name=plate_number],input[name=vehicle_id],input[name=load],input[name=name],input[name=driver_id]").val("");
+                $("input[name=plate_number],input[name=name]").val("");
             }
         });
         $("#driver_add").change(function(e){
             var value = $(this).val();
-            $("input[name=plate_number]").val("");
-            $("input[name=load]").val("");
             if(value != ""){
                 var id = $("#driverList").find("option[value='"+value+"']").attr("data-did");
                 for(var i in driverList){
                     if(id == driverList[i].did){
                         $("input[name=name]").val(driverList[i].name);
                         $("input[name=driver_id]").val(driverList[i].did);
-                        $("input[name=plate_number]").val(driverList[i].plate_number);
-                        $("input[name=vehicle_id]").val(driverList[i].vehicle_id);
                     }
                 }
-                //请求车辆查询载重
-                if($("input[name=plate_number]").val()!=""){
-                    var data = {platenumber:$("input[name=plate_number]").val()};
-                    vehiceDataGet(data);
+            }else{
+                $("input[name=name],input[name=driver_id]").val("");
+            }
+        });
+
+        //车牌号联动车辆载重
+        $("#plate_number").blur(function(){
+            var value = $(this).val();
+            var list = [];
+            for(var i = 0;i<vehiceList.length;i++){
+                list.push(vehiceList[i].platenumber);
+            }
+            if(list.indexOf(value) == -1){  //不存在
+                $(this).val("");
+                $("#plate_number,input[name=vehicle_id],input[name=load]").val("");
+            }
+        });
+        $("#plate_number").change(function(e){
+            var value = $(this).val();
+            $("input[name=load]").val("");
+            if(value != ""){
+                //显示载重
+                for(var i in vehiceList){
+                    if(value == vehiceList[i].platenumber){
+                        $("input[name=load]").val(vehiceList[i].load);
+                        $("input[name=vehicle_id]").val(vehiceList[i].vehid);
+                    }
                 }
             }else{
-                $("input[name=plate_number],input[name=vehicle_id],input[name=load],input[name=name],input[name=driver_id]").val("");
+                $("input[name=load],input[name=vehicle_id]").val("");
             }
         });
 
@@ -952,7 +971,6 @@ var WayBillDelete = function() {
     }
 }();
 
-
 //导入车辆
 $("#bill_import").on("click",function(){
     $("#bill_upload").find("input[type=file]").value = "";
@@ -1086,14 +1104,14 @@ var WayBillDepart = function() {
     }
 }();
 
-//运单完成
+//运单签收
 var WayBillDone = function() {
     $('#bill_done').click(function() {
         var len = $(".checkboxes:checked").length;
         if(len < 1){
             alertDialog("至少选中一项！");
         }else{
-            confirmDialog("您确定要完成运单吗？", WayBillDone.deletePro)
+            confirmDialog("您确定要签收运单吗？", WayBillDone.deletePro)
         }
     });
     return{
@@ -1249,15 +1267,15 @@ function getDriverDataEnd(flg, result){
                     $("#driverList").append("<option data-did='"+driverList[i].did+"' value='"+value+"'></option>");
                 }
             }
-            //获取发货人信息
-            consignorDataGet();
+            //获取车辆信息
+            vehiceDataGet();
         }else{
-            //获取发货人信息
-            consignorDataGet();
+            //获取车辆信息
+            vehiceDataGet();
         }
     }else{
-        //获取发货人信息
-        consignorDataGet()
+        //获取车辆信息
+        vehiceDataGet();
     }
 }
 
@@ -1369,12 +1387,19 @@ function getVehiceDataEnd(flg,result){
     if(flg){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
-            $("input[name=load]").val(res.vehicleList[0].load);
+            vehiceList = res.vehicleList;
+            for(var i in vehiceList){
+                $("#vehiceList").append("<option value='"+vehiceList[i].platenumber+"'></option>");
+            }
+            //获取发货人信息
+            consignorDataGet();
         }else{
-            alertDialog("车辆信息获取失败！");
+            //获取发货人信息
+            consignorDataGet();
         }
     }else{
-        alertDialog("车辆信息获取失败！");
+        //获取发货人信息
+        consignorDataGet();
     }
 }
 

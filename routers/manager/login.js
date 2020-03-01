@@ -392,7 +392,7 @@ router.get('/ushield',function(req,res,next){
 var fs = require('fs');
 var path = require('path');
 router.get('/downloadushieldfile', function (req, res, next) {
-    var filename = 'U盾模板.xlsx';
+    var filename = 'U盾模板.txt';
     var filepath = path.join(__dirname, '../upload/' + filename);
     var stats = fs.statSync(filepath);
     if (stats.isFile()) {

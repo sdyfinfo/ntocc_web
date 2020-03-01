@@ -6,7 +6,7 @@ var businessUrl = regulateSucc.businessUrl;
 function userDataGet(data, callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
-        data = {userid: "", username: "", organid: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+        data = {userid: "", username: "", organid: "", mobile:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",

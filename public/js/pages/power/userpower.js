@@ -185,7 +185,15 @@ var UserTable = function () {
                     }
                 }, {
                     title : '用户列表',
-                    field : 'username'
+                    field : 'userid',
+                    formatter: function (value, row, index) {
+                        for(var i in userList){
+                            if(value == userList[i].userid){
+                                return userList[i].username+"("+value+")";
+                            }
+                        }
+                    }
+
                 }
             ],
             //选中userid，根据userid查找权限

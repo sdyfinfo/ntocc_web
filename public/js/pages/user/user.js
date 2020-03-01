@@ -103,6 +103,7 @@ var UserTable = function () {
                     userid: formData.userid,
                     username: formData.username,
                     organid: organ,
+                    mobile:formData.mobile,
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,

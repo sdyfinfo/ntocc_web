@@ -112,6 +112,15 @@ $(function () {
     });
 
     window.menuItem = function(e,that) {
+        //判断是否清空缓存
+        if(localStorage.getItem("repassword") == undefined){
+            if(that != undefined){
+                $(that).attr('href',"/logout");
+            }else{
+                $(this).attr('href',"/logout");
+            }
+            return;
+        }
         if(that != undefined){
             // 获取标识数据
             var dataUrl = $(that).attr('href'),

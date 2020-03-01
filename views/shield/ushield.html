@@ -253,14 +253,14 @@
                     <h4 class="modal-title">导入U盾</h4>
                 </div>
                 <div class="modal-body" style="vertical-align: middle;text-align: center;">
-                    <div style="height: 30px;line-height: 30px">只能上传xlsx格式文件,<a href="/downloadushieldfile" download="U盾.text">点击下载Excel模板</a></div>
+                    <div style="height: 30px;line-height: 30px">只能上传txt格式文件,<a href="/downloadushieldfile" download="U盾.txt">点击下载txt模板</a></div>
                     <div style="width: 360px;height: 200px;border: 1px dashed #0088cc;margin: 0 auto;" ondrop="drop(event)" ondragover="allowDrop(event)">
                         <label contentEditable='true' style="width: 100%;height: 100%;padding-top: 50px" for="ush_file">
                             <img src="/public/img/file_upload.png" style="width: 100px;height: 80px">
                             <div style="height: 50px;line-height: 50px">将文件拖到此处或点击上传</div>
                         </label>
                     </div>
-                    <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx,.text" id="ush_file" style="display: none">
+                    <input type="file" accept=".txt" id="ush_file" style="display: none">
                     <div style="height: 30px;line-height: 30px" id="upload_name" hidden="hidden"></div>
                 </div>
             </div>

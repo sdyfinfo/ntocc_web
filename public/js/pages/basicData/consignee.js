@@ -147,12 +147,10 @@ var ConsEdit = function(){
                 mobile:{
                     required: true,
                     phone:true
+                },
+                credit_code:{
+                    creditCode:true
                 }
-                //,
-                //credit_code:{
-                //    required: true,
-                //    creditCode:true
-                //}
 
             },
 

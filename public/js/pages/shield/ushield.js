@@ -529,7 +529,7 @@ function drop(ev) {
         var filesName=files[0].name;
         var extStart=filesName.lastIndexOf(".");
         var ext=filesName.substring(extStart,filesName.length).toUpperCase();
-        if(ext ==".text" || ext ==".TEXT"){ //判断是否是需要的问件类型
+        if(ext ==".txt" || ext ==".TXT"){ //判断是否是需要的问件类型
             //显示上传文件名
             $("#upload_name").show();
             $("#upload_name").html("文件名："+filesName+"   文件大小："+((Number(files[0].size))/1024).toFixed(1)+"KB");
@@ -544,7 +544,7 @@ function drop(ev) {
             $("#loading_edit").modal('show');
             ushieldUpload(formData);
         }else{
-            alertDialog("请选择.text类型的文件上传！");
+            alertDialog("请选择.txt类型的文件上传！");
             return false;
         }
     }else{

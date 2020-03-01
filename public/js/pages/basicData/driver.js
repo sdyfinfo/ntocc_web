@@ -283,6 +283,12 @@ var DriverEdit = function() {
                 },
                 driving_license: {
                     required: true
+                },
+                driving_license_starttime:{
+                    required: true
+                },
+                driving_license_endtime:{
+                    required: true
                 }
             },
 
@@ -310,6 +316,12 @@ var DriverEdit = function() {
                 },
                 driving_license: {
                     required: "行驶证必须上传"
+                },
+                driving_license_starttime:{
+                    required: "驾驶证有效日期(起始)必须选择"
+                },
+                driving_license_endtime:{
+                    required: "驾驶证有效日期(终止)必须选择"
                 }
             },
 
