@@ -290,7 +290,7 @@ var WayBillAdd = function() {
                 orderMaking_time: {
                     required: true
                 },
-                project_id:{
+                project_name:{
                     required: true
                 },
                 consignor:{
@@ -352,7 +352,7 @@ var WayBillAdd = function() {
                 orderMaking_time: {
                     required: "制单日期必须选择"
                 },
-                project_id:{
+                project_name:{
                     required: "项目必须输入"
                 },
                 consignor:{
@@ -864,7 +864,11 @@ var WayBillAdd = function() {
                 $("#goodsname,input[name=number]").removeAttr("readonly");
             }else{
                 $("#lineHave").val("1");
-                $("#project_add").attr("readonly","readonly");
+                if(bill.project_id != ""){
+                    $("#project_add").attr("readonly","readonly");
+                }else{
+                    $("#project_add").removeAttr("readonly");
+                }
                 $("input[name=orderMaking_time],#goods_type").attr("disabled",true);
                 $(".line-display").find("input").removeAttr("readonly");
                 $("#lineList_add").parents('.form-group').hide();
