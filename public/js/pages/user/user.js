@@ -37,7 +37,7 @@ var ComponentsDateTimePickers = function () {
                 todayHighlight: true
             });
             var date = getNowFormatDate();
-            $("input[name='birthday']").datepicker("setDate",date);
+            $("input[name='birthday']").datepicker("setDate","");
         }
     };
 
@@ -356,7 +356,7 @@ var UserEdit = function() {
             validator.resetForm();
             $(".register-form").find(".has-error").removeClass("has-error");
             $(".modal-title").text("新增用户");
-            $(":input",".register-form").not(":button,:reset,:submit,:radio,:input[name=birthday],#evaluationneed").val("")
+            $(":input",".register-form").not(":button,:reset,:submit,:radio,#evaluationneed").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
             //清空角色输入框
@@ -368,6 +368,7 @@ var UserEdit = function() {
             );
             //清空机构输入框
             clearSelect($("#organtree"));
+            ComponentsDateTimePickers.init();
             //用户代码可以输入
             $(".register-form").find("input[name=userid]").attr("readonly", false);
             $("input[name=edittype]").val(USERADD);

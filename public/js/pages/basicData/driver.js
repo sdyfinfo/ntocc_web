@@ -44,8 +44,8 @@ var ComponentsDateTimePickers = function () {
                 todayHighlight: true
             });
             var date = getNowFormatDate();
-//            $("input[name='driving_license_starttime']").datepicker("setDate",date);
-//            $("input[name='driving_license_endtime']").datepicker("setDate",date);
+            $("input[name='driving_license_starttime']").datepicker("setDate","");
+            $("input[name='driving_license_endtime']").datepicker("setDate","");
         }
     };
 
@@ -458,12 +458,8 @@ var DriverEdit = function() {
             var options = { jsonValue: driver, exclude:exclude,isDebug: false};
             $(".edit-form").initForm(options);
             //日期框赋值
-            if(driver.driving_license_starttime != ""){
-                $("input[name=driving_license_starttime]").datepicker("setDate",dateFormat(driver.driving_license_starttime, "-"));
-            }
-            if(driver.driving_license_endtime != ""){
-                $("input[name=driving_license_endtime]").datepicker("setDate",dateFormat(driver.driving_license_endtime, "-"));
-            }
+            $("input[name=driving_license_starttime]").datepicker("setDate",dateFormat(driver.driving_license_starttime, "-"));
+            $("input[name=driving_license_endtime]").datepicker("setDate",dateFormat(driver.driving_license_endtime, "-"));
             //清空文件
             clearFile();
             //显示图片
@@ -500,12 +496,8 @@ var DriverEdit = function() {
             var options = { jsonValue: driver, exclude:exclude,isDebug: false};
             $(".edit-form").initForm(options);
             //日期框赋值
-            if(driver.driving_license_starttime != ""){
-                $("input[name=driving_license_starttime]").datepicker("setDate",dateFormat(driver.driving_license_starttime, "-"));
-            }
-            if(driver.driving_license_endtime != ""){
-                $("input[name=driving_license_endtime]").datepicker("setDate",dateFormat(driver.driving_license_endtime, "-"));
-            }
+            $("input[name=driving_license_starttime]").datepicker("setDate",dateFormat(driver.driving_license_starttime, "-"));
+            $("input[name=driving_license_endtime]").datepicker("setDate",dateFormat(driver.driving_license_endtime, "-"));
             //清空文件
             clearFile();
             //显示图片
@@ -532,6 +524,7 @@ var DriverEdit = function() {
             $(":input",".edit-form").not(":button,:reset,:submit,:radio,#evaluationneed").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
+            ComponentsDateTimePickers.init();
             //清空文件
             clearFile();
             //是否允许上传图片

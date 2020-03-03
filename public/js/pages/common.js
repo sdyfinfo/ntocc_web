@@ -246,7 +246,8 @@ function bootstrapTableDataSet(totalcount, data, callback){
 function dateFormat(date, sep){
     //如果日期不存在，或者为空，返回当前日期
     if(date == undefined || date == "" || typeof(date) != "string"){
-        return getNowFormatDate();
+        //return getNowFormatDate();
+        return "";
     }
     date = date.replace(/\//g,'');
     return date.substr(0,4) + sep + date.substr(4, 2) + sep + date.substr(6, 2);

@@ -251,7 +251,7 @@ var LineEdit = function(){
                 goods:{
                     required: true
                 },
-                numbers:{
+                number:{
                     required: true
                 },
                 consignorTel:{
@@ -309,7 +309,7 @@ var LineEdit = function(){
                 goods:{
                     required: "请选择货物名称"
                 },
-                numbers:{
+                number:{
                     required: "请输入总发运数量"
                 },
                 consignorTel:{

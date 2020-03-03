@@ -41,8 +41,8 @@ var ComponentsDateTimePickers = function () {
                 todayHighlight: true
             });
             var date = getNowFormatDate();
-            $("input[name='regdate']").datepicker("setDate",date);
-            $("input[name='issue_date']").datepicker("setDate",date);
+            $("input[name='regdate']").datepicker("setDate","");
+            $("input[name='issue_date']").datepicker("setDate","");
         }
     };
 
@@ -420,12 +420,8 @@ var VehiceEdit = function() {
             var options = { jsonValue: vehice, exclude:exclude,isDebug: false};
             $(".edit-form").initForm(options);
             //日期框赋值
-            if(vehice.regdate!=""){
-                $("input[name=regdate]").datepicker("setDate",dateFormat(vehice.regdate, "-"));
-            }
-            if(vehice.issue_date!=""){
-                $("input[name=issue_date]").datepicker("setDate",dateFormat(vehice.issue_date, "-"));
-            }
+            $("input[name=regdate]").datepicker("setDate",dateFormat(vehice.regdate, "-"));
+            $("input[name=issue_date]").datepicker("setDate",dateFormat(vehice.issue_date, "-"));
             //清空文件
             clearFile();
             //显示图片
@@ -458,12 +454,8 @@ var VehiceEdit = function() {
             var options = { jsonValue: vehice, exclude:exclude,isDebug: false};
             $(".edit-form").initForm(options);
             //日期框赋值
-            if(vehice.regdate!=""){
-                $("input[name=regdate]").datepicker("setDate",dateFormat(vehice.regdate, "-"));
-            }
-            if(vehice.issue_date!=""){
-                $("input[name=issue_date]").datepicker("setDate",dateFormat(vehice.issue_date, "-"));
-            }
+            $("input[name=regdate]").datepicker("setDate",dateFormat(vehice.regdate, "-"));
+            $("input[name=issue_date]").datepicker("setDate",dateFormat(vehice.issue_date, "-"));
             //清空文件
             clearFile();
             //显示图片
@@ -489,6 +481,7 @@ var VehiceEdit = function() {
             $(":input",".edit-form").not(":button,:reset,:submit,:radio,#evaluationneed").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
+            ComponentsDateTimePickers.init();
             //清空文件
             clearFile();
             fileUploadAllowed(1);

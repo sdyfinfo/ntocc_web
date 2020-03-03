@@ -30,7 +30,7 @@ var ComponentsDateTimePickers = function () {
             };
             $("#birthday").datepicker(data);
             var date = getNowFormatDate();
-            $("input[name='birthday']").datepicker("setDate",date);
+            $("input[name='birthday']").datepicker("setDate","");
         }
     };
 

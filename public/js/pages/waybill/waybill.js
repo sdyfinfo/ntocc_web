@@ -36,13 +36,14 @@ var ComponentsDateTimePickers = function () {
                 language:"zh-CN",
                 todayBtn:true,
                 format:"yyyy-mm-dd",
-                //showButtonPanel:true,
-                todayHighlight: true
-            });
-            var date = getNowFormatDate();
-            $("input[name='orderMaking_time']").datepicker("setDate",date);
-        }
-    };
+            //showButtonPanel:true,
+            todayHighlight: true
+        });
+      var date = getNowFormatDate();
+      $("input[name='orderMaking_time']").datepicker("setDate",date);
+      $("input[name='planTime']").datepicker("setDate","");
+  }
+};
 
     return {
         //main function to initiate the module
@@ -730,7 +731,7 @@ var WayBillAdd = function() {
                     }
                 }
                 if(goodsList.length == 0){
-                    alertDialog("获取名称必须输入！");
+                    alertDialog("货物名称必须输入！");
                     return;
                 }
                 //货物重量不能大于车载重量
@@ -869,7 +870,7 @@ var WayBillAdd = function() {
                 }else{
                     $("#project_add").removeAttr("readonly");
                 }
-                $("input[name=orderMaking_time],#goods_type").attr("disabled",true);
+                $("input[name=orderMaking_time]").attr("disabled",true);
                 $(".line-display").find("input").removeAttr("readonly");
                 $("#lineList_add").parents('.form-group').hide();
                 $("input[name=consigneeTel],input[name=consignorTel]").attr("readonly","readonly");
@@ -894,6 +895,7 @@ var WayBillAdd = function() {
             $("#project_add").removeAttr("readonly");
             $('.add-form').find("input,textarea,select").attr("disabled", false);
             $('.add-form').find("input[name=orderMaking_time]").attr("disabled", true);
+            ComponentsDateTimePickers.init();
             goodsList = [];
             $("input[name=edittype]").val(BILLADD);
             $(".modal-title").text("新增运单");
