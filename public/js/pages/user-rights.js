@@ -1366,6 +1366,28 @@ function vehiceUpload(data){
     });
 }
 
+//车辆证照导入
+function vehiceImgUpload(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: false,
+        processData:false,
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "vehiclePhotos",    //请求发送到TestServlet处
+        data: data,
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("vehiceImgUpload:" + JSON.stringify(result));
+            vehiceEditEnd(true, result, VEHICEIMGUPLOAD);
+        },
+        error: function (errorMsg) {
+            console.info("vehiceImgUpload-error:" + JSON.stringify(errorMsg));
+            vehiceEditEnd(false, "", VEHICEIMGUPLOAD);
+        }
+    });
+}
+
 //线路新增
 function lineAdd(data){
     App.blockUI({target:'#lay-out',boxed: true});
@@ -1824,6 +1846,28 @@ function driverUpload(data){
         error: function (errorMsg) {
             console.info("driverUpload-error:" + JSON.stringify(errorMsg));
             driverEditEnd(false, "", DRIVERUPLOAD);
+        }
+    });
+}
+
+//司机证照导入
+function driverImgUpload(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: false,
+        processData:false,
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "driverPhotos",    //请求发送到TestServlet处
+        data: data,
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("driverImgUpload:" + JSON.stringify(result));
+            driverEditEnd(true, result, DRIVERIMGUPLOAD);
+        },
+        error: function (errorMsg) {
+            console.info("driverImgUpload-error:" + JSON.stringify(errorMsg));
+            driverEditEnd(false, "", DRIVERIMGUPLOAD);
         }
     });
 }

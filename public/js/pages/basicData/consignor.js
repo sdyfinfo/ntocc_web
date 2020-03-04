@@ -4,12 +4,15 @@
 
 var invoiceList = [];
 var ConsignorList = [];
+var getData = false;
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
         fun_power();
         //获取发票信息
         invoiceDataGet();
+        //发货人表格
+        ConsignorTable.init();
         //司机编辑和查看
         ConsignorEdit.init();
     });
@@ -233,25 +236,37 @@ var ConsignorEdit = function() {
         });
         //查看发货人信息
         $('#consignor_table').on('click', '#consignor_detail', function (e) {
+            var that = this;
             e.preventDefault();
             //清除校验错误信息
             validator.resetForm();
             $(".edit-form").find(".has-error").removeClass("has-error");
             $(".modal-title").text("查看发货人");
-            var exclude = [];
-            var row = $(this).parents('tr')[0];
-            var conid = $("#consignor_table").dataTable().fnGetData(row).conid;
-            var consignor = new Object();
-            for(var i=0; i < ConsignorList.length; i++){
-                if(conid == ConsignorList[i].conid){
-                    consignor = ConsignorList[i];
+            //获取发票信息
+            getData = false;
+            var Timer;
+            invoiceDataGet();
+            Timer = setInterval(
+              function(){
+                if(getData){
+                    clearInterval(Timer);
+                    var exclude = [];
+                    var row = $(that).parents('tr')[0];
+                    var conid = $("#consignor_table").dataTable().fnGetData(row).conid;
+                    var consignor = new Object();
+                    for(var i=0; i < ConsignorList.length; i++){
+                        if(conid == ConsignorList[i].conid){
+                            consignor = ConsignorList[i];
+                        }
+                    }
+                    var options = { jsonValue: consignor, exclude:exclude,isDebug: false};
+                    $(".edit-form").initForm(options);
+                    $(".edit-form").find("input").attr("disabled",true);
+                    $(".modal-footer").hide();
+                    $('#edit_consignor').modal('show');
                 }
-            }
-            var options = { jsonValue: consignor, exclude:exclude,isDebug: false};
-            $(".edit-form").initForm(options);
-            $(".edit-form").find("input").attr("disabled",true);
-            $(".modal-footer").hide();
-            $('#edit_consignor').modal('show');
+              },500
+            );
         });
         //编辑发货人信息
         $('#consignor_table').on('click', '#op_edit', function (e) {
@@ -260,27 +275,36 @@ var ConsignorEdit = function() {
             validator.resetForm();
             $(".edit-form").find(".has-error").removeClass("has-error");
             $(".modal-title").text("编辑发货人");
-            var exclude = [];
-            var row = $(this).parents('tr')[0];
-            var conid = $("#consignor_table").dataTable().fnGetData(row).conid;
-            var consignor = new Object();
-            for(var i=0; i < ConsignorList.length; i++){
-                if(conid == ConsignorList[i].conid){
-                    consignor = ConsignorList[i];
-                }
-            }
-            if(consignor.line == "0"){  //该发货人绑定了线路
-                alertDialog("该发货人绑定了线路,不能进行编辑操作！");
-            }else{
-                var options = { jsonValue: consignor, exclude:exclude,isDebug: false};
-                $(".edit-form").initForm(options);
-                $("input[name=edittype]").val(CONSIGNOREDIT);
-                $(".edit-form").find("input").attr("disabled",false);
-                //发票抬头不能编辑
-                $("input[name=invoice_rise]").attr("disabled",true);
-                $(".modal-footer").show();
-                $('#edit_consignor').modal('show');
-            }
+            //获取发票信息
+            getData = false;
+            var Timer;
+            invoiceDataGet();
+            Timer = setInterval(
+                function(){
+                    clearInterval(Timer);
+                    var exclude = [];
+                    var row = $(this).parents('tr')[0];
+                    var conid = $("#consignor_table").dataTable().fnGetData(row).conid;
+                    var consignor = new Object();
+                    for(var i=0; i < ConsignorList.length; i++){
+                        if(conid == ConsignorList[i].conid){
+                            consignor = ConsignorList[i];
+                        }
+                    }
+                    if(consignor.line == "0"){  //该发货人绑定了线路
+                        alertDialog("该发货人绑定了线路,不能进行编辑操作！");
+                    }else{
+                        var options = { jsonValue: consignor, exclude:exclude,isDebug: false};
+                        $(".edit-form").initForm(options);
+                        $("input[name=edittype]").val(CONSIGNOREDIT);
+                        $(".edit-form").find("input").attr("disabled",false);
+                        //发票抬头不能编辑
+                        $("input[name=invoice_rise]").attr("disabled",true);
+                        $(".modal-footer").show();
+                        $('#edit_consignor').modal('show');
+                    }
+                },500
+            );
         });
         //新增发货人
         $('#op_add').click(function() {
@@ -291,6 +315,8 @@ var ConsignorEdit = function() {
             $(":input",".edit-form").not(":button,:reset,:submit,:radio,#evaluationneed").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
+            //获取发票信息
+            invoiceDataGet();
             $("input[name=edittype]").val(CONSIGNORADD);
             $(".edit-form").find("input").attr("disabled",false);
             $(".modal-footer").show();
@@ -339,22 +365,21 @@ function getInvoiceDataEnd(flg,result){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
             invoiceList = res.invlist;
+            $("#invoiceList,#invoiceList_edit").empty();
             //给发票信息datalist赋值
             for(var i = 0;i<invoiceList.length;i++){
                 $("#invoiceList").append("<option>"+invoiceList[i].rise_name+"</option>");
                 $("#invoiceList_edit").append("<option>"+invoiceList[i].rise_name+"</option>");
             }
-            //发货人表格
-            ConsignorTable.init();
+            getData = true;
         }else{
+            getData = true;
             alertDialog("发票抬头信息获取失败！");
-            //发货人表格
-            ConsignorTable.init();
         }
     }else{
+        getData = true;
         alertDialog("发票抬头信息获取失败！");
-        //发货人表格
-        ConsignorTable.init();
+
     }
 }
 

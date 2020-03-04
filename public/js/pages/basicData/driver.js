@@ -8,6 +8,7 @@ var payeeList = [];
 var dictlist = [];
 var imgInit = "/public/img/img_upload.png";
 var payeeMenuId = "";
+var getData = false;
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
         fun_power();
@@ -18,8 +19,6 @@ if (App.isAngularJsApp() === false) {
         //获取字典信息
         var data = {"lx":"10007"};
         dictQuery(data);
-        //获取收款人信息
-        payeeDataGet();
         //时间控件初始化
         ComponentsDateTimePickers.init();
         //司机编辑和查看
@@ -382,7 +381,7 @@ var DriverEdit = function() {
             var value = $(this).val();
             var list = [];
             for(var i = 0;i<payeeList.length;i++){
-                list.push(payeeList[i].payname+payeeList[i].banknumber);
+                list.push(payeeList[i].payname+payeeList[i].payphone);
             }
             if(list.indexOf(value) == -1){  //不存在
                 $(this).val("");
@@ -436,95 +435,121 @@ var DriverEdit = function() {
         });
         //查看司机信息
         $('#driver_table').on('click', '#driver_detail', function (e) {
+            var that = this;
             e.preventDefault();
             //清除校验错误信息
             validator.resetForm();
             $(".edit-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("查看司机");
-            var exclude = [];
-            var row = $(this).parents('tr')[0];
-            var did = $("#driver_table").dataTable().fnGetData(row).did;
-            var driver = new Object();
-            for(var i=0; i < driverList.length; i++){
-                if(did == driverList[i].did){
-                    driver = driverList[i];
-                }
-            }
-            for(var i in payeeList){
-                if(driver.payid == payeeList[i].payid){
-                    driver.payee_name = payeeList[i].payname+payeeList[i].banknumber;
-                }
-            }
-            var options = { jsonValue: driver, exclude:exclude,isDebug: false};
-            $(".edit-form").initForm(options);
-            //日期框赋值
-            $("input[name=driving_license_starttime]").datepicker("setDate",dateFormat(driver.driving_license_starttime, "-"));
-            $("input[name=driving_license_endtime]").datepicker("setDate",dateFormat(driver.driving_license_endtime, "-"));
-            //清空文件
-            clearFile();
-            //显示图片
-            $("#id_front").siblings("label").find("img").attr("src",driver.id_front || imgInit);
-            $("#id_back").siblings("label").find("img").attr("src",driver.id_back || imgInit);
-            $("#driving_license").siblings("label").find("img").attr("src",driver.driving_license || imgInit);
-            $("#qualification_img").siblings("label").find("img").attr("src",driver.qualification_img || imgInit);
-            //是否允许上传图片
-            fileUploadAllowed(0);
-            $(".modal-footer").hide();
-            $('#edit_driver').modal('show');
+            $("#edit_driver").find(".modal-title").text("查看司机");
+            //获取车辆收款人信息
+            getData = false;
+            var Timer;
+            vehiceDataGet();
+            Timer = setInterval(
+                function(){
+                    if(getData){
+                        clearInterval(Timer);
+                        var exclude = [];
+                        var row = $(that).parents('tr')[0];
+                        var did = $("#driver_table").dataTable().fnGetData(row).did;
+                        var driver = new Object();
+                        for(var i=0; i < driverList.length; i++){
+                            if(did == driverList[i].did){
+                                driver = driverList[i];
+                            }
+                        }
+                        for(var i in payeeList){
+                            if(driver.payid == payeeList[i].payid){
+                                driver.payee_name = payeeList[i].payname+payeeList[i].payphone;
+                            }
+                        }
+                        var options = { jsonValue: driver, exclude:exclude,isDebug: false};
+                        $(".edit-form").initForm(options);
+                        //日期框赋值
+                        $("input[name=driving_license_starttime]").datepicker("setDate",dateFormat(driver.driving_license_starttime, "-"));
+                        $("input[name=driving_license_endtime]").datepicker("setDate",dateFormat(driver.driving_license_endtime, "-"));
+                        //清空文件
+                        clearFile();
+                        //显示图片
+                        $("#id_front").siblings("label").find("img").attr("src",driver.id_front || imgInit);
+                        $("#id_back").siblings("label").find("img").attr("src",driver.id_back || imgInit);
+                        $("#driving_license").siblings("label").find("img").attr("src",driver.driving_license || imgInit);
+                        $("#qualification_img").siblings("label").find("img").attr("src",driver.qualification_img || imgInit);
+                        //是否允许上传图片
+                        fileUploadAllowed(0);
+                        $(".modal-footer").hide();
+                        $('#edit_driver').modal('show');
+                    }
+                },500
+            );
         });
         //编辑司机信息
         $('#driver_table').on('click', '#op_edit', function (e) {
+            var that = this;
             e.preventDefault();
             //清除校验错误信息
             validator.resetForm();
             $(".edit-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("编辑司机");
-            var exclude = [];
-            var row = $(this).parents('tr')[0];
-            var did = $("#driver_table").dataTable().fnGetData(row).did;
-            var driver = new Object();
-            for(var i=0; i < driverList.length; i++){
-                if(did == driverList[i].did){
-                    driver = driverList[i];
+            $("#edit_driver").find(".modal-title").text("编辑司机");
+            //获取车辆收款人信息
+            getData = false;
+            var Timer;
+            vehiceDataGet();
+            Timer = setInterval(
+                function(){
+                    if(getData){
+                        clearInterval(Timer);
+                        var exclude = [];
+                        var row = $(that).parents('tr')[0];
+                        var did = $("#driver_table").dataTable().fnGetData(row).did;
+                        var driver = new Object();
+                        for(var i=0; i < driverList.length; i++){
+                            if(did == driverList[i].did){
+                                driver = driverList[i];
+                            }
+                        }
+                        for(var i in payeeList){
+                            if(driver.payid == payeeList[i].payid){
+                                driver.payee_name = payeeList[i].payname+payeeList[i].payphone;
+                            }
+                        }
+                        var options = { jsonValue: driver, exclude:exclude,isDebug: false};
+                        $(".edit-form").initForm(options);
+                        //日期框赋值
+                        $("input[name=driving_license_starttime]").datepicker("setDate",dateFormat(driver.driving_license_starttime, "-"));
+                        $("input[name=driving_license_endtime]").datepicker("setDate",dateFormat(driver.driving_license_endtime, "-"));
+                        //清空文件
+                        clearFile();
+                        //显示图片
+                        $("#id_front").siblings("label").find("img").attr("src",driver.id_front || imgInit);
+                        $("#id_back").siblings("label").find("img").attr("src",driver.id_back || imgInit);
+                        $("#driving_license").siblings("label").find("img").attr("src",driver.driving_license || imgInit);
+                        $("#qualification_img").siblings("label").find("img").attr("src",driver.qualification_img || imgInit);
+                        //是否允许上传图片
+                        fileUploadAllowed(1);
+                        //只读
+                        $("#id_front,#id_back").attr("disabled",true);
+                        $(".edit-form").find("input[name=name]").attr("readonly","readonly");
+                        $(".edit-form").find("input[name=id_number]").attr("readonly","readonly");
+                        $("input[name=edittype]").val(VEHICEEDIT);
+                        $(".modal-footer").show();
+                        $('#edit_driver').modal('show');
+                    }
                 }
-            }
-            for(var i in payeeList){
-                if(driver.payid == payeeList[i].payid){
-                    driver.payee_name = payeeList[i].payname+payeeList[i].banknumber;
-                }
-            }
-            var options = { jsonValue: driver, exclude:exclude,isDebug: false};
-            $(".edit-form").initForm(options);
-            //日期框赋值
-            $("input[name=driving_license_starttime]").datepicker("setDate",dateFormat(driver.driving_license_starttime, "-"));
-            $("input[name=driving_license_endtime]").datepicker("setDate",dateFormat(driver.driving_license_endtime, "-"));
-            //清空文件
-            clearFile();
-            //显示图片
-            $("#id_front").siblings("label").find("img").attr("src",driver.id_front || imgInit);
-            $("#id_back").siblings("label").find("img").attr("src",driver.id_back || imgInit);
-            $("#driving_license").siblings("label").find("img").attr("src",driver.driving_license || imgInit);
-            $("#qualification_img").siblings("label").find("img").attr("src",driver.qualification_img || imgInit);
-            //是否允许上传图片
-            fileUploadAllowed(1);
-            //只读
-            $("#id_front,#id_back").attr("disabled",true);
-            $(".edit-form").find("input[name=name]").attr("readonly","readonly");
-            $(".edit-form").find("input[name=id_number]").attr("readonly","readonly");
-            $("input[name=edittype]").val(VEHICEEDIT);
-            $(".modal-footer").show();
-            $('#edit_driver').modal('show');
+            );
         });
         //新增司机
         $('#op_add').click(function() {
             //清除校验错误信息
             validator.resetForm();
             $(".edit-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("新增司机");
+            $("#edit_driver").find(".modal-title").text("新增司机");
             $(":input",".edit-form").not(":button,:reset,:submit,:radio,#evaluationneed").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
             ComponentsDateTimePickers.init();
+            //获取车辆收款人信息
+            vehiceDataGet();
             //清空文件
             clearFile();
             //是否允许上传图片
@@ -547,7 +572,7 @@ var DriverEdit = function() {
 $("#driver_table").on('click',".imgCheck",function(e){
     var src = $(this).children("span")[0].innerText;
     $("#img_check").find("img").attr('src',src);
-    $(".modal-title").text("图片查看");
+    $("#driver_table").find(".modal-title").text("图片查看");
     $("#img_check").modal('show');
 });
 
@@ -642,12 +667,12 @@ var DriverDelete = function() {
 
 //导入司机
 $("#driver_import").on("click",function(){
-    $(".driver_upload").find("input[type=file]").value = "";
+    $("#driver_file").value = "";
     $("#upload_name").hide();
     $("#driver_upload").modal('show');
 });
 
-//车辆文件点击上传
+//司机文件点击上传
 $("#driver_file").change(function(){
     var img = $(this).siblings("label").find("img");
     if(this.files[0]){
@@ -668,7 +693,7 @@ $("#driver_file").change(function(){
     }
 });
 
-//车辆文件拖拽上传
+//司机文件拖拽上传
 function allowDrop(ev) {
     //阻止浏览器默认打开文件的操作
     ev.preventDefault();
@@ -703,6 +728,88 @@ function drop(ev) {
     }
 };
 
+//导入司机证照
+$("#driverImg_import").on("click",function(){
+    $("#driverImg_file").value = "";
+    $("#driverImg_upload").modal('show');
+});
+
+//司机证照点击上传
+$("#driverImg_file").change(function(){
+    var filelist = this.files;
+    if(filelist.length!=0){
+        if(filelist.length > 200){
+            alertDialog("单次最多可选200张图片！");
+            $("#driverImg_file").value = "";
+            return;
+        }
+        var formData = new FormData();
+        for(var i = 0; i < filelist.length;i++){
+            //判断图片文件命名格式
+            if(!imgNameCheck(this.files[i].name)){
+                alertDialog("图片文件命名格式不正确！"+this.files[i].name);
+                $("#driverImg_file").value = "";
+                return false;
+            }
+            formData.append("files",this.files[i]);
+        }
+        var userid = {
+            "userid":loginSucc.userid,
+            "organid":loginSucc.organid
+        }
+        var data = sendMessageEdit(DEFAULT,userid);
+        formData.append("body",new Blob([data],{type:"application/json"}));
+        $("#loading_edit").modal('show');
+        driverImgUpload(formData);
+        $("#driverImg_file").value = "";
+    }else{
+        $("#driverImg_file").value = "";
+    }
+});
+
+//司机证照拖拽上传
+function allowDrop(ev) {
+    //阻止浏览器默认打开文件的操作
+    ev.preventDefault();
+};
+function imgDrop(ev) {
+    ev.preventDefault();
+    var files = ev.dataTransfer.files;
+    var len = files.length;
+    if(len!=0){
+        if(len > 200){
+            alertDialog("单次最多可选200张图片！");
+            return;
+        }
+        var formData = new FormData();
+        for(var i = 0;i<len;i++){
+            var filesName=files[i].name;
+            var extStart=filesName.lastIndexOf(".");
+            var ext=filesName.substring(extStart,filesName.length).toUpperCase();
+            if(ext ==".jpg" || ext ==".JPG" || ext ==".png" || ext ==".PNG" || ext ==".gif" || ext ==".GIF"){ //判断是否是需要的问件类型
+                //判断图片文件命名格式
+                if(!imgNameCheck(filesName)){
+                    alertDialog("图片文件命名格式不正确！"+filesName);
+                    return false;
+                }
+                formData.append("files",files[i]);
+            }else{
+                alertDialog("请选择.jpg .png .gif类型的文件上传！"+filesName);
+                return false;
+            }
+        }
+        var userid = {
+            "userid":loginSucc.userid,
+            "organid":loginSucc.organid
+        };
+        var data = sendMessageEdit(DEFAULT,userid);
+        formData.append("body",new Blob([data],{type:"application/json"}));
+        $("#loading_edit").modal('show');
+        console.log("files:"+formData.getAll('files'));
+        driverImgUpload(formData);
+    }
+};
+
 //司机操作结果返回
 function driverEditEnd(flg, result, type){
     $("#loading_edit").modal("hide");
@@ -725,6 +832,9 @@ function driverEditEnd(flg, result, type){
         case DRIVERSTATUS:
             text = "状态设置";
             break;
+        case DRIVERIMGUPLOAD:
+            text = "证照导入";
+            break;
     }
     if(flg){
         if(result && result.retcode != SUCCESS){
@@ -740,7 +850,10 @@ function driverEditEnd(flg, result, type){
     if(alert == ""){
         if(type == DRIVERSTATUS){
             alert ="司机信息"+ text + res + "！";
-        }else{
+        }else if(type == DRIVERIMGUPLOAD){
+            alert ="司机"+ text + res + "！";
+        }
+        else{
             alert = text + "司机信息" + res + "！";
         }
     }
@@ -782,12 +895,21 @@ function getVehiceDataEnd(flg, result, callback){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
             vehicleList = res.vehicleList;
+            $("#vehiceList,#vehiceList_edit").empty();
             //给关联车辆datalist赋值
             for(var i = 0;i<vehicleList.length;i++){
                 $("#vehiceList").append("<option>"+vehicleList[i].platenumber+"</option>");
                 $("#vehiceList_edit").append("<option>"+vehicleList[i].platenumber+"</option>");
             }
+            //获取收款人信息
+            payeeDataGet();
+        }else{
+            //获取收款人信息
+            payeeDataGet();
         }
+    }else{
+        //获取收款人信息
+        payeeDataGet();
     }
 }
 
@@ -798,14 +920,20 @@ function getPayeeDataEnd(flg,result){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
             payeeList = res.payeelist;
+            $("#payeeList,#payeeList_edit").empty();
             //给关联车辆datalist赋值
             for(var i = 0;i<payeeList.length;i++){
                 if(payeeList[i].state == "0"){  //启用
-                    $("#payeeList").append("<option data-payid='"+payeeList[i].payid+"' value='"+payeeList[i].payname+payeeList[i].banknumber+"'></option>");
-                    $("#payeeList_edit").append("<option data-payid='"+payeeList[i].payid+"' value='"+payeeList[i].payname+payeeList[i].banknumber+"'></option>");
+                    $("#payeeList").append("<option data-payid='"+payeeList[i].payid+"' value='"+payeeList[i].payname+payeeList[i].payphone+"'></option>");
+                    $("#payeeList_edit").append("<option data-payid='"+payeeList[i].payid+"' value='"+payeeList[i].payname+payeeList[i].payphone+"'></option>");
                 }
             }
+            getData = true;
+        }else{
+            getData = true;
         }
+    }else{
+        getData = true;
     }
 }
 
@@ -874,4 +1002,26 @@ function payeeMenuIdGet(){
             }
         }
     }
+}
+
+//判断司机证照文件命名格式
+function imgNameCheck(name){
+    //先判断有没有-
+    if(name.indexOf('-') == -1){
+        return false;
+    }
+    var namelist = name.split("-");
+    //判断身份证格式
+    var plate = /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/;
+    if(!(plate.test(namelist[0]))){
+        return false;
+    }
+    //判断-后只能是不大于4的数字
+    var num=/^([1-4]|4)$/;
+    var index = namelist[1].lastIndexOf('.');
+    var number = namelist[1].substring(0,index);
+    if(!(num.test(number))){
+        return false;
+    }
+    return true;
 }

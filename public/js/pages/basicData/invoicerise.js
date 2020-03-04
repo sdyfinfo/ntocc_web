@@ -5,6 +5,8 @@
 var invocerList = [];
 var addressidList,bankList = [];
 var invlist = [];
+var getData = false;
+var Questdraw = 0;
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function () {
         fun_power();
@@ -412,24 +414,37 @@ var invEdit = function(){
 
         //更换邮寄地址
         $('#inv_table').on('click', '#mail', function (e) {
+            var that = this;
             e.preventDefault();
             //清除校验错误信息
             address_validator.resetForm();
             $(".address-form").find(".has-error").removeClass("has-error");
             $(".modal-title").text("选择地址");
-            var exclude = [];
-            var row = $(this).parents('tr')[0];
-            var invid = $("#inv_table").dataTable().fnGetData(row).invid;
-            var invo = new Object();
-            for(var i=0; i < invocerList.length; i++){
-                if(invid == invocerList[i].invid){
-                    invo = invocerList[i];
-                }
-            }
-            var options = { jsonValue: invo, exclude:exclude,isDebug: false};
-            $(".address-form").initForm(options);
-            $("input[name=edittype]").val(INVREPLACE);
-            $('#edit_replace').modal('show');
+            //获取邮寄地址
+            getData = false;
+            Questdraw = "1";
+            var Timer;
+            addressDataGet();
+            Timer = setInterval(
+                function(){
+                    if(getData){
+                        clearInterval(Timer);
+                        var exclude = [];
+                        var row = $(this).parents('tr')[0];
+                        var invid = $("#inv_table").dataTable().fnGetData(row).invid;
+                        var invo = new Object();
+                        for(var i=0; i < invocerList.length; i++){
+                            if(invid == invocerList[i].invid){
+                                invo = invocerList[i];
+                            }
+                        }
+                        var options = { jsonValue: invo, exclude:exclude,isDebug: false};
+                        $(".address-form").initForm(options);
+                        $("input[name=edittype]").val(INVREPLACE);
+                        $('#edit_replace').modal('show');
+                    }
+                },500
+            );
         });
     };
     return {
@@ -529,19 +544,29 @@ function getaddressDataEnd(flg, result, callback){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
             addressidList = res.list;
+            $("#addrid").empty();
             for(var i = 0; i < addressidList.length; i++){
                 $("#addrid").append("<option value='"+addressidList[i].aid+"'>" + addressidList[i].ress+"</option>");
             }
-            //获取银行
-            bankNameDataGet();
+            getData = true;
+            if(Questdraw == 0){
+                //获取银行
+                bankNameDataGet();
+            }
         }else{
-            //获取银行
-            bankNameDataGet();
+            getData = true;
+            if(Questdraw == 0){
+                //获取银行
+                bankNameDataGet();
+            }
             alertDialog("邮寄地址获取失败！");
         }
     }else{
-        //获取银行
-        bankNameDataGet();
+        getData = true;
+        if(Questdraw == 0){
+            //获取银行
+            bankNameDataGet();
+        }
         alertDialog("邮寄地址获取失败！");
     }
 }

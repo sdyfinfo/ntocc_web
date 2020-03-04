@@ -235,12 +235,12 @@ var addressEdit = function(){
                 addrsEdit(addr,ADDRSEDIT);
             }
         });
-        //新增项目
+        //新增发票邮寄地址
         $('#op_add').click(function() {
             //清除校验错误信息
             validator.resetForm();
             $(".register-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("新增项目");
+            $(".modal-title").text("新增发票邮寄地址");
             $(":input",".register-form").not(":button,:reset,:submit,:radio,:input[name=birthday],#evaluationneed").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
@@ -249,13 +249,13 @@ var addressEdit = function(){
             $("input[name=edittype]").val(ADDRADD);
             $('#edit_adds').modal('show');
         });
-        //编辑项目
+        //编辑发票邮寄地址
         $('#add_table').on('click', '#op_edit', function (e) {
             e.preventDefault();
             //清除校验错误信息
             validator.resetForm();
             $(".register-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("编辑项目");
+            $(".modal-title").text("编辑发票邮寄地址");
             var exclude = [];
             var row = $(this).parents('tr')[0];
             var aid = $("#add_table").dataTable().fnGetData(row).aid;
@@ -351,6 +351,7 @@ function addrEditEnd(flg, result, type){
             $('#edit_adds').modal('hide');
         }
     }
+    if(alert == "")  alert = text + "发票邮寄地址" + res + "！";
     App.unblockUI('#lay-out');
     alertDialog(alert);
 }

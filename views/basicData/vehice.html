@@ -108,6 +108,11 @@
                                             <i class="fa fa-reply"></i>
                                         </button>
                                     </div>
+                                    <div class="btn-group">
+                                        <button id="vehiceImg_import" class="btn btn-info"> 导入车辆证照
+                                            <i class="fa fa-hand-pointer-o"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -397,6 +402,30 @@
                     </div>
                     <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx" id="vehice_file" style="display: none">
                     <div style="height: 30px;line-height: 30px" id="upload_name" hidden="hidden"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 导入车辆证照弹框 -->
+    <div id="vehiceimg_upload" class="modal fade" tabindex="-1" data-width="400" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">导入车辆证照</h4>
+                </div>
+                <div class="modal-body" style="vertical-align: middle;text-align: center;">
+                    <div style="width: 360px;height: 200px;border: 1px dashed #0088cc;margin: 0 auto;" ondrop="imgDrop(event)" ondragover="allowDrop(event)">
+                        <label contentEditable='true' style="width: 100%;height: 100%;padding-top: 50px" for="vehiceImg_file">
+                            <img src="/public/img/file_upload.png" style="width: 100px;height: 80px">
+                            <div style="height: 50px;">将图片文件拖到此处或点击上传<br>
+                            单次最多可选200张照片</div>
+                        </label>
+                    </div>
+                    <input type="file" accept=".jpg,.png,.gif" id="vehiceImg_file" style="display: none" multiple="multiple">
+                    <div style="margin-top:20px;color:#e02222;text-align: left">
+                        提示：支持jpg/png/gif格式，上传车辆证照图片之前，请确保系统中已创建车辆信息，并注意证照图片命名规则，例如：车牌号-1.jpg为行驶证，车牌号-2.jpg为道路运输证，车牌号-3.jpg为道路运输经营许可证照片，车牌号-4.jpg为保险卡照片，车牌号-5.jpg为人车合影，命名不规范或系统车牌号不存在，将导入失败
+                    </div>
                 </div>
             </div>
         </div>

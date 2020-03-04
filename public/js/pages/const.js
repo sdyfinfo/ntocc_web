@@ -125,6 +125,8 @@ const USHPLOAD = 88;
 const USHCHECK = 90;
 const INVREPLACE = 91;
 const INVUPDATE = 92;
+const VEHICEIMGUPLOAD = 93;
+const DRIVERIMGUPLOAD = 94;
 
 
 

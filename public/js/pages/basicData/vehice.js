@@ -164,7 +164,7 @@ var VehiceTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(2),td:eq(3),td:eq(4),td:eq(7),td:eq(8),td:eq(9),td:eq(10),td:eq(11),td:eq(12)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(2),td:eq(3),td:eq(4),td:eq(8),td:eq(9),td:eq(10),td:eq(11),td:eq(12)', nRow).attr('style', 'text-align: center;');
                 $('td:eq(5), td:eq(6)', nRow).attr('style', 'text-align: right;');
             }
         });
@@ -219,7 +219,8 @@ var VehiceEdit = function() {
             ignore: "",
             rules: {
                 platenumber: {
-                    required: true
+                    required: true,
+                    platenumber:true
                 },
                 platecolor: {
                     required: true
@@ -371,6 +372,13 @@ var VehiceEdit = function() {
                 form.submit();
             }
         });
+
+        // 车牌号码验证
+        jQuery.validator.addMethod("platenumber", function(value, element) {
+            var plate = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/;
+            return this.optional(element) || (plate.test(value));
+        }, "请正确填写您的车牌号");
+
         //点击确定按钮
         $('#edit-btn').click(function() {
             btnDisable($('#edit-btn'));
@@ -407,7 +415,7 @@ var VehiceEdit = function() {
             //清除校验错误信息
             validator.resetForm();
             $(".edit-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("查看车辆");
+            $("#edit_vehice").find(".modal-title").text("查看车辆");
             var exclude = [];
             var row = $(this).parents('tr')[0];
             var vehid = $("#vehice_table").dataTable().fnGetData(row).vehid;
@@ -441,7 +449,7 @@ var VehiceEdit = function() {
             //清除校验错误信息
             validator.resetForm();
             $(".edit-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("编辑车辆");
+            $("#edit_vehice").find(".modal-title").text("编辑车辆");
             var exclude = [];
             var row = $(this).parents('tr')[0];
             var vehid = $("#vehice_table").dataTable().fnGetData(row).vehid;
@@ -477,7 +485,7 @@ var VehiceEdit = function() {
             //清除校验错误信息
             validator.resetForm();
             $(".edit-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("新增车辆");
+            $("#edit_vehice").find(".modal-title").text("新增车辆");
             $(":input",".edit-form").not(":button,:reset,:submit,:radio,#evaluationneed").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
@@ -501,7 +509,7 @@ var VehiceEdit = function() {
 $("#vehice_table").on('click',".imgCheck",function(e){
     var src = $(this).children("span")[0].innerText;
     $("#img_check").find("img").attr('src',src);
-    $(".modal-title").text("图片查看");
+    $("#vehice_table").find(".modal-title").text("图片查看");
     $("#img_check").modal('show');
 });
 
@@ -543,14 +551,13 @@ var VehiceDelete = function() {
 
 //导入车辆
 $("#vehice_import").on("click",function(){
-    $(".vehice_upload").find("input[type=file]").value = "";
+    $("#vehice_upload").find("input[type=file]").value = "";
     $("#upload_name").hide();
     $("#vehice_upload").modal('show');
 });
 
 //车辆文件点击上传
 $("#vehice_file").change(function(){
-    var img = $(this).siblings("label").find("img");
     if(this.files[0]){
         //显示上传文件名
         $("#upload_name").show();
@@ -603,6 +610,87 @@ function drop(ev) {
         }
     }else{
         $("#upload_name").html("");
+    }
+};
+
+//导入车辆证照
+$("#vehiceImg_import").on('click',function(){
+    $("#vehiceImg_file").value = "";
+    $("#vehiceimg_upload").modal('show');
+});
+
+//车辆证照点击上传
+$("#vehiceImg_file").change(function(){
+    var filelist = this.files;
+    if(filelist.length!=0){
+        if(filelist.length > 200){
+            alertDialog("单次最多可选200张图片！");
+            $("#vehiceImg_file").value = "";
+            return;
+        }
+        var formData = new FormData();
+        for(var i = 0; i < filelist.length;i++){
+            //判断图片文件命名格式
+            if(!imgNameCheck(this.files[i].name)){
+                alertDialog("图片文件命名格式不正确！"+this.files[i].name);
+                $("#vehiceImg_file").value = "";
+                return false;
+            }
+            formData.append("file",this.files[i]);
+        }
+        var userid = {
+            "userid":loginSucc.userid,
+            "organid":loginSucc.organid
+        }
+        var data = sendMessageEdit(DEFAULT,userid);
+        formData.append("body",new Blob([data],{type:"application/json"}));
+        $("#loading_edit").modal('show');
+        vehiceImgUpload(formData);
+        $("#vehiceImg_file").value = "";
+    }else{
+        $("#vehiceImg_file").value = "";
+    }
+});
+
+//车辆证照拖拽上传
+function allowDrop(ev) {
+    //阻止浏览器默认打开文件的操作
+    ev.preventDefault();
+};
+function imgDrop(ev) {
+    ev.preventDefault();
+    var files = ev.dataTransfer.files;
+    var len = files.length;
+    if(len!=0){
+        if(len > 200){
+            alertDialog("单次最多可选200张图片！");
+            return;
+        }
+        var formData = new FormData();
+        for(var i = 0; i<len;i++){
+            var filesName=files[i].name;
+            var extStart=filesName.lastIndexOf(".");
+            var ext=filesName.substring(extStart,filesName.length).toUpperCase();
+            if(ext ==".jpg" || ext ==".JPG" || ext ==".png" || ext ==".PNG" || ext ==".gif" || ext ==".GIF"){ //判断是否是需要的问件类型
+                //判断图片文件命名格式
+                if(!imgNameCheck(filesName)){
+                    alertDialog("图片文件命名格式不正确！"+filesName);
+                    return false;
+                }
+                formData.append("file",files[i]);
+            }else{
+                alertDialog("请选择.jpg .png .gif类型的文件上传！"+filesName);
+                return false;
+            }
+        }
+        var userid = {
+            "userid":loginSucc.userid,
+            "organid":loginSucc.organid
+        };
+        var data = sendMessageEdit(DEFAULT,userid);
+        formData.append("body",new Blob([data],{type:"application/json"}));
+        $("#loading_edit").modal('show');
+        vehiceImgUpload(formData);
     }
 };
 
@@ -676,6 +764,9 @@ function vehiceEditEnd(flg, result, type){
         case VEHICEUPLOAD:
             text = "导入";
             break;
+        case VEHICEIMGUPLOAD:
+            text = "证照导入";
+            break;
     }
     if(flg){
         if(result && result.retcode != SUCCESS){
@@ -687,9 +778,16 @@ function vehiceEditEnd(flg, result, type){
             $('#add_vehice').modal('hide');
             $('#edit_vehice').modal('hide');
             $('#vehice_upload').modal('hide');
+            $('#vehiceimg_upload').modal('hide');
         }
     }
-    if(alert == "") alert = text + "车辆信息" + res + "！";
+    if(alert == ""){
+        if(type == VEHICEIMGUPLOAD){
+            alert = "车辆"+ text + res + "！";
+        }else{
+            alert = text + "车辆信息" + res + "！";
+        }
+    }
     App.unblockUI('#lay-out');
     alertDialog(alert);
 }
@@ -769,4 +867,26 @@ function vehiceInfoRequest(){
         //车辆表格
         VehiceTable.init();
     }
+}
+
+//判断车辆证照文件命名格式
+function imgNameCheck(name){
+    //先判断有没有-
+    if(name.indexOf('-') == -1){
+        return false;
+    }
+    var namelist = name.split("-");
+    //判断车牌号格式
+    var plate = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/;
+    if(!(plate.test(namelist[0]))){
+        return false;
+    }
+    //判断-后只能是不大于5的数字
+    var num=/^([1-5]|5)$/;
+    var index = namelist[1].lastIndexOf('.');
+    var number = namelist[1].substring(0,index);
+    if(!(num.test(number))){
+        return false;
+    }
+    return true;
 }
