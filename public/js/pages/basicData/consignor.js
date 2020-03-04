@@ -270,6 +270,7 @@ var ConsignorEdit = function() {
         });
         //编辑发货人信息
         $('#consignor_table').on('click', '#op_edit', function (e) {
+            var that = this;
             e.preventDefault();
             //清除校验错误信息
             validator.resetForm();
@@ -283,7 +284,7 @@ var ConsignorEdit = function() {
                 function(){
                     clearInterval(Timer);
                     var exclude = [];
-                    var row = $(this).parents('tr')[0];
+                    var row = $(that).parents('tr')[0];
                     var conid = $("#consignor_table").dataTable().fnGetData(row).conid;
                     var consignor = new Object();
                     for(var i=0; i < ConsignorList.length; i++){
