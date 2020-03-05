@@ -5,9 +5,10 @@
 var billStateList,payStateList,goodsTypeList,unitList,verificationList,dictTrue = [];   //字典
 var projectList,driverList,vehiceList,consignorList,consigneeList = [];
 var wayBillList = [];
-var goodsList = [];  //货物名称
+//var goodsList = [];  //货物名称
 var selectType = '0';
 var wayBillImport;
+var getData = false;
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
@@ -16,9 +17,14 @@ if (App.isAngularJsApp() === false) {
         ComponentsDateTimePickers.init();
         //获取项目信息
         projectDataGet();
-        //运单操作和查看
-        //WayBillEdit.init();
-        //运单新增
+        //获取字典相关信息
+        var data = {};
+        var list = ["10005","10006","10009","10010","10011"];
+        for(var i in list){
+            data.lx = list[i];
+            dictQuery(data);
+        }
+        //运单操作
         WayBillAdd.init();
     });
 }
@@ -560,7 +566,7 @@ var WayBillAdd = function() {
             }
         });
 
-        //选择发货人或收货人显示联系方式
+        //选择发货人或收货人联动
         $("#consignor").blur(function(){
             var value = $(this).val();
             var list = [];
@@ -569,7 +575,7 @@ var WayBillAdd = function() {
             }
             if(list.indexOf(value) == -1){  //不存在
                 $(this).val("");
-                $("input[name=consignorTel]").val("");
+                $("input[name=consignorTel],input[name=loading_place],input[name=loading_address]").val("");
             }
         });
         $("#consignor").change(function(){
@@ -579,10 +585,14 @@ var WayBillAdd = function() {
                 for(var i in consignorList){
                     if(id == consignorList[i].conid){
                         $("input[name=consignorTel]").val(consignorList[i].mobile);
+                        if($("#lineHave").val() == "1"){   //无线路，联动装货地址和装货详细地址
+                            $("input[name=loading_place]").val(consignorList[i].loading_place);
+                            $("input[name=loading_address]").val(consignorList[i].loading_address)
+                        }
                     }
                 }
             }else{
-                $("input[name=consignorTel]").val("");
+                $("input[name=consignorTel],input[name=loading_place],input[name=loading_address]").val("");
             }
         });
         $("#consignee").blur(function(){
@@ -593,7 +603,7 @@ var WayBillAdd = function() {
             }
             if(list.indexOf(value) == -1){  //不存在
                 $(this).val("");
-                $("input[name=consigneeTel]").val("");
+                $("input[name=consigneeTel],input[name=unloading_place],input[name=unloading_address]").val("");
             }
         });
         $("#consignee").change(function(){
@@ -603,10 +613,14 @@ var WayBillAdd = function() {
                 for(var i in consigneeList){
                     if(id == consigneeList[i].conid){
                         $("input[name=consigneeTel]").val(consigneeList[i].mobile);
+                        if($("#lineHave").val() == "1"){   //无线路，联动装货地址和装货详细地址
+                            $("input[name=unloading_place]").val(consigneeList[i].unloading_place);
+                            $("input[name=unloading_address]").val(consigneeList[i].unloading_address)
+                        }
                     }
                 }
             }else{
-                $("input[name=consigneeTel]").val("");
+                $("input[name=consigneeTel],input[name=unloading_place],input[name=unloading_address]").val("");
             }
         });
 
@@ -620,34 +634,44 @@ var WayBillAdd = function() {
                 $("#unit_text").html("吨");
             }
         });
-        //货物名称回车键监听
-        $("#goodsname").keypress(function (e) {
-            if (e.which == 13) {
-                //重复的不添加
-                var value = $(this).val();
-                for(var i in goodsList){
-                    if(value == goodsList[i]){
-                        alertDialog("货物名称不可重复");
-                        return;
-                    }
-                }
-                //将输入内容添加到右方div中
-                goodsList.push(value);
-                var div = "<div class='goods_div'><span>×</span>"+value+"</div>";
-                $("#goods").append(div);
-                $("#goodsname").val("");
-            }
+
+        //货物单位联动
+        $("#goods_type").change(function(){
+           if($(this).val() == ""){
+               $("input[name=goods]").val("");
+           }else{
+               var goods = $("#goods_type").find("option:selected").text();
+               $("input[name=goods]").val(goods);
+           }
         });
+        //货物名称回车键监听
+//        $("#goodsname").keypress(function (e) {
+//            if (e.which == 13) {
+//                //重复的不添加
+//                var value = $(this).val();
+//                for(var i in goodsList){
+//                    if(value == goodsList[i]){
+//                        alertDialog("货物名称不可重复");
+//                        return;
+//                    }
+//                }
+//                //将输入内容添加到右方div中
+//                goodsList.push(value);
+//                var div = "<div class='goods_div'><span>×</span>"+value+"</div>";
+//                $("#goods").append(div);
+//                $("#goodsname").val("");
+//            }
+//        });
 
         //点击删除货物名称
-        $("#goods").on('click','.goods_div',function(){
-            var value = $(this).text().replace('×','');
-            var index = goodsList.indexOf(value);
-            if (index > -1) {
-                goodsList.splice(index, 1);
-            }
-            $(this).remove();
-        });
+//        $("#goods").on('click','.goods_div',function(){
+//            var value = $(this).text().replace('×','');
+//            var index = goodsList.indexOf(value);
+//            if (index > -1) {
+//                goodsList.splice(index, 1);
+//            }
+//            $(this).remove();
+//        });
 
         //货物单价和总发运数量联动运费
         $("input[name=number]").on("input propertychange",function(){
@@ -730,10 +754,10 @@ var WayBillAdd = function() {
                         return;
                     }
                 }
-                if(goodsList.length == 0){
-                    alertDialog("货物名称必须输入！");
-                    return;
-                }
+//                if(goodsList.length == 0){
+//                    alertDialog("货物名称必须输入！");
+//                    return;
+//                }
                 //货物重量不能大于车载重量
                 if(Number($("input[name=number]").val()) > Number($("input[name=load]").val())){
                     alertDialog("总发运重量不能大于车载重量！");
@@ -747,7 +771,6 @@ var WayBillAdd = function() {
                 bill.linename = $("#lineList_add").find("option:selected").text();
                 bill.goods_type = "10005,"+$("#goods_type").val();
                 bill.unit = $("#unit").val();
-                bill.goods = goodsList.toString();
                 if($("input[name=edittype]").val() == BILLADD){
                     $("#loading_edit").modal("show");
                     wayBillAdd(bill);
@@ -763,54 +786,67 @@ var WayBillAdd = function() {
 
         //查看运单
         $('#bill_table').on('click','#bill_detail',function(e){
+            var that = this;
             e.preventDefault();
             //清除校验错误信息
             validator.resetForm();
             $(".add-form").find(".has-error").removeClass("has-error");
             $(".modal-title").text("查看运单");
-            var exclude = [];
-            var row = $(this).parents('tr')[0];
-            var wid = $("#bill_table").dataTable().fnGetData(row).wid;
-            var bill = new Object();
-            for(var i=0; i < wayBillList.length; i++){
-                if(wid == wayBillList[i].wid){
-                    bill = wayBillList[i];
-                }
-            }
-            if(bill.line_id != ""){  //有线路信息
-                //根据项目找线路
-                for(var i in projectList){
-                    if(bill.project_id == projectList[i].proid){
-                        var linelist = projectList[i].linelist;
-                        for(var j in linelist){
-                            $("#lineList_add").append("<option value='"+linelist[j].lineid+"'>"+linelist[j].line+"</option>");
-                        }
-                    }
-                }$("#lineList_add").parents('.form-group').show();
-            }else{  //隐藏线路输入框
-                $("#lineList_add").parents('.form-group').hide();
-            }
-            $("#goods").empty();
-            var options = { jsonValue: bill, exclude:exclude,isDebug: false};
-            $(".add-form").initForm(options);
-            //显示货物名称
-            goodsList = bill.goods.split(",");
-            for(var i in goodsList){
-                var div = "<div class='goods_check'><span>×</span>"+goodsList[i]+"</div>";
-                $("#goods").append(div);
-            }
-            $("#driver_add").val(bill.name+bill.id_number);
-            $("input[name=orderMaking_time]").datepicker("setDate",dateFormat(bill.orderMaking_time, "-"));
-            $("input[name=planTime]").datepicker("setDate",dateFormat(bill.planTime, "-"));
-            $('.add-form').find("input,textarea,select").attr("disabled", true);
-            $("#lineInfo").hide();
-            $("#line-display").show();
-            $(".modal-footer").hide();
-            $('#add_bill').modal('show');
+            getData = false;
+            //获取项目信息
+            projectDataGet();
+            var Timer;
+            Timer = setInterval(
+              function(){
+                  if(getData){
+                      clearInterval(Timer);
+                      var exclude = [];
+                      var row = $(that).parents('tr')[0];
+                      var wid = $("#bill_table").dataTable().fnGetData(row).wid;
+                      var bill = new Object();
+                      for(var i=0; i < wayBillList.length; i++){
+                          if(wid == wayBillList[i].wid){
+                              bill = wayBillList[i];
+                          }
+                      }
+                      if(bill.line_id != ""){  //有线路信息
+                          //根据项目找线路
+                          for(var i in projectList){
+                              if(bill.project_id == projectList[i].proid){
+                                  var linelist = projectList[i].linelist;
+                                  for(var j in linelist){
+                                      $("#lineList_add").append("<option value='"+linelist[j].lineid+"'>"+linelist[j].line+"</option>");
+                                  }
+                              }
+                          }$("#lineList_add").parents('.form-group').show();
+                      }else{  //隐藏线路输入框
+                          $("#lineList_add").parents('.form-group').hide();
+                      }
+                      $("#goods").empty();
+                      var options = { jsonValue: bill, exclude:exclude,isDebug: false};
+                      $(".add-form").initForm(options);
+                      //显示货物名称
+                      goodsList = bill.goods.split(",");
+                      for(var i in goodsList){
+                          var div = "<div class='goods_check'><span>×</span>"+goodsList[i]+"</div>";
+                          $("#goods").append(div);
+                      }
+                      $("#driver_add").val(bill.name+bill.id_number);
+                      $("input[name=orderMaking_time]").datepicker("setDate",dateFormat(bill.orderMaking_time, "-"));
+                      $("input[name=planTime]").datepicker("setDate",dateFormat(bill.planTime, "-"));
+                      $('.add-form').find("input,textarea,select").attr("disabled", true);
+                      $("#lineInfo").hide();
+                      $("#line-display").show();
+                      $(".modal-footer").hide();
+                      $('#add_bill').modal('show');
+                  }
+              },500
+            );
         });
 
         //运单编辑
         $('#bill_table').on('click','#op_edit',function(e){
+            var that = this;
             e.preventDefault();
             //清除校验错误信息
             validator.resetForm();
@@ -818,74 +854,86 @@ var WayBillAdd = function() {
             $(".modal-title").text("编辑运单");
             $("#goods").empty();
             $('.add-form').find("input,textarea,select").attr("disabled", false);
-            var exclude = [];
-            var row = $(this).parents('tr')[0];
-            var wid = $("#bill_table").dataTable().fnGetData(row).wid;
-            var bill = new Object();
-            for(var i=0; i < wayBillList.length; i++){
-                if(wid == wayBillList[i].wid){
-                    bill = wayBillList[i];
-                }
-            }
-            if(bill.line_id != ""){  //有线路信息
-                //根据项目找线路
-                for(var i in projectList){
-                    if(bill.project_id == projectList[i].proid){
-                        var linelist = projectList[i].linelist;
-                        for(var j in linelist){
-                            $("#lineList_add").append("<option value='"+linelist[j].lineid+"'>"+linelist[j].line+"</option>");
-                        }
-                    }
-                }
-                $("#lineList_add").parents('.form-group').show();
-            }else{  //隐藏线路输入框
-                $("#lineList_add").parents('.form-group').hide();
-            }
-            var options = { jsonValue: bill, exclude:exclude,isDebug: false};
-            $(".add-form").initForm(options);
-            //显示货物名称
-            goodsList = bill.goods.split(",");
-            for(var i in goodsList){
-                var div = "<div class='goods_div'><span>×</span>"+goodsList[i]+"</div>";
-                $("#goods").append(div);
-            }
-            $("#driver_add").val(bill.name+bill.id_number);
-            $("input[name=orderMaking_time]").datepicker("setDate",dateFormat(bill.orderMaking_time, "-"));
-            $("input[name=planTime]").datepicker("setDate",dateFormat(bill.planTime, "-"));
+            getData = false;
+            //获取项目信息
+            projectDataGet();
+            var Timer;
+            Timer = setInterval(
+              function(){
+                  if(getData){
+                      clearInterval(Timer);
+                      var exclude = [];
+                      var row = $(that).parents('tr')[0];
+                      var wid = $("#bill_table").dataTable().fnGetData(row).wid;
+                      var bill = new Object();
+                      for(var i=0; i < wayBillList.length; i++){
+                          if(wid == wayBillList[i].wid){
+                              bill = wayBillList[i];
+                          }
+                      }
+                      if(bill.line_id != ""){  //有线路信息
+                          //根据项目找线路
+                          for(var i in projectList){
+                              if(bill.project_id == projectList[i].proid){
+                                  var linelist = projectList[i].linelist;
+                                  for(var j in linelist){
+                                      $("#lineList_add").append("<option value='"+linelist[j].lineid+"'>"+linelist[j].line+"</option>");
+                                  }
+                              }
+                          }
+                          $("#lineList_add").parents('.form-group').show();
+                      }else{  //隐藏线路输入框
+                          $("#lineList_add").parents('.form-group').hide();
+                      }
+                      var options = { jsonValue: bill, exclude:exclude,isDebug: false};
+                      $(".add-form").initForm(options);
+                      //显示货物名称
+                      goodsList = bill.goods.split(",");
+                      for(var i in goodsList){
+                          var div = "<div class='goods_div'><span>×</span>"+goodsList[i]+"</div>";
+                          $("#goods").append(div);
+                      }
+                      $("#driver_add").val(bill.name+bill.id_number);
+                      $("input[name=orderMaking_time]").datepicker("setDate",dateFormat(bill.orderMaking_time, "-"));
+                      $("input[name=planTime]").datepicker("setDate",dateFormat(bill.planTime, "-"));
 
-            //根据是否有线路信息，判断哪些不可编辑
-            if(bill.line_id != ""){   //有线路
-                $("#lineHave").val("0");
-                $("#lineList_add").parents('.form-group').show();
-                $("#project_add").attr("readonly","readonly");
-                $("#lineList_add,input[name=orderMaking_time]").attr("disabled",true);
-                $(".line-display").find("input").attr("readonly","readonly");
-                $(".line-display").find("select").attr("disabled", true);
-                //总发运数量和货物名称可编辑
-                $("#goodsname,input[name=number]").removeAttr("readonly");
-            }else{
-                $("#lineHave").val("1");
-                if(bill.project_id != ""){
-                    $("#project_add").attr("readonly","readonly");
-                }else{
-                    $("#project_add").removeAttr("readonly");
-                }
-                $("input[name=orderMaking_time]").attr("disabled",true);
-                $(".line-display").find("input").removeAttr("readonly");
-                $("#lineList_add").parents('.form-group').hide();
-                $("input[name=consigneeTel],input[name=consignorTel]").attr("readonly","readonly");
-            }
+                      //根据是否有线路信息，判断哪些不可编辑
+                      if(bill.line_id != ""){   //有线路
+                          $("#lineHave").val("0");
+                          $("#lineList_add").parents('.form-group').show();
+                          $("#project_add").attr("readonly","readonly");
+                          $("#lineList_add,input[name=orderMaking_time]").attr("disabled",true);
+                          $(".line-display").find("input").attr("readonly","readonly");
+                          $(".line-display").find("select").attr("disabled", true);
+                          //总发运数量和货物名称可编辑
+                          $("#goodsname,input[name=number]").removeAttr("readonly");
+                      }else{
+                          $("#lineHave").val("1");
+                          if(bill.project_id != ""){
+                              $("#project_add").attr("readonly","readonly");
+                          }else{
+                              $("#project_add").removeAttr("readonly");
+                          }
+                          $("input[name=orderMaking_time]").attr("disabled",true);
+                          $(".line-display").find("input").removeAttr("readonly");
+                          $("#lineList_add").parents('.form-group').hide();
+                          $("input[name=consigneeTel],input[name=consignorTel]").attr("readonly","readonly");
+                      }
 
-            $("#lineInfo").hide();
-            $("#line-display").show();
-            $(".modal-footer").show();
-            $("input[name=edittype]").val(BILLEDIT);
-            $('#add_bill').modal('show');
-
+                      $("#lineInfo").hide();
+                      $("#line-display").show();
+                      $(".modal-footer").show();
+                      $("input[name=edittype]").val(BILLEDIT);
+                      $('#add_bill').modal('show');
+                  }
+              },500
+            );
         });
 
         //新增运单
         $('#op_add').click(function() {
+            //获取信息
+            projectDataGet();
             //清除校验错误信息
             clearFormInfo();
             $("#line-display").hide();
@@ -1215,11 +1263,11 @@ function getProjectDataEnd(flg,result){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
             projectList = res.projectlist;
+            $("#proList,#proList_add").empty();
             for(var i in projectList){
                 $("#proList").append("<option data-proid='"+projectList[i].proid+"' value='"+projectList[i].proname+"'></option>");
                 if(projectList[i].state == "0"){
                     $("#proList_add").append("<option data-proid='"+projectList[i].proid+"' value='"+projectList[i].proname+"'></option>");
-                    $("#proList_add1").append("<option data-proid='"+projectList[i].proid+"' value='"+projectList[i].proname+"'></option>");
                 }
             }
             //获取司机信息
@@ -1267,6 +1315,7 @@ function getDriverDataEnd(flg, result){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
             driverList = res.list;
+            $("#driverList").empty();
             for(var i in driverList){
                 if(driverList[i].state == "0"){
                     var value = driverList[i].name+driverList[i].id_number;
@@ -1292,6 +1341,7 @@ function getConsignorDataEnd(flg,result){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
             consignorList = res.conlist;
+            $("#consignorList").empty();
             for(var i in consignorList){
                 $("#consignorList").append("<option data-conid='"+consignorList[i].conid+"' value='"+consignorList[i].consignor+"'></option>");
             }
@@ -1314,33 +1364,16 @@ function getconsigneeidDataEnd(flg, result, callback){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
             consigneeList = res.conlist;
+            $("#consigneeList").empty();
             for(var i = 0; i < consigneeList.length; i++){
                 $("#consigneeList").append("<option data-conid='"+consigneeList[i].conid+"' value='"+ consigneeList[i].consignee+"'></option>");
             }
-            //获取字典相关信息
-            var data = {};
-            var list = ["10005","10006","10009","10010","10011"];
-            for(var i in list){
-                data.lx = list[i];
-                dictQuery(data);
-            }
+            getData = true;
         }else{
-            //获取字典相关信息
-            var data = {};
-            var list = ["10005","10006","10009","10010","10011"];
-            for(var i in list){
-                data.lx = list[i];
-                dictQuery(data);
-            }
+            getData = true;
         }
     }else{
-        //获取字典相关信息
-        var data = {};
-        var list = ["10005","10006","10009","10010","10011"];
-        for(var i in list){
-            data.lx = list[i];
-            dictQuery(data);
-        }
+        getData = true;
     }
 }
 
@@ -1394,6 +1427,7 @@ function getVehiceDataEnd(flg,result){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
             vehiceList = res.vehicleList;
+            $("#vehiceList").empty();
             for(var i in vehiceList){
                 $("#vehiceList").append("<option value='"+vehiceList[i].platenumber+"'></option>");
             }

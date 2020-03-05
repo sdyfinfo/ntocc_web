@@ -109,14 +109,14 @@ var DriverTable = function () {
                 { "data": "phone" },
                 { "data": "quasi_driving" },
                 { "data": "qualification"},
-                { "data": "id_front"},
+                { "data": "did"},
                 { "data": "driving_license"},
                 { "data": "did"},
                 { "data": "plate_number"},
+                { "data": null},
                 { "data": "state"},
                 { "data": "updateTime"},
-                { "data": "bank",visible: false},
-                { "data": null}
+                { "data": "bank",visible: false}
             ],
             columnDefs: [
                 {
@@ -145,17 +145,19 @@ var DriverTable = function () {
                     }
                 },
                 {
-                    "targets": [13],
+                    "targets": [14],
                     "render": function (data, type, row, meta) {
                         return dateTimeFormat(data);
                     }
                 },{
                     "targets": [8],
                     "render": function (data, type, row, meta) {
-                        if(data == ""){
-                            return "暂无图片";
-                        }else{
-                            return '<a href="javascript:;" class="imgCheck">查看图片<span hidden="hidden">'+data+'</span></a>';
+                        for(var i in driverList){
+                            if(data == driverList[i].did){
+                                return '<a href="javascript:;" class="imgCheck">正面<span hidden="hidden">'+driverList[i].id_front+'</span></a>'+
+                                    '<span>|</span>'+
+                                    '<a href="javascript:;" class="imgCheck">反面<span hidden="hidden">'+driverList[i].id_back+'</span></a>';
+                            }
                         }
                     }
                 },{
@@ -181,13 +183,13 @@ var DriverTable = function () {
 
                     }
                 },{
-                    "targets": [12],
+                    "targets": [13],
                     "render": function (data, type, row, meta) {
                         return statusFormat(data);
                     }
                 },
                 {
-                    "targets": [15],
+                    "targets": [12],
                     "render": function (data, type, row, meta) {
                         var edit = "";
                         if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
@@ -528,7 +530,6 @@ var DriverEdit = function() {
                         //是否允许上传图片
                         fileUploadAllowed(1);
                         //只读
-                        $("#id_front,#id_back").attr("disabled",true);
                         $(".edit-form").find("input[name=name]").attr("readonly","readonly");
                         $(".edit-form").find("input[name=id_number]").attr("readonly","readonly");
                         $("input[name=edittype]").val(VEHICEEDIT);

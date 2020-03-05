@@ -141,7 +141,11 @@ var BillPaymentTable = function () {
                 },{
                     "targets": [10],
                     "render": function (data, type, row, meta) {
-                        return data+"%";
+                        var text = ""
+                        if(data!=""){
+                            text = data+"%";
+                        }
+                        return text;
                     }
                 },{
                     "targets": [12],
@@ -445,13 +449,17 @@ var paymentEdit = function() {
                 var number = $(this).val();
                 //计算平台服务费
                 var rate = $("input[name=rate]").val();
-                var serviceFee = subStringNum(((number/(1-(rate/100)))*(rate/100)),2);
+                var serviceFee = get_thousand_num(subStringNum(((number/(1-(rate/100)))*(rate/100)),2));
                 $("input[name=serviceFee]").val(serviceFee);
-                var total = subStringNum((Number(number)+Number(serviceFee)),2);
+                var total = get_thousand_num(subStringNum((Number(number)+Number(serviceFee.replace(/,/g,""))),2));
                 $("input[name=total]").val(total);
             }else{
                 $("input[name=total],input[name=serviceFee]").val("");
             }
+        });
+        $("input[name=amount]").blur(function(){
+            var number = $(this).val();
+            $(this).val(get_thousand_num(number));
         });
 
         //点击确定按钮
@@ -472,6 +480,10 @@ var paymentEdit = function() {
                         }
                     }
                 }
+                paymentData.freight = paymentData.freight.replace(/,/g,"");
+                paymentData.amount = paymentData.amount.replace(/,/g,"");
+                paymentData.serviceFee = paymentData.serviceFee.replace(/,/g,"");
+                paymentData.total = paymentData.total.replace(/,/g,"");
                 paymentData.widlist = paymentData.widlist.split(',');
                 paymentData.paid = paymentData.paidlist.split(',');
                 paymentData.userid = loginSucc.userid;
@@ -499,12 +511,13 @@ var paymentEdit = function() {
                 widlist:[],
                 amount:0,       //支付金额，
                 total:0,          //合计支付
-                paidlist:[]     //已支付金额集合
+                paidlist:[],     //已支付金额集合
+                rate:0
             }
             $(".checkboxes:checked").parents("td").each(function () {
                 var row = $(this).parents('tr')[0];
                 //已支付的运单不可一键支付
-                var pay_state = $("#payment_table").dataTable().fnGetData(row).pay_state;
+                var pay_state = $("#payment_table").dataTable().fnGetData(row).payment_status;
                 if(pay_state == '03'){
                     alertDialog("已支付的运单不可一键支付！");
                     result = false;
@@ -513,7 +526,7 @@ var paymentEdit = function() {
                     var driver = $("#payment_table").dataTable().fnGetData(row).freight;
                     var paied = $("#payment_table").dataTable().fnGetData(row).paid;
                     data.widlist.push($("#payment_table").dataTable().fnGetData(row).wid);
-                    data.rate = $("#payment_table").dataTable().fnGetData(row).rate;
+                    var rate = $("#payment_table").dataTable().fnGetData(row).rate;
                     data.verification_status = $("#payment_table").dataTable().fnGetData(row).verification_status;
                     data.state = $("#payment_table").dataTable().fnGetData(row).state;
                     data.paidlist.push(paied);
@@ -521,14 +534,21 @@ var paymentEdit = function() {
                     data.freight += Number(driver);
                     //累加已支付运费
                     data.paid += Number(paied);
+                    //服务费
+                    if(rate == ""){
+                        rate = 0;
+                    }
+                    data.rate += Number(rate);
                 }
             });
+            data.freight = get_thousand_num(data.freight);
+            data.paid = get_thousand_num(data.paid);
             //支付金额=运费-已支付
-            data.amount = Number(data.freight)-Number(data.paid);
+            data.amount = get_thousand_num(Number(data.freight.replace(/,/g,""))-Number(data.paid.replace(/,/g,"")));
             //平台服务费=支付金额/(1-费率)*费率
-            data.serviceFee = subStringNum(((data.amount)/(1-(data.rate)/100))*((data.rate)/100),2);
+            data.serviceFee = get_thousand_num(subStringNum(((data.amount.replace(/,/g,""))/(1-(data.rate)/100))*((data.rate)/100),2));
             //合计支付=支付金额+服务费
-            data.total = subStringNum(Number(data.amount)+Number(data.serviceFee),2);
+            data.total = get_thousand_num(subStringNum(Number(data.amount.replace(/,/g,""))+Number(data.serviceFee.replace(/,/g,"")),2));
             var exclude = [];
             var options = { jsonValue: data, exclude:exclude,isDebug: false};
             $(".payment-form").initForm(options);
@@ -542,6 +562,7 @@ var paymentEdit = function() {
                 $("input[name=paid]").parents('.form-group').hide();
                 $("input[name=amount]").attr("readonly","readonly");
             }
+            $("input[name=ushield]").val("");
             $("#payment_edit").modal('show');
         });
     };

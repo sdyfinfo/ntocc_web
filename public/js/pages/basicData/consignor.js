@@ -9,6 +9,8 @@ var getData = false;
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
         fun_power();
+        //省市区三级联动
+        addressDispaly("#loading_provincecode");
         //获取发票信息
         invoiceDataGet();
         //发货人表格
@@ -53,7 +55,7 @@ var ConsignorTable = function () {
                 { "data": "conid",visible: false },
                 { "data": "consignor"},
                 { "data": "mobile" },
-                { "data": "invoice_rise" },
+                { "data": "loading_place" },
                 { "data": "updatetime" },
                 { "data": null}
             ],
@@ -144,9 +146,9 @@ var ConsignorEdit = function() {
             focusInvalid: false, // do not focus the last invalid input
             ignore: "",
             rules: {
-                invoice_rise: {
-                    required: true
-                },
+//                invoice_rise: {
+//                    required: true
+//                },
                 consignor: {
                     required: true
                 },
@@ -157,9 +159,9 @@ var ConsignorEdit = function() {
             },
 
             messages: {
-                invoice_rise: {
-                    required: "发票抬头必须选择"
-                },
+//                invoice_rise: {
+//                    required: "发票抬头必须选择"
+//                },
                 consignor: {
                     required: "发货人必须输入"
                 },
@@ -225,6 +227,10 @@ var ConsignorEdit = function() {
                         consignor.invid = invoiceList[i].invid
                     }
                 }
+                //装货省市区
+                consignor.loading_province = $("#loading_provincecode").find("option:selected").text();
+                consignor.loading_city = $("#loading_citycode").find("option:selected").text();
+                consignor.loading_county = $("#loading_countycode").find("option:selected").text();
                 if($("input[name=edittype]").val() == CONSIGNORADD){
                     $("#loading_edit").modal('show');
                     consignorAdd(consignor);
@@ -259,9 +265,11 @@ var ConsignorEdit = function() {
                             consignor = ConsignorList[i];
                         }
                     }
+                    //省市区显示
+                    areaDisplay(consignor.loading_provincecode,consignor.loading_citycode,"#loading_citycode","#loading_countycode");
                     var options = { jsonValue: consignor, exclude:exclude,isDebug: false};
                     $(".edit-form").initForm(options);
-                    $(".edit-form").find("input").attr("disabled",true);
+                    $(".edit-form").find("input,select").attr("disabled",true);
                     $(".modal-footer").hide();
                     $('#edit_consignor').modal('show');
                 }
@@ -292,13 +300,15 @@ var ConsignorEdit = function() {
                             consignor = ConsignorList[i];
                         }
                     }
+                    //省市区显示
+                    areaDisplay(consignor.loading_provincecode,consignor.loading_citycode,"#loading_citycode","#loading_countycode");
                     if(consignor.line == "0"){  //该发货人绑定了线路
                         alertDialog("该发货人绑定了线路,不能进行编辑操作！");
                     }else{
                         var options = { jsonValue: consignor, exclude:exclude,isDebug: false};
                         $(".edit-form").initForm(options);
                         $("input[name=edittype]").val(CONSIGNOREDIT);
-                        $(".edit-form").find("input").attr("disabled",false);
+                        $(".edit-form").find("input,select").attr("disabled",false);
                         //发票抬头不能编辑
                         $("input[name=invoice_rise]").attr("disabled",true);
                         $(".modal-footer").show();
@@ -319,7 +329,7 @@ var ConsignorEdit = function() {
             //获取发票信息
             invoiceDataGet();
             $("input[name=edittype]").val(CONSIGNORADD);
-            $(".edit-form").find("input").attr("disabled",false);
+            $(".edit-form").find("input,select").attr("disabled",false);
             $(".modal-footer").show();
             $('#edit_consignor').modal('show');
         });
@@ -375,12 +385,9 @@ function getInvoiceDataEnd(flg,result){
             getData = true;
         }else{
             getData = true;
-            alertDialog("发票抬头信息获取失败！");
         }
     }else{
         getData = true;
-        alertDialog("发票抬头信息获取失败！");
-
     }
 }
 

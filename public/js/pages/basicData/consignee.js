@@ -5,6 +5,8 @@ var conList = [];
 if(App.isAngularJsApp() == false){
     jQuery(document).ready(function(){
         fun_power();
+        //省市区三级联动
+        addressDispaly("#unloading_provincecode");
         //收货人信息列表
         ConsTable.init();
         //收货人信息
@@ -94,7 +96,7 @@ var ConsTable = function(){
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(2),td:eq(3),td:eq(4),td:eq(5),td:eq(6),td:eq(7)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(3),td:eq(4),td:eq(5),td:eq(6),td:eq(7)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );
@@ -211,16 +213,14 @@ var ConsEdit = function(){
             btnDisable($('#register-btn'));
             if ($('.register-form').validate().form()) {
                 var genn = $('.register-form').getFormData();
+                //卸货省市区
+                genn.unloading_province = $("#unloading_provincecode").find("option:selected").text();
+                genn.unloading_city = $("#unloading_citycode").find("option:selected").text();
+                genn.unloading_county = $("#unloading_countycode").find("option:selected").text();
                 if($("input[name=edittype]").val() == GENNADD){
                     $("#loading_edit").modal('show');
                     gennAdd(genn);
                 }else {
-                    var data;
-                    for(var i = 0; i < conList.length; i++) {
-                        if(genn.conid == conList[i].conid){
-                            data = conList[i];
-                        }
-                    }
                     $("#loading_edit").modal('show');
                     geenEdit(genn,GENNEDIT);
                 }
@@ -256,6 +256,8 @@ var ConsEdit = function(){
                     cons = conList[i];
                 }
             }
+            //省市区显示
+            areaDisplay(cons.unloading_provincecode,cons.unloading_citycode,"#unloading_citycode","#unloading_countycode");
             var options = { jsonValue: cons, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
             $("input[name=edittype]").val(GENNEDIT);
@@ -344,6 +346,7 @@ function gennEditEnd(flg, result, type){
             $('#edit_gnee').modal('hide');
         }
     }
+    if(alert == "")alert = text + "收货人信息" + res;
     App.unblockUI('#lay-out');
     alertDialog(alert);
 }

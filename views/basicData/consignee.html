@@ -150,27 +150,55 @@
                             <input type="hidden" name="edittype">
                             <input type="hidden" name="conid">
                             <div class="row">
-                                <div class="form-group col-md-12">
-                                    <label class="col-md-2 control-label">收货人<span class="required"> * </span></label>
-                                    <div class="col-md-10">
+                                <div class="form-group col-md-5">
+                                    <label class="col-md-5 control-label">收货人<span class="required"> * </span></label>
+                                    <div class="col-md-7">
                                         <input type="text" class="form-control" placeholder="收货人" name="consignee" id="gnee_consignee"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-7">
+                                    <label class="col-md-4 control-label">收货人电话<span class="required"> * </span></label>
+                                    <div class="col-md-7">
+                                        <input type="text" class="form-control" placeholder="收货人电话" name="mobile" id="geen_mobile" maxlength="11"/>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-12">
-                                    <label class="col-md-2 control-label">收货人电话<span class="required"> * </span></label>
-                                    <div class="col-md-10">
-                                        <input type="text" class="form-control" placeholder="收货人电话" name="mobile" id="geen_mobile" maxlength="11"/>
-                                    </div>
-                                </div>
-                                <div class="form-group col-md-12">
                                     <!--
                                     <label class="col-md-2 control-label">社会信用代码(或身份证号)<span class="required"> * </span></label>
                                     -->
                                     <label class="col-md-2 control-label">社会信用代码(或身份证号)</label>
-                                    <div class="col-md-10">
+                                    <div class="col-md-9">
                                         <input type="text" class="form-control" placeholder="社会信用代码(或身份证号)" name="credit_code" id="credit_code"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label class="col-md-2 control-label">卸货地址</label>
+                                    <div class="col-md-3">
+                                        <select class="form-control" name="unloading_provincecode" id="unloading_provincecode">
+                                            <option value="">请选择省</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-control" name="unloading_citycode" id="unloading_citycode">
+                                            <option value="">请选择市</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-control" name="unloading_countycode" id="unloading_countycode">
+                                            <option value="">请选择区/县</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label class="col-md-2 control-label">卸货详细地址</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" placeholder="卸货详细地址" name="unloading_address"/>
                                     </div>
                                 </div>
                             </div>
@@ -220,6 +248,8 @@
     <script type="text/javascript" src="/public/js/pages/common.js"></script>
     <script type="text/javascript" src="/public/js/pages/data.js"></script>
     <script type="text/javascript" src="/public/js/pages/user-rights.js"></script>
+    <script type="text/javascript" src="/public/js/pages/areaCode.js"></script>
+    <script type="text/javascript" src="/public/js/pages/basicData/areaCodeAddress.js"></script>
 
     <script type="text/javascript" src="/public/js/pages/basicData/consignee.js"></script>
 

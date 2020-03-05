@@ -4,7 +4,6 @@
 
 var lineList = [];
 var projectList,dictList,consigneeList,consignorList,goodsTypeList,unitList = [];
-var goodsList = [];   //货物名称列表
 var dictTrue = [];   //获取字典结果
 var getData = false;
 if(App.isAngularJsApp() == false){
@@ -239,34 +238,34 @@ var LineEdit = function(){
                 consigneeid:{
                     required: true
                 },
-                contacts:{
-                    required: true
-                },
-                phone:{
-                    required: true,
-                    phone:true
-                },
-                goods_type:{
-                    required: true
-                },
-                goods:{
-                    required: true
-                },
-                number:{
-                    required: true
-                },
+//                contacts:{
+//                    required: true
+//                },
+//                phone:{
+//                    required: true,
+//                    phone:true
+//                },
+//                goods_type:{
+//                    required: true
+//                },
+//                goods:{
+//                    required: true
+//                },
+//                number:{
+//                    required: true
+//                },
                 consignorTel:{
                     required: true
                 },
                 consigneeTel:{
                     required: true
                 },
-                unit:{
-                    required: true
-                },
-                univalence:{
-                    required: true
-                },
+//                unit:{
+//                    required: true
+//                },
+//                univalence:{
+//                    required: true
+//                },
                 loading_address:{
                     required: true
                 },
@@ -298,33 +297,33 @@ var LineEdit = function(){
                 consigneeid:{
                     required: "请选择收货人"
                 },
-                contacts:{
-                    required: "请输入线路联系人"
-                },
-                phone:{
-                    required: "请输入联系电话"
-                },
-                goods_type:{
-                    required: "请选择货物类型"
-                },
-                goods:{
-                    required: "请选择货物名称"
-                },
-                number:{
-                    required: "请输入总发运数量"
-                },
+//                contacts:{
+//                    required: "请输入线路联系人"
+//                },
+//                phone:{
+//                    required: "请输入联系电话"
+//                },
+//                goods_type:{
+//                    required: "请选择货物类型"
+//                },
+//                goods:{
+//                    required: "请选择货物名称"
+//                },
+//                number:{
+//                    required: "请输入总发运数量"
+//                },
                 consignorTel:{
                     required: "请输入发货人电话"
                 },
                 consigneeTel:{
                     required: "请输入收货人电话"
                 },
-                unit:{
-                    required: "请选择货运单位"
-                },
-                univalence:{
-                    required: "请输入货物单价"
-                },
+//                unit:{
+//                    required: "请选择货运单位"
+//                },
+//                univalence:{
+//                    required: "请输入货物单价"
+//                },
                 loading_address:{
                     required: "请输入发货详细地址"
                 },
@@ -379,34 +378,34 @@ var LineEdit = function(){
             }
         });
 
-        //货物名称回车键监听
-        $("#goodsname").keypress(function (e) {
-            if (e.which == 13) {
-                //重复的不添加
-                var value = $(this).val();
-                for(var i in goodsList){
-                    if(value == goodsList[i]){
-                        alertDialog("货物名称不可重复");
-                        return;
-                    }
-                }
-                //将输入内容添加到右方div中
-                goodsList.push(value);
-                var div = "<div class='goods_div'><span>×</span>"+value+"</div>";
-                $("#goods").append(div);
-                $("#goodsname").val("");
-            }
-        });
+//        //货物名称回车键监听
+//        $("#goodsname").keypress(function (e) {
+//            if (e.which == 13) {
+//                //重复的不添加
+//                var value = $(this).val();
+//                for(var i in goodsList){
+//                    if(value == goodsList[i]){
+//                        alertDialog("货物名称不可重复");
+//                        return;
+//                    }
+//                }
+//                //将输入内容添加到右方div中
+//                goodsList.push(value);
+//                var div = "<div class='goods_div'><span>×</span>"+value+"</div>";
+//                $("#goods").append(div);
+//                $("#goodsname").val("");
+//            }
+//        });
 
-        //点击删除货物名称
-        $("#goods").on('click','.goods_div',function(){
-            var value = $(this).text().replace('×','');
-            var index = goodsList.indexOf(value);
-            if (index > -1) {
-                goodsList.splice(index, 1);
-            }
-            $(this).remove();
-        });
+//        //点击删除货物名称
+//        $("#goods").on('click','.goods_div',function(){
+//            var value = $(this).text().replace('×','');
+//            var index = goodsList.indexOf(value);
+//            if (index > -1) {
+//                goodsList.splice(index, 1);
+//            }
+//            $(this).remove();
+//        });
 
         //选择发货人或收货人显示联系方式
         $("#consignor").change(function(){
@@ -460,10 +459,10 @@ var LineEdit = function(){
         $('#register-btn').click(function() {
             btnDisable($('#register-btn'));
             if ($('.register-form').validate().form()) {
-                if(goodsList.length == 0){
-                    alertDialog("货物名称必须输入！");
-                    return;
-                }
+//                if(goodsList.length == 0){
+//                    alertDialog("货物名称必须输入！");
+//                    return;
+//                }
                 var line = $('.register-form').getFormData();
                 //项目id
                 line.project_id = $('#project_name').find("option[value='"+line.project_name+"']").attr("data-proid") || "";
@@ -478,7 +477,7 @@ var LineEdit = function(){
                 //收货人，发货人
                 line.goods_type = "10005,"+line.goods_type;
                 line.unit = "10006,"+line.unit;
-                line.goods = goodsList.toString();
+                line.goods = $("#goods_type").find("option:selected").text();
                 if($("input[name=edittype]").val() == LINEADD){
                     $("#loading_edit").modal('show');
                     lineAdd(line);
@@ -501,7 +500,7 @@ var LineEdit = function(){
             consignorDataGet();
             $("input[name=edittype]").val(LINEADD);
             fileUploadAllowed(1);
-            goodsList = [];
+//            goodsList = [];
             $("#goods").empty();
             $(".modal-footer").show();
             $('#edit_lin').modal('show');
@@ -538,11 +537,11 @@ var LineEdit = function(){
                       var options = { jsonValue: line, exclude:exclude,isDebug: false};
                       $(".register-form").initForm(options);
                       //显示货物名称
-                      goodsList = line.goods.split(",");
-                      for(var i in goodsList){
-                          var div = "<div class='goods_check'><span>×</span>"+goodsList[i]+"</div>";
-                          $("#goods").append(div);
-                      }
+//                      goodsList = line.goods.split(",");
+//                      for(var i in goodsList){
+//                          var div = "<div class='goods_check'><span>×</span>"+goodsList[i]+"</div>";
+//                          $("#goods").append(div);
+//                      }
                       //项目名称赋值
                       fileUploadAllowed(0);
                       $(".modal-footer").hide();
@@ -585,11 +584,11 @@ var LineEdit = function(){
                         var options = { jsonValue: line, exclude:exclude,isDebug: false};
                         $(".register-form").initForm(options);
                         //显示货物名称
-                        goodsList = line.goods.split(",");
-                        for(var i in goodsList){
-                            var div = "<div class='goods_div'><span>×</span>"+goodsList[i]+"</div>";
-                            $("#goods").append(div);
-                        }
+//                        goodsList = line.goods.split(",");
+//                        for(var i in goodsList){
+//                            var div = "<div class='goods_div'><span>×</span>"+goodsList[i]+"</div>";
+//                            $("#goods").append(div);
+//                        }
                         fileUploadAllowed(1);
                         $("input[name=edittype]").val(LINEEDIT);
                         $(".modal-footer").show();
@@ -699,8 +698,8 @@ function lineEditEnd (flg, result, type){
             res = "成功";
             LineTable.init();
             $('#edit_lin').modal('hide');
-            goodsList = [];
-            $("#goods").empty();
+//            goodsList = [];
+//            $("#goods").empty();
         }
     }
     if(alert == ""){

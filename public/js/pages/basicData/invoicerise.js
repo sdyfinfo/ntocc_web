@@ -430,7 +430,7 @@ var invEdit = function(){
                     if(getData){
                         clearInterval(Timer);
                         var exclude = [];
-                        var row = $(this).parents('tr')[0];
+                        var row = $(that).parents('tr')[0];
                         var invid = $("#inv_table").dataTable().fnGetData(row).invid;
                         var invo = new Object();
                         for(var i=0; i < invocerList.length; i++){
@@ -545,6 +545,7 @@ function getaddressDataEnd(flg, result, callback){
             var res = result.response;
             addressidList = res.list;
             $("#addrid").empty();
+            $("#addrid").append("<option value=''>请选择</option>");
             for(var i = 0; i < addressidList.length; i++){
                 $("#addrid").append("<option value='"+addressidList[i].aid+"'>" + addressidList[i].ress+"</option>");
             }
