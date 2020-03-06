@@ -12,14 +12,12 @@
 // };
 
 var hostIp = "http://39.107.68.137";                       
-var operatorIp = "http://39.107.68.137";   
 
 var regulateSucc = {
     "uploadFolder" : "/home/yfdev/src/ywt_web",                       // 上传文件所在文件夹
-    "loginUrl" : hostIp + "/ntocc/ntocc-ac/web/",                      // 登录URL   "/gramtu/ac/web/"  /ntocc/ntocc-ac/web/
-    "userHostUrl" : hostIp + "/ntocc/ntocc-ac/api/web/",             // 用户相关URL（无车运平台系统管理）   "/gramtu/ac/web/front/"  /ntocc/ntocc-ac/api/web/
-    "gramtuWebUrl": hostIp + "/gramtu/web/",                      // web端URL
-    "businessUrl": hostIp+"/ntocc/ntocc-business/api/web/"           //无车运平台（基础数据管理）相关
+    "loginUrl" : hostIp + "/ntocc/ntocc-ac/web/",                     // 登录URL   "/gramtu/ac/web/"  /ntocc/ntocc-ac/web/
+    "userHostUrl" : hostIp + "/ntocc/ntocc-ac/api/web/",              // 用户相关URL（无车运平台系统管理）   "/gramtu/ac/web/front/"  /ntocc/ntocc-ac/api/web/
+    "businessUrl": hostIp+"/ntocc/ntocc-business/api/web/"            //无车运平台（基础数据管理）相关
 };
 
 const SUCCESS = "0000";
