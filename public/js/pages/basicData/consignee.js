@@ -214,9 +214,18 @@ var ConsEdit = function(){
             if ($('.register-form').validate().form()) {
                 var genn = $('.register-form').getFormData();
                 //卸货省市区
-                genn.unloading_province = $("#unloading_provincecode").find("option:selected").text();
-                genn.unloading_city = $("#unloading_citycode").find("option:selected").text();
-                genn.unloading_county = $("#unloading_countycode").find("option:selected").text();
+                genn.unloading_province = "";
+                if(genn.unloading_provincecode != ""){
+                    genn.unloading_province = $("#unloading_provincecode").find("option:selected").text();
+                }
+                genn.unloading_city = "";
+                if(genn.unloading_citycode != ""){
+                    genn.unloading_city = $("#unloading_citycode").find("option:selected").text();
+                }
+                genn.unloading_county = "";
+                if(genn.unloading_countycode != ""){
+                    genn.unloading_county = $("#unloading_countycode").find("option:selected").text();
+                }
                 if($("input[name=edittype]").val() == GENNADD){
                     $("#loading_edit").modal('show');
                     gennAdd(genn);

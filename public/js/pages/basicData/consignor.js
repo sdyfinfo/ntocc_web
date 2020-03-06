@@ -228,9 +228,18 @@ var ConsignorEdit = function() {
                     }
                 }
                 //装货省市区
-                consignor.loading_province = $("#loading_provincecode").find("option:selected").text();
-                consignor.loading_city = $("#loading_citycode").find("option:selected").text();
-                consignor.loading_county = $("#loading_countycode").find("option:selected").text();
+                consignor.loading_province = "";
+                if(consignor.loading_provincecode != ""){
+                    consignor.loading_province = $("#loading_provincecode").find("option:selected").text();
+                }
+                consignor.loading_city = "";
+                if(consignor.loading_citycode != ""){
+                    consignor.loading_city = $("#loading_citycode").find("option:selected").text();
+                }
+                consignor.loading_county = "";
+                if(consignor.loading_countycode != ""){
+                    consignor.loading_county = $("#loading_countycode").find("option:selected").text();
+                }
                 if($("input[name=edittype]").val() == CONSIGNORADD){
                     $("#loading_edit").modal('show');
                     consignorAdd(consignor);

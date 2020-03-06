@@ -3,9 +3,10 @@
  */
 
 var vehicleList = [];
-var plateColor,ve_conductor,vehicleType,energy_Type = [];
+var plateColor,ve_conductor,vehicleType,energy_Type,driverList = [];
 var dictTrue = [];   //获取字典结果
 var imgInit = "/public/img/img_upload.png";
+var getData = false;
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
@@ -379,6 +380,32 @@ var VehiceEdit = function() {
             return this.optional(element) || (plate.test(value));
         }, "请正确填写您的车牌号");
 
+        //司机信息联动
+        $("#driver_add").blur(function(){
+            var value = $(this).val();
+            var list = [];
+            for(var i = 0;i<driverList.length;i++){
+                list.push(driverList[i].name+driverList[i].id_number);
+            }
+            if(list.indexOf(value) == -1){  //不存在
+                $(this).val("");
+                $("input[name=did]").val("");
+            }
+        });
+        $("#driver_add").change(function(e){
+            var value = $(this).val();
+            if(value != ""){
+                var id = $("#driverList").find("option[value='"+value+"']").attr("data-did");
+                for(var i in driverList){
+                    if(id == driverList[i].did){
+                        $("input[name=did]").val(driverList[i].did);
+                    }
+                }
+            }else{
+                $("input[name=did]").val("");
+            }
+        });
+
         //点击确定按钮
         $('#edit-btn').click(function() {
             btnDisable($('#edit-btn'));
@@ -390,7 +417,7 @@ var VehiceEdit = function() {
                 var formData = new FormData();
                 var data = sendMessageEdit(DEFAULT,vehice);
                 formData.append("body",new Blob([data],{type:"application/json"}));
-                var list = ["driving_img","transport_img","license_img","insurance_img","group_photo"];
+                var list = ["driving_img","transport_img","insurance_img","group_photo"];
                 for(var i in list){
                     formData.append(list[i],null);
                 }
@@ -411,74 +438,118 @@ var VehiceEdit = function() {
         });
         //查看车辆信息
         $('#vehice_table').on('click', '#vehice_detail', function (e) {
+            var that = this;
             e.preventDefault();
             //清除校验错误信息
             validator.resetForm();
             $(".edit-form").find(".has-error").removeClass("has-error");
             $("#edit_vehice").find(".modal-title").text("查看车辆");
-            var exclude = [];
-            var row = $(this).parents('tr')[0];
-            var vehid = $("#vehice_table").dataTable().fnGetData(row).vehid;
-            var vehice = new Object();
-            for(var i=0; i < vehicleList.length; i++){
-                if(vehid == vehicleList[i].vehid){
-                    vehice = vehicleList[i];
-                }
-            }
-            var options = { jsonValue: vehice, exclude:exclude,isDebug: false};
-            $(".edit-form").initForm(options);
-            //日期框赋值
-            $("input[name=regdate]").datepicker("setDate",dateFormat(vehice.regdate, "-"));
-            $("input[name=issue_date]").datepicker("setDate",dateFormat(vehice.issue_date, "-"));
-            //清空文件
-            clearFile();
-            //显示图片
-            $("#driving_img").siblings("label").find("img").attr("src",vehice.driving_img || imgInit);
-            $("#transport_img").siblings("label").find("img").attr("src",vehice.transport_img || imgInit);
-            $("#license_img").siblings("label").find("img").attr("src",vehice.license_img || imgInit);
-            $("#insurance_img").siblings("label").find("img").attr("src",vehice.insurance_img || imgInit);
-            $("#group_photo").siblings("label").find("img").attr("src",vehice.group_photo || imgInit);
-            //是否允许上传图片
-            fileUploadAllowed(0);
-            $(".modal-footer").hide();
-            $('#edit_vehice').modal('show');
+            //获取司机信息
+            getData = false;
+            driverDataGet();
+            var Timer;
+            Timer = setInterval(
+              function(){
+                  if(getData){
+                      clearInterval(Timer);
+                      var exclude = [];
+                      var row = $(that).parents('tr')[0];
+                      var vehid = $("#vehice_table").dataTable().fnGetData(row).vehid;
+                      var vehice = new Object();
+                      for(var i=0; i < vehicleList.length; i++){
+                          if(vehid == vehicleList[i].vehid){
+                              vehice = vehicleList[i];
+                          }
+                      }
+                      var options = { jsonValue: vehice, exclude:exclude,isDebug: false};
+                      $(".edit-form").initForm(options);
+                      //日期框赋值
+                      $("input[name=regdate]").datepicker("setDate",dateFormat(vehice.regdate, "-"));
+                      $("input[name=issue_date]").datepicker("setDate",dateFormat(vehice.issue_date, "-"));
+                      //显示司机
+                      if(vehice.did!=""){
+                          for(var i in driverList){
+                              if(vehice.did == driverList[i].did){
+                                  $("#driver_add").val(driverList[i].name+driverList[i].id_number);
+                              }
+                          }
+                      }else{
+                          $("#driver_add").val("");
+                      }
+                      //清空文件
+                      clearFile();
+                      //显示图片
+                      $("#driving_img").siblings("label").find("img").attr("src",vehice.driving_img || imgInit);
+                      $("#transport_img").siblings("label").find("img").attr("src",vehice.transport_img || imgInit);
+                      //$("#license_img").siblings("label").find("img").attr("src",vehice.license_img || imgInit);
+                      $("#insurance_img").siblings("label").find("img").attr("src",vehice.insurance_img || imgInit);
+                      $("#group_photo").siblings("label").find("img").attr("src",vehice.group_photo || imgInit);
+                      //是否允许上传图片
+                      fileUploadAllowed(0);
+                      $(".modal-footer").hide();
+                      $('#edit_vehice').modal('show');
+                  }
+              },500
+            );
         });
         //编辑车辆信息
         $('#vehice_table').on('click', '#op_edit', function (e) {
+            var that = this;
             e.preventDefault();
             //清除校验错误信息
             validator.resetForm();
             $(".edit-form").find(".has-error").removeClass("has-error");
             $("#edit_vehice").find(".modal-title").text("编辑车辆");
-            var exclude = [];
-            var row = $(this).parents('tr')[0];
-            var vehid = $("#vehice_table").dataTable().fnGetData(row).vehid;
-            var vehice = new Object();
-            for(var i=0; i < vehicleList.length; i++){
-                if(vehid == vehicleList[i].vehid){
-                    vehice = vehicleList[i];
-                }
-            }
-            var options = { jsonValue: vehice, exclude:exclude,isDebug: false};
-            $(".edit-form").initForm(options);
-            //日期框赋值
-            $("input[name=regdate]").datepicker("setDate",dateFormat(vehice.regdate, "-"));
-            $("input[name=issue_date]").datepicker("setDate",dateFormat(vehice.issue_date, "-"));
-            //清空文件
-            clearFile();
-            //显示图片
-            $("#driving_img").siblings("label").find("img").attr("src",vehice.driving_img || imgInit);
-            $("#transport_img").siblings("label").find("img").attr("src",vehice.transport_img || imgInit);
-            $("#license_img").siblings("label").find("img").attr("src",vehice.license_img || imgInit);
-            $("#insurance_img").siblings("label").find("img").attr("src",vehice.insurance_img || imgInit);
-            $("#group_photo").siblings("label").find("img").attr("src",vehice.group_photo || imgInit);
-            //是否允许上传图片
-            fileUploadAllowed(1);
-            //车牌号只读
-            $("#platenumber_edit").attr("disabled",true);
-            $("input[name=edittype]").val(VEHICEEDIT);
-            $(".modal-footer").show();
-            $('#edit_vehice').modal('show');
+            //获取司机信息
+            getData = false;
+            driverDataGet();
+            var Timer;
+            Timer = setInterval(
+                function(){
+                    if(getData){
+                        clearInterval(Timer);
+                        var exclude = [];
+                        var row = $(that).parents('tr')[0];
+                        var vehid = $("#vehice_table").dataTable().fnGetData(row).vehid;
+                        var vehice = new Object();
+                        for(var i=0; i < vehicleList.length; i++){
+                            if(vehid == vehicleList[i].vehid){
+                                vehice = vehicleList[i];
+                            }
+                        }
+                        var options = { jsonValue: vehice, exclude:exclude,isDebug: false};
+                        $(".edit-form").initForm(options);
+                        //日期框赋值
+                        $("input[name=regdate]").datepicker("setDate",dateFormat(vehice.regdate, "-"));
+                        $("input[name=issue_date]").datepicker("setDate",dateFormat(vehice.issue_date, "-"));
+                        //显示司机
+                        if(vehice.did!=""){
+                            for(var i in driverList){
+                                if(vehice.did == driverList[i].did){
+                                    $("#driver_add").val(driverList[i].name+driverList[i].id_number);
+                                }
+                            }
+                        }else{
+                            $("#driver_add").val("");
+                        }
+                        //清空文件
+                        clearFile();
+                        //显示图片
+                        $("#driving_img").siblings("label").find("img").attr("src",vehice.driving_img || imgInit);
+                        $("#transport_img").siblings("label").find("img").attr("src",vehice.transport_img || imgInit);
+                        //$("#license_img").siblings("label").find("img").attr("src",vehice.license_img || imgInit);
+                        $("#insurance_img").siblings("label").find("img").attr("src",vehice.insurance_img || imgInit);
+                        $("#group_photo").siblings("label").find("img").attr("src",vehice.group_photo || imgInit);
+                        //是否允许上传图片
+                        fileUploadAllowed(1);
+                        //车牌号只读
+                        $("#platenumber_edit").attr("disabled",true);
+                        $("input[name=edittype]").val(VEHICEEDIT);
+                        $(".modal-footer").show();
+                        $('#edit_vehice').modal('show');
+                    }
+                },500
+            );
         });
         //新增车辆
         $('#op_add').click(function() {
@@ -490,6 +561,8 @@ var VehiceEdit = function() {
                 .removeAttr("checked")
                 .removeAttr("selected");
             ComponentsDateTimePickers.init();
+            //获取司机信息
+            driverDataGet();
             //清空文件
             clearFile();
             fileUploadAllowed(1);
@@ -795,7 +868,7 @@ function vehiceEditEnd(flg, result, type){
 //清空文件
 function clearFile(){
     $(".edit-form").find("input[type=file]").val("");
-    var list = ["#driving_img","#transport_img","#license_img","#insurance_img","#group_photo"];
+    var list = ["#driving_img","#transport_img","#insurance_img","#group_photo"];
     for(var i = 0;i<list.length;i++){
         $(list[i]).siblings("label").find("img").attr('src',imgInit);
     }
@@ -889,4 +962,27 @@ function imgNameCheck(name){
         return false;
     }
     return true;
+}
+
+//司机信息结果返回
+function getDriverDataEnd(flg, result){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+            var res = result.response;
+            driverList = res.list;
+            $("#driverList").empty();
+            for(var i in driverList){
+                if(driverList[i].state == "0"){
+                    var value = driverList[i].name+driverList[i].id_number;
+                    $("#driverList").append("<option data-did='"+driverList[i].did+"' value='"+value+"'></option>");
+                }
+            }
+            getData = true;
+        }else{
+            getData = true;
+        }
+    }else{
+        getData = true;
+    }
 }

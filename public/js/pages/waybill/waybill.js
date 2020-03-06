@@ -520,7 +520,7 @@ var WayBillAdd = function() {
             }
             if(list.indexOf(value) == -1){  //不存在
                 $(this).val("");
-                $("input[name=plate_number],input[name=name]").val("");
+                $("input[name=name],input[name=driver_id]").val("");
             }
         });
         $("#driver_add").change(function(e){
@@ -547,7 +547,7 @@ var WayBillAdd = function() {
             }
             if(list.indexOf(value) == -1){  //不存在
                 $(this).val("");
-                $("#plate_number,input[name=vehicle_id],input[name=load]").val("");
+                $("input[name=vehicle_id],input[name=load]").val("");
             }
         });
         $("#plate_number").change(function(e){
@@ -686,7 +686,7 @@ var WayBillAdd = function() {
                 var number = $(this).val();
                 var univalence = $("input[name=univalence]").val();
                 if(univalence!=""){
-                    $("input[name=freight]").val(number*univalence);
+                    $("input[name=freight]").val(Math.round(number*univalence*100)/100);
                 }
             }else{
                 $("input[name=freight]").val("");
@@ -705,7 +705,7 @@ var WayBillAdd = function() {
                 var univalence = $(this).val();
                 var number = $("input[name=number]").val();
                 if(number!=""){
-                    $("input[name=freight]").val(number*univalence);
+                    $("input[name=freight]").val(Math.round(number*univalence*100)/100);
                 }
             }else{
                 $("input[name=freight]").val("");
@@ -826,11 +826,11 @@ var WayBillAdd = function() {
                       var options = { jsonValue: bill, exclude:exclude,isDebug: false};
                       $(".add-form").initForm(options);
                       //显示货物名称
-                      goodsList = bill.goods.split(",");
-                      for(var i in goodsList){
-                          var div = "<div class='goods_check'><span>×</span>"+goodsList[i]+"</div>";
-                          $("#goods").append(div);
-                      }
+//                      goodsList = bill.goods.split(",");
+//                      for(var i in goodsList){
+//                          var div = "<div class='goods_check'><span>×</span>"+goodsList[i]+"</div>";
+//                          $("#goods").append(div);
+//                      }
                       $("#driver_add").val(bill.name+bill.id_number);
                       $("input[name=orderMaking_time]").datepicker("setDate",dateFormat(bill.orderMaking_time, "-"));
                       $("input[name=planTime]").datepicker("setDate",dateFormat(bill.planTime, "-"));
@@ -888,11 +888,11 @@ var WayBillAdd = function() {
                       var options = { jsonValue: bill, exclude:exclude,isDebug: false};
                       $(".add-form").initForm(options);
                       //显示货物名称
-                      goodsList = bill.goods.split(",");
-                      for(var i in goodsList){
-                          var div = "<div class='goods_div'><span>×</span>"+goodsList[i]+"</div>";
-                          $("#goods").append(div);
-                      }
+//                      goodsList = bill.goods.split(",");
+//                      for(var i in goodsList){
+//                          var div = "<div class='goods_div'><span>×</span>"+goodsList[i]+"</div>";
+//                          $("#goods").append(div);
+//                      }
                       $("#driver_add").val(bill.name+bill.id_number);
                       $("input[name=orderMaking_time]").datepicker("setDate",dateFormat(bill.orderMaking_time, "-"));
                       $("input[name=planTime]").datepicker("setDate",dateFormat(bill.planTime, "-"));
@@ -1299,7 +1299,7 @@ function getlineDataEnd(flg,result){
                 $("#goods").append(div);
             }
             //计算运费：单价x总发运数
-            $(".add-form").find("input[name=freight]").val(line.univalence*line.number);
+            $(".add-form").find("input[name=freight]").val(Math.round(line.univalence*line.number*100)/100);
         }else{
             alertDialog("线路信息获取失败");
         }
