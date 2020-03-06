@@ -619,7 +619,7 @@ function fun_power(){
         "#vehice_inquiry","#vehice_import","#pro_inquiry","#driver_inquiry","#driver_import","#consignor_inquiry","#addr_inquiry",
         "#lin_inquiry","#cons_inquiry","#pay_inquiry","#us_inquiry","#us_import","#inv_inquiry","#bill_inquiry",
         "#bill_import","#bill_submit","#bill_depart","#bill_done","#payment_inquiry","#bill_payment","#invoice_inquiry","#invoice_apply",
-        "#vehiceImg_import","#driverImg_import"];
+        "#vehiceImg_import","#driverImg_import","#capital_inquiry"];
     for(var i in list){
         if(!makeEdit(menu,loginSucc.functionlist,list[i])){
             $(list[i]).hide();

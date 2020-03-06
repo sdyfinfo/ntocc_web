@@ -573,8 +573,16 @@ var DriverEdit = function() {
 $("#driver_table").on('click',".imgCheck",function(e){
     var src = $(this).children("span")[0].innerText;
     $("#img_check").find("img").attr('src',src);
-    $("#driver_table").find(".modal-title").text("图片查看");
-    $("#img_check").modal('show');
+//    $("#driver_table").find(".modal-title").text("图片查看");
+//    $("#img_check").modal('show');
+    $("#img_check img").trigger('click');
+});
+
+$("#img_check img").viewer({
+    navbar: false,
+    button: true,
+    toolbar: true,
+    title: false
 });
 
 //项目状态显示
