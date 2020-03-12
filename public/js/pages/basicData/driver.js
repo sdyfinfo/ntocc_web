@@ -154,9 +154,15 @@ var DriverTable = function () {
                     "render": function (data, type, row, meta) {
                         for(var i in driverList){
                             if(data == driverList[i].did){
-                                return '<a href="javascript:;" class="imgCheck">正面<span hidden="hidden">'+driverList[i].id_front+'</span></a>'+
-                                    '<span>|</span>'+
-                                    '<a href="javascript:;" class="imgCheck">反面<span hidden="hidden">'+driverList[i].id_back+'</span></a>';
+                                var id_front = "<span>正面</span>"
+                                var id_back = "<span>反面</span>";
+                                if(driverList[i].id_front != ""){
+                                    id_front = '<a href="javascript:;" class="imgCheck">正面<span hidden="hidden">'+driverList[i].id_front+'</span></a>';
+                                }
+                                if(driverList[i].id_back != ""){
+                                    id_back =  '<a href="javascript:;" class="imgCheck">反面<span hidden="hidden">'+driverList[i].id_back+'</span></a>';
+                                }
+                                return id_front+'<span>|</span>'+id_back;
                             }
                         }
                     }
@@ -202,7 +208,7 @@ var DriverTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(3),td:eq(4),td:eq(7),td:eq(8),td:eq(10),td:eq(11),td:eq(12),td:eq(13)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(3),td:eq(4),td:eq(5),td:eq(7),td:eq(8),td:eq(10),td:eq(11),td:eq(12),td:eq(13)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );
@@ -760,6 +766,11 @@ $("#driverImg_file").change(function(){
                 $("#driverImg_file").value = "";
                 return false;
             }
+            if((Number(this.files[i].size)/1024/1024)>20){
+                alertDialog("单张照片大小不可超过20M！"+this.files[i].name);
+                $("#driverImg_file").value = "";
+                return false;
+            }
             formData.append("files",this.files[i]);
         }
         var userid = {
@@ -799,6 +810,10 @@ function imgDrop(ev) {
                 //判断图片文件命名格式
                 if(!imgNameCheck(filesName)){
                     alertDialog("图片文件命名格式不正确！"+filesName);
+                    return false;
+                }
+                if((Number(files[i].size)/1024/1024)>20){
+                    alertDialog("单张照片大小不可超过20M！"+files[i].name);
                     return false;
                 }
                 formData.append("files",files[i]);

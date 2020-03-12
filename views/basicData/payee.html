@@ -195,18 +195,24 @@
                             <input type="hidden" name="payid">
                             <input type="hidden" name="bankid">
                             <div class="row">
-                                <div class="form-group col-md-12">
-                                    <label class="col-md-2 control-label">银行开户户名<span class="required"> * </span></label>
-                                    <div class="col-md-9">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">银行开户户名<span class="required"> * </span></label>
+                                    <div class="col-md-8">
                                         <input type="text" class="form-control" placeholder="银行开户户名" name="payname" id="payname"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">银行卡号<span class="required"> * </span></label>
+                                    <div class="col-md-7" style="margin-left: -10px">
+                                        <input type="text" class="form-control" placeholder="银行卡号" name="bank" id="bank"/>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <label class="col-md-4 control-label">银行卡号<span class="required"> * </span></label>
-                                    <div class="col-md-7">
-                                        <input type="text" class="form-control" placeholder="银行卡号" name="bank" id="bank"/>
+                                    <label class="col-md-4 control-label">收款人手机号<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="收款人手机号" name="payphone" id="payphone" maxlength="11"/>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -214,25 +220,20 @@
                                     <label class="col-md-4 control-label">身份证号<span class="required"> * </span></label>
                                     -->
                                     <label class="col-md-4 control-label">身份证号</label>
-                                    <div class="col-md-7">
+                                    <div class="col-md-7" style="margin-left: -10px">
                                         <input type="text" class="form-control" placeholder="身份证号" name="idcard" id="idcard"/>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="form-group col-md-6">
-                                    <label class="col-md-4 control-label">收款人手机号<span class="required"> * </span></label>
-                                    <div class="col-md-7">
-                                        <input type="text" class="form-control" placeholder="收款人手机号" name="payphone" id="payphone" maxlength="11"/>
-                                    </div>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label class="col-md-4 control-label">开户银行<span class="required"> * </span></label>
-                                    <div class="col-md-7">
+                                <div class="form-group col-md-12">
+                                    <label class="col-md-2 control-label">开户银行<span class="required"> * </span></label>
+                                    <div class="col-md-9" style="margin-left: -5px">
                                         <input type="text" class="form-control" placeholder="开户银行" name="bankname" id="bankname" list="bankList"/>
                                         <datalist id="bankList"></datalist>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </form>

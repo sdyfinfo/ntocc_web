@@ -717,6 +717,11 @@ $("#vehiceImg_file").change(function(){
                 $("#vehiceImg_file").value = "";
                 return false;
             }
+            if((Number(this.files[i].size)/1024/1024)>20){
+                alertDialog("单张照片大小不可超过20M！"+this.files[i].name);
+                $("#vehiceImg_file").value = "";
+                return false;
+            }
             formData.append("file",this.files[i]);
         }
         var userid = {
@@ -756,6 +761,10 @@ function imgDrop(ev) {
                 //判断图片文件命名格式
                 if(!imgNameCheck(filesName)){
                     alertDialog("图片文件命名格式不正确！"+filesName);
+                    return false;
+                }
+                if((Number(files[i].size)/1024/1024)>20){
+                    alertDialog("单张照片大小不可超过20M！"+files[i].name);
                     return false;
                 }
                 formData.append("file",files[i]);

@@ -2,12 +2,11 @@
  * Created by Administrator on 2019/2/22.
  */
 var organList = [];
-var bankList = [];
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
         fun_power();
-        //获取银行
-        bankNameDataGet();
+        //机构表格
+        OrganTable.init();
         //新增和编辑
         OrganEdit.init();
     });
@@ -204,7 +203,7 @@ var OrganEdit = function() {
                     required: true
                 },
                 rate: {
-                    required: true,
+                    organRate: true,
                     rate:true
                 },
                 invoicerise_address:{
@@ -218,9 +217,6 @@ var OrganEdit = function() {
             messages: {
                 taxpayer: {
                     required: "统一社会信用代码必须输入"
-                },
-                rate: {
-                    required: "服务费率必须输入"
                 }
             },
 
@@ -269,6 +265,16 @@ var OrganEdit = function() {
             return this.optional(element) || (rate.test(value));
         }, "请输入0-100且小数点后最多两位的数字");
 
+        jQuery.validator.addMethod("organRate", function(value, element) {
+            var result = true;
+            if($(".invoicerise-form").find("input[name=types]").val() != "0"){  //非运营方
+                if($(".invoicerise-form").find("input[name=rate]").val() == ""){
+                    result = false;
+                }
+            }
+            return result;
+        }, "服务费率必须输入！");
+
         jQuery.validator.addMethod("address", function(value, element) {
             var rate = /^[\u4e00-\u9fa5a-zA-Z0-9]+$/;
             return this.optional(element) || (rate.test(value));
@@ -287,18 +293,6 @@ var OrganEdit = function() {
                 $("#href2").parents('li').show();
             }else{
                 $("#href2").parents('li').hide();
-            }
-        });
-
-        //输入开户行事件
-        $("#bank_name").blur(function(){
-            var value = $(this).val();
-            var list = [];
-            for(var i = 0;i<bankList.length;i++){
-                list.push(bankList[i].bankname);
-            }
-            if(list.indexOf(value) == -1){  //不存在
-                $(this).val("");
             }
         });
 
@@ -339,7 +333,6 @@ var OrganEdit = function() {
                     organ.taxpayer = invoicerise.taxpayer;
                     organ.address_phone = invoicerise.invoicerise_address+"/"+invoicerise.invoicerise_tel;
                     organ.bankname = invoicerise.bankname;
-                    organ.bank_id = $("#bank_list").find("option[value='"+invoicerise.bankname+"']").attr("data-bankid");
                     organ.bank = invoicerise.bank;
                     organ.rate = invoicerise.rate;
                     if($("input[name=edittype]").val() == ORGANADD){
@@ -388,12 +381,6 @@ var OrganEdit = function() {
             for(var i=0; i < organlist.length; i++){
                 if(organid == organlist[i].organid){
                     organ = organlist[i];
-                }
-            }
-            organ.bankname = "";
-            for(var i in bankList){
-                if(organ.bank_id == bankList[i].bankid){
-                    organ.bankname = bankList[i].bankname;
                 }
             }
             var options = { jsonValue: organ, exclude:exclude,isDebug: false};
@@ -564,29 +551,6 @@ function parentOrSelf(node, checkId){
     }
 }
 
-//返回开户行结果
-function getbankNameDataEnd(flg, result){
-    App.unblockUI('#lay-out');
-    if(flg){
-        if (result && result.retcode == SUCCESS) {
-            var res = result.response;
-            bankList = res.banklist;
-            for(var i = 0; i < bankList.length; i++){
-                $("#bank_list").append("<option data-bankid='"+bankList[i].bankid+"' value='"+bankList[i].bankname+"'></option>");
-            }
-            //获取开票信息
-            OrganTable.init();
-        }else{
-            //获取开票信息
-            OrganTable.init();
-            alertDialog("开户行信息获取失败！");
-        }
-    }else{
-        //获取开票信息
-        OrganTable.init();
-        alertDialog("开户行信息获取失败！");
-    }
-}
 
 //tab显示(默认显示tab_1_1)
 function tabDisplay(){

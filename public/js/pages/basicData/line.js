@@ -500,8 +500,8 @@ var LineEdit = function(){
             consignorDataGet();
             $("input[name=edittype]").val(LINEADD);
             fileUploadAllowed(1);
-//            goodsList = [];
-            $("#goods").empty();
+            //goodsList = [];
+            //$("#goods").empty();
             $(".modal-footer").show();
             $('#edit_lin').modal('show');
         });
@@ -530,10 +530,16 @@ var LineEdit = function(){
                               line = lineList[i];
                           }
                       }
-                      $("#goods").empty();
+                      //$("#goods").empty();
                       //省市区显示
                       areaDisplay(line.loading_provincecode,line.loading_citycode,"#loading_citycode","#loading_countycode");
                       areaDisplay(line.unloading_provincecode,line.unloading_citycode,"#unloading_citycode","#unloading_countycode");
+                      //默认货物量单位显示
+                      for(var i in unitList){
+                          if(line.unit == unitList[i].code){
+                              $("#unit_text").html(unitList[i].value);
+                          }
+                      }
                       var options = { jsonValue: line, exclude:exclude,isDebug: false};
                       $(".register-form").initForm(options);
                       //显示货物名称
@@ -577,10 +583,16 @@ var LineEdit = function(){
                                 line = lineList[i];
                             }
                         }
-                        $("#goods").empty();
+                        //$("#goods").empty();
                         //省市区显示
                         areaDisplay(line.loading_provincecode,line.loading_citycode,"#loading_citycode","#loading_countycode");
                         areaDisplay(line.unloading_provincecode,line.unloading_citycode,"#unloading_citycode","#unloading_countycode");
+                        //默认货物量单位显示
+                        for(var i in unitList){
+                            if(line.unit == unitList[i].code){
+                                $("#unit_text").html(unitList[i].value);
+                            }
+                        }
                         var options = { jsonValue: line, exclude:exclude,isDebug: false};
                         $(".register-form").initForm(options);
                         //显示货物名称

@@ -3,7 +3,7 @@
  */
 
 var invocerList = [];
-var addressidList,bankList = [];
+var addressidList = [];
 var invlist = [];
 var getData = false;
 var Questdraw = 0;
@@ -73,10 +73,10 @@ var invocreTable = function () {
                         //显示发票抬头
                         for(var i in invocerList){
                             if(data == invocerList[i].invid){
-                                return "<b>"+"抬头名称:"+"</b>"+invocerList[i].rise_name +"<br>"+
-                                    "<b>"+"纳税人识别号:"+"</b>"+ invocerList[i].taxpayer +"<br>"+
-                                    "<b>"+"地址/电话:"+"</b>"+invocerList[i].address_phone +"<br>"+
-                                    "<b>"+"开户行及账号:"+"</b>"+ bankDisplay(invocerList[i].bank_id) + invocerList[i].bank + "<br>"+
+                                return "<b>"+"抬头名称："+"</b>"+invocerList[i].rise_name +"<br>"+
+                                    "<b>"+"纳税人识别号："+"</b>"+ invocerList[i].taxpayer +"<br>"+
+                                    "<b>"+"地址/电话："+"</b>"+invocerList[i].address_phone +"<br>"+
+                                    "<b>"+"开户行及账号："+"</b>"+ invocerList[i].bankname + invocerList[i].bank + "<br>"+
                                     "<a href='javascript:;' id='invoice'>"+"修改抬头信息"+"</a>";
                             }
                         }
@@ -88,10 +88,9 @@ var invocreTable = function () {
                         //邮寄地址
                         for(var i in invocerList) {
                             if (data == invocerList[i].invid) {
-                                return "<b>"+"邮寄地址:"+"</b>"+invocerList[i].address +"<br>"+
-                                    "<b>"+"收件人"+"</b>"+ invocerList[i].addressee +"<br>"+
-                                    "<b>"+"电话:"+"</b>"+ invocerList[i].addresseeTel +"<br>"+
-                                    "<b>"+"邮箱:"+"</b>"+ invocerList[i].email + "<br>"+
+                                return "<b>"+"邮寄地址："+"</b>"+invocerList[i].address +"<br>"+
+                                    "<b>"+"收件人："+"</b>"+ invocerList[i].addressee +"<br>"+
+                                    "<b>"+"电话："+"</b>"+ invocerList[i].addresseeTel +"<br>"+
                                     "<a href='javascript:;' id='mail'>"+"更换邮寄地址"+"</a>";
                             }
                         }
@@ -178,7 +177,7 @@ var invEdit = function(){
                 invoicerise_tel:{
                     required: true
                 },
-                bank_name:{
+                bankname:{
                     required: true
                 },
                 bank:{
@@ -194,7 +193,7 @@ var invEdit = function(){
                 invoicerise_tel:{
                     required: "请输入电话"
                 },
-                bank_name:{
+                bankname:{
                     required: "请输入开户行"
                 },
                 bank:{
@@ -344,24 +343,11 @@ var invEdit = function(){
             }
         });
 
-        //输入开户行事件
-        $("#bank_name").blur(function(){
-            var value = $(this).val();
-            var list = [];
-            for(var i = 0;i<bankList.length;i++){
-                list.push(bankList[i].bankname);
-            }
-            if(list.indexOf(value) == -1){  //不存在
-                $(this).val("");
-            }
-        });
-
         //点击修改抬头信息确定按钮
         $('#register-update').click(function() {
             btnDisable($('#register-update'));
             if ($('.register-form').validate().form()) {
                 var inv = $('.register-form').getFormData();
-                inv.bank_id = $("#bankList").find("option[value='"+inv.bank_name+"']").attr('data-bankid');
                 inv.address_phone = inv.invoicerise_address+"/"+inv.invoicerise_tel;
                 $("#loading_edit").modal("show");
                 invoReplaceEdit(inv);
@@ -382,12 +368,6 @@ var invEdit = function(){
             for(var i=0; i < invocerList.length; i++){
                 if(invid == invocerList[i].invid){
                     inv = invocerList[i];
-                }
-            }
-            inv.bank_name = "";
-            for(var i in bankList){
-                if(inv.bank_id == bankList[i].bankid){
-                    inv.bank_name = bankList[i].bankname;
                 }
             }
             var options = { jsonValue: inv, exclude:exclude,isDebug: false};
@@ -551,58 +531,23 @@ function getaddressDataEnd(flg, result, callback){
             }
             getData = true;
             if(Questdraw == 0){
-                //获取银行
-                bankNameDataGet();
+                //获取开票信息
+                invocreTable.init();
             }
         }else{
             getData = true;
             if(Questdraw == 0){
-                //获取银行
-                bankNameDataGet();
+                //获取开票信息
+                invocreTable.init();
             }
             alertDialog("邮寄地址获取失败！");
         }
     }else{
         getData = true;
         if(Questdraw == 0){
-            //获取银行
-            bankNameDataGet();
+            //获取开票信息
+            invocreTable.init();
         }
         alertDialog("邮寄地址获取失败！");
     }
-}
-
-//返回开户行结果
-function getbankNameDataEnd(flg, result){
-    App.unblockUI('#lay-out');
-    if(flg){
-        if (result && result.retcode == SUCCESS) {
-            var res = result.response;
-            bankList = res.banklist;
-            for(var i = 0; i < bankList.length; i++){
-                $("#bankList").append("<option data-bankid='"+bankList[i].bankid+"' value='"+bankList[i].bankname+"'></option>");
-            }
-            //获取开票信息
-            invocreTable.init();
-        }else{
-            //获取开票信息
-            invocreTable.init();
-            alertDialog("开户行信息获取失败！");
-        }
-    }else{
-        //获取开票信息
-        invocreTable.init();
-        alertDialog("开户行信息获取失败！");
-    }
-}
-
-//显示开户行
-function bankDisplay(data){
-    var value = "";
-    for(var i in bankList){
-        if(data == bankList[i].bankid){
-            value = bankList[i].bankname;
-        }
-    }
-    return value;
 }

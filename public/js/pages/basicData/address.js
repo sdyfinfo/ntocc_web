@@ -52,7 +52,6 @@ var addressTable = function(){
                 {"data":"ress"},
                 {"data":"addressee"},
                 {"data":"addresseeTel"},
-                {"data":"email"},
                 {"data":"updateTime"},
                 {"data":null}
             ],
@@ -71,13 +70,13 @@ var addressTable = function(){
                     }
                 },
                 {
-                    "targets":[7],
+                    "targets":[6],
                     "render": function (data, type, row ,meta) {
                         return dateTimeFormat(data);
                     }
                 },
                 {
-                    "targets":[8],
+                    "targets":[7],
                     "render": function (data, type, row, meta) {
                         var edit = "";
                         if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
@@ -90,7 +89,7 @@ var addressTable = function(){
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(2),td:eq(4),td:eq(5),td:eq(6),td:eq(7)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(4),td:eq(5),td:eq(6)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );
@@ -148,11 +147,7 @@ var addressEdit = function(){
                 },
                 consigneeTel:{
                     required: true
-                },
-                email:{
-                    required: true
                 }
-
             },
 
             messages: {
@@ -164,9 +159,6 @@ var addressEdit = function(){
                 },
                 addresseeTel:{
                     required: "请输入收件人电话"
-                },
-                email:{
-                    required: "请输入收件人邮箱"
                 }
             },
 
@@ -204,10 +196,10 @@ var addressEdit = function(){
             return this.optional(element) || (tel.test(value));
         }, "请正确填写您的联系电话");
 
-        jQuery.validator.addMethod("consigneeid_mailbox", function(value, element) {
-            var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
-            return this.optional(element) || (reg.test(value));
-        }, "请正确填写您的收件邮箱");
+//        jQuery.validator.addMethod("consigneeid_mailbox", function(value, element) {
+//            var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+//            return this.optional(element) || (reg.test(value));
+//        }, "请正确填写您的收件邮箱");
 
         //点击确定按钮
         $('#register-btn').click(function() {

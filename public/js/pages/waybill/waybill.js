@@ -507,7 +507,7 @@ var WayBillAdd = function() {
                 $(".line-display").find("input").val("");
                 $(".line-display").find("select").val("");
                 $(".add-form").find("input[name=freight]").val("");
-                $("#goods").empty();
+                //$("#goods").empty();
             }
         });
 
@@ -822,7 +822,13 @@ var WayBillAdd = function() {
                       }else{  //隐藏线路输入框
                           $("#lineList_add").parents('.form-group').hide();
                       }
-                      $("#goods").empty();
+                      //$("#goods").empty();
+                      //默认货物量单位显示
+                      for(var i in unitList){
+                          if(bill.unit == unitList[i].code){
+                              $("#unit_text").html(unitList[i].value);
+                          }
+                      }
                       var options = { jsonValue: bill, exclude:exclude,isDebug: false};
                       $(".add-form").initForm(options);
                       //显示货物名称
@@ -884,6 +890,12 @@ var WayBillAdd = function() {
                           $("#lineList_add").parents('.form-group').show();
                       }else{  //隐藏线路输入框
                           $("#lineList_add").parents('.form-group').hide();
+                      }
+                      //默认货物量单位显示
+                      for(var i in unitList){
+                          if(bill.unit == unitList[i].code){
+                              $("#unit_text").html(unitList[i].value);
+                          }
                       }
                       var options = { jsonValue: bill, exclude:exclude,isDebug: false};
                       $(".add-form").initForm(options);
@@ -1293,10 +1305,16 @@ function getlineDataEnd(flg,result){
             var options = { jsonValue: line, exclude:exclude,isDebug: false};
             $(".add-form").find(".line-display").initForm(options);
             //显示货物名称
-            goodsList = line.goods.split(",");
-            for(var i in goodsList){
-                var div = "<div class='goods_div'><span>×</span>"+goodsList[i]+"</div>";
-                $("#goods").append(div);
+//            goodsList = line.goods.split(",");
+//            for(var i in goodsList){
+//                var div = "<div class='goods_div'><span>×</span>"+goodsList[i]+"</div>";
+//                $("#goods").append(div);
+//            }
+            //默认货物量单位显示
+            for(var i in unitList){
+                if(line.unit == unitList[i].code){
+                    $("#unit_text").html(unitList[i].value);
+                }
             }
             //计算运费：单价x总发运数
             $(".add-form").find("input[name=freight]").val(Math.round(line.univalence*line.number*100)/100);
