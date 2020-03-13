@@ -171,7 +171,7 @@ function selectChilds(datas,row,id,pid,checked,table) {
         if(datas[i][pid] == row[id]){
             datas[i].check=checked;
             $(table+' tbody').find('tr').eq(i).find('input[type=checkbox]').prop('checked',checked);
-            selectChilds(datas,datas[i],id,pid,checked);
+            selectChilds(datas,datas[i],id,pid,checked,table);
         }
     }
 }
@@ -181,7 +181,7 @@ function selectParentChecked(datas,row,id,pid,table){
         if(datas[i][id] == row[pid]){
             datas[i].check=true;
             $(table+' tbody').find('tr').eq(i).find('input[type=checkbox]').prop('checked',true);
-            selectParentChecked(datas,datas[i],id,pid);
+            selectParentChecked(datas,datas[i],id,pid,table);
         }
     }
 }
@@ -665,7 +665,7 @@ function getNowDateTime() {
 }
 
 
-//保留两位小数，不四舍五入
+//保留小数，不四舍五入
 function subStringNum(a,num) {
     var a_type = typeof(a);
     if(a_type == "number"){

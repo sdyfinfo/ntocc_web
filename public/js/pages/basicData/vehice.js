@@ -138,6 +138,12 @@ var VehiceTable = function () {
                         return conductorDisplay(data);
                     }
                 },{
+                    "targets": [7],
+                    "render": function (data, type, row, meta) {
+                        //载重
+                        return subStringNum((data/1000),3);
+                    }
+                },{
                     "targets": [11],
                     "render": function (data, type, row, meta) {
                         if(data == ""){
@@ -254,10 +260,12 @@ var VehiceEdit = function() {
 //                    required: true
 //                },
                 load:{
-                    required: true
+                    required: true,
+                    load:true
                 },
                 total_mass:{
-                    required: true
+                    required: true,
+                    load:true
                 },
                 transport_number:{
                     required: true
@@ -379,6 +387,12 @@ var VehiceEdit = function() {
             var plate = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/;
             return this.optional(element) || (plate.test(value));
         }, "请正确填写您的车牌号");
+
+        //核载重
+        jQuery.validator.addMethod("load", function(value, element){
+            var num = /(^[1-9]\d*$)/;
+            return this.optional(element) || (num.test(value));
+        }, "只能输入数字");
 
         //司机信息联动
         $("#driver_add").blur(function(){

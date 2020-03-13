@@ -557,7 +557,7 @@ var WayBillAdd = function() {
                 //显示载重
                 for(var i in vehiceList){
                     if(value == vehiceList[i].platenumber){
-                        $("input[name=load]").val(vehiceList[i].load);
+                        $("input[name=load]").val(subStringNum(vehiceList[i].load/1000,3));
                         $("input[name=vehicle_id]").val(vehiceList[i].vehid);
                     }
                 }
