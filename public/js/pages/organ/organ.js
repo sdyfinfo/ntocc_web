@@ -361,6 +361,7 @@ var OrganEdit = function() {
             clearSelect($("#organtree"));
             //操作类型
             $("input[name=edittype]").val(ORGANADD);
+            $("#rate").find("input").removeAttr("readonly");
             //tab显示
             tabDisplay();
             $('#edit_organ').modal('show');
@@ -411,6 +412,7 @@ var OrganEdit = function() {
                 $("#rate").hide();
             }else{
                 $("#rate").show();
+                $("#rate").find("input").attr("readonly","readonly");
             }
             //tab显示
             tabDisplay();
