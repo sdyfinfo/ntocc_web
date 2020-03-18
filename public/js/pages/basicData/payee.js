@@ -464,7 +464,7 @@ function drop(ev) {
             var data = sendMessageEdit(DEFAULT,userid);
             formData.append("body",new Blob([data],{type:"application/json"}));
             $("#loading_edit").modal("show");
-            driverUpload(formData);
+            payeeUpload(formData);
         }else{
             alertDialog("请选择.xlsx类型的文件上传！");
             return false;
