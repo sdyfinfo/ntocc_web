@@ -259,19 +259,19 @@ var LineEdit = function(){
                 },
                 consigneeTel:{
                     required: true
-                },
+                }
 //                unit:{
 //                    required: true
 //                },
 //                univalence:{
 //                    required: true
 //                },
-                loading_address:{
-                    required: true
-                },
-                unloading_address:{
-                    required: true
-                }
+//                loading_address:{
+//                    required: true
+//                },
+//                unloading_address:{
+//                    required: true
+//                }
 
             },
 
@@ -317,19 +317,19 @@ var LineEdit = function(){
                 },
                 consigneeTel:{
                     required: "请输入收货人电话"
-                },
+                }
 //                unit:{
 //                    required: "请选择货运单位"
 //                },
 //                univalence:{
 //                    required: "请输入货物单价"
 //                },
-                loading_address:{
-                    required: "请输入发货详细地址"
-                },
-                unloading_address:{
-                    required: "请输入卸货详细地址"
-                }
+//                loading_address:{
+//                    required: "请输入发货详细地址"
+//                },
+//                unloading_address:{
+//                    required: "请输入卸货详细地址"
+//                }
             },
 
             invalidHandler: function(event, validator) { //display error alert on form submit
