@@ -229,7 +229,7 @@ var payeeEdit = function(){
         }, "请正确填写您的联系电话");
 
         jQuery.validator.addMethod("bank", function(value, element) {
-            var reg = /^([1-9]{1})(\d{14}|\d{18})$/;
+            var reg = /^[0-9]*$/;
             return this.optional(element) || (reg.test(value));
         }, "请正确填写您的银行卡号");
 
