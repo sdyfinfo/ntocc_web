@@ -5,6 +5,7 @@
 var billStateList,payStateList,goodsTypeList,unitList,verificationList,dictTrue = [];   //字典
 var projectList = [];
 var paymentList = [];
+var paymentDetailWid = "";
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
@@ -168,11 +169,12 @@ var BillPaymentTable = function () {
                     "targets": [14],
                     "render": function (data, type, row, meta) {
                         //已支付运费查看
-                        if(data != "0"){
-                            return '<a href="javascript:;" id="payment_detail">'+data+'</a>'
-                        }else{
-                            return data;
-                        }
+//                        if(data != "0"){
+//                            return '<a href="javascript:;" id="payment_detail">'+data+'</a>'
+//                        }else{
+//                            return data;
+//                        }
+                        return data;
                     }
                 },{
                     "targets": [15],
@@ -291,68 +293,85 @@ $("#payment_table").on('click',"#bill_detail",function(){
 //查看运单支付明细
 $("#payment_table").on('click',"#payment_detail",function(){
     var row = $(this).parents('tr')[0];
-    var wid = $("#payment_table").dataTable().fnGetData(row).wid;
-    var table = $('#payDetail_table');
-    pageLengthInit(table);
-    table.dataTable({
-        "language": TableLanguage,
-        "bStateSave": false,
-        "lengthMenu": TableLengthMenu[2],
-        "destroy": true,
-        "pageLength": PageLength,
-        //"pagingType": "numbers",
-        "serverSide": true,
-        "processing": true,
-        "searching": false,
-        "ordering": false,
-        "bAutoWidth": false,
-        "ajax":function (data, callback, settings) {
-            var da = {
-                wid:wid,
-                currentpage: (data.start / data.length) + 1,
-                pagesize: data.length == -1 ? "": data.length,
-                startindex: data.start,
-                draw: data.draw
-            };
-            paymentDetailGet(da, callback);
-        },
-        columns: [//返回的json数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
-            { "data": null},
-            { "data": "wid" },
-            { "data": "project_name"},     //项目
-            { "data": "linename" }
-        ],
-        columnDefs: [
-            {
-                "targets": [0],
-                "data": null,
-                "render": function (data, type, row, meta) {
-                    return meta.settings._iDisplayStart + meta.row + 1;  //行号
-                }
-            },{
-                "targets": [1],
-                "render": function (data, type, row, meta) {
-                    if(data == undefined){
-                        return "";
-                    }
-                    return dateTimeFormat(data);
-                }
-            },{
-                "targets": [2],
-                "render": function (data, type, row, meta) {
-                    if(data == undefined){
-                        return "";
-                    }
-                    return formatCurrency(data);
-                }
-            }
-        ],
-        fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-            $('td:eq(0),td:eq(1)', nRow).attr('style', 'text-align: center;');
-            $('td:eq(2),td:eq(3)', nRow).attr('style', 'text-align: right;');
-        }
-    });
+    paymentDetailWid = $("#payment_table").dataTable().fnGetData(row).wid;
+    payDetailTable.init();
+    $("#edit_detail").modal('show');
+
 });
+
+//运单支付明细表
+var payDetailTable = function (){
+    var initTable = function (){
+        var table = $('#payDetail_table');
+        pageLengthInit(table);
+        table.dataTable({
+            "language": TableLanguage,
+            "bStateSave": false,
+            "lengthMenu": TableLengthMenu[2],
+            "destroy": true,
+            "pageLength": PageLength,
+            //"pagingType": "numbers",
+            "serverSide": true,
+            "processing": true,
+            "searching": false,
+            "ordering": false,
+            "bAutoWidth": false,
+            "ajax":function (data, callback, settings) {
+                var da = {
+                    wid:paymentDetailWid,
+                    currentpage: (data.start / data.length) + 1,
+                    pagesize: data.length == -1 ? "": data.length,
+                    startindex: data.start,
+                    draw: data.draw
+                };
+                paymentDetailGet(da, callback);
+            },
+            columns: [//返回的json数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
+                { "data": null},
+                { "data": "wid" },
+                { "data": "project_name"},     //项目
+                { "data": "linename" }
+            ],
+            columnDefs: [
+                {
+                    "targets": [0],
+                    "data": null,
+                    "render": function (data, type, row, meta) {
+                        return meta.settings._iDisplayStart + meta.row + 1;  //行号
+                    }
+                },{
+                    "targets": [1],
+                    "render": function (data, type, row, meta) {
+                        if(data == undefined){
+                            return "";
+                        }
+                        return dateTimeFormat(data);
+                    }
+                },{
+                    "targets": [2],
+                    "render": function (data, type, row, meta) {
+                        if(data == undefined){
+                            return "";
+                        }
+                        return formatCurrency(data);
+                    }
+                }
+            ],
+            fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                $('td:eq(0),td:eq(1)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(2),td:eq(3)', nRow).attr('style', 'text-align: right;');
+            }
+        });
+    };
+    return {
+        init: function (data) {
+            if (!jQuery().dataTable) {
+                return;
+            }
+            initTable(data);
+        }
+    };
+}();
 
 //支付运单
 var paymentEdit = function() {
@@ -541,29 +560,31 @@ var paymentEdit = function() {
                     data.rate += Number(rate);
                 }
             });
-            data.freight = get_thousand_num(data.freight);
-            data.paid = get_thousand_num(data.paid);
-            //支付金额=运费-已支付
-            data.amount = get_thousand_num(Number(data.freight.replace(/,/g,""))-Number(data.paid.replace(/,/g,"")));
-            //平台服务费=支付金额/(1-费率)*费率
-            data.serviceFee = get_thousand_num(subStringNum(((data.amount.replace(/,/g,""))/(1-(data.rate)/100))*((data.rate)/100),2));
-            //合计支付=支付金额+服务费
-            data.total = get_thousand_num(subStringNum(Number(data.amount.replace(/,/g,""))+Number(data.serviceFee.replace(/,/g,"")),2));
-            var exclude = [];
-            var options = { jsonValue: data, exclude:exclude,isDebug: false};
-            $(".payment-form").initForm(options);
+            if(result){
+                data.freight = get_thousand_num(data.freight);
+                data.paid = get_thousand_num(data.paid);
+                //支付金额=运费-已支付
+                data.amount = get_thousand_num(Number(data.freight.replace(/,/g,""))-Number(data.paid.replace(/,/g,"")));
+                //平台服务费=支付金额/(1-费率)*费率
+                data.serviceFee = get_thousand_num(subStringNum(((data.amount.replace(/,/g,""))/(1-(data.rate)/100))*((data.rate)/100),2));
+                //合计支付=支付金额+服务费
+                data.total = get_thousand_num(subStringNum(Number(data.amount.replace(/,/g,""))+Number(data.serviceFee.replace(/,/g,"")),2));
+                var exclude = [];
+                var options = { jsonValue: data, exclude:exclude,isDebug: false};
+                $(".payment-form").initForm(options);
 
-            $("#len").val(len);
-            $("#payment_len").html("共选择了"+len+"个运单");
-            if(len == 1){  //选择一个运单，显示已支付金额，支付金额可修改
-                $("input[name=paid]").parents('.form-group').show();
-                $("input[name=amount]").removeAttr("readonly");
-            }else{   //多个运单，已支付金额不显示，支付金额不可修改
-                $("input[name=paid]").parents('.form-group').hide();
-                $("input[name=amount]").attr("readonly","readonly");
+                $("#len").val(len);
+                $("#payment_len").html("共选择了"+len+"个运单");
+                if(len == 1){  //选择一个运单，显示已支付金额，支付金额可修改
+                    $("input[name=paid]").parents('.form-group').show();
+                    $("input[name=amount]").removeAttr("readonly");
+                }else{   //多个运单，已支付金额不显示，支付金额不可修改
+                    $("input[name=paid]").parents('.form-group').hide();
+                    $("input[name=amount]").attr("readonly","readonly");
+                }
+                $("input[name=ushield]").val("");
+                $("#payment_edit").modal('show');
             }
-            $("input[name=ushield]").val("");
-            $("#payment_edit").modal('show');
         });
     };
     return {
@@ -642,15 +663,20 @@ function getUserBalanceEnd(flg,result){
     if(flg){
         if(result && result.retcode != SUCCESS){
             alert = result.retmsg || "";
+            if(alert == "") alert = text + res + "！";
+            App.unblockUI('#lay-out');
+            alertDialog(alert);
         }
         if (result && result.retcode == SUCCESS) {
-            res = "成功";
-            $("#balance").val(formatCurrency(result.response.balance));
+            App.unblockUI('#lay-out');
+            $("#balance").html(formatCurrency(result.response.list.data.balance));
         }
+    }else{
+        if(alert == "") alert = text + res + "！";
+        App.unblockUI('#lay-out');
+        alertDialog(alert);
     }
-    if(alert == "") alert = text + res + "！";
-    App.unblockUI('#lay-out');
-    alertDialog(alert);
+
 }
 
 //项目信息获取结果返回

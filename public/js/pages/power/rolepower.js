@@ -70,6 +70,14 @@ var RoleTable = function () {
                 jsTreeDataClear($('#menutree'));
                 $("#function_table").bootstrapTable('destroy');
                 FunctionTable.init();
+                //通用的角色只有admin才有权限修改权限
+                if(row.currency == "0" && loginSucc.userid == "admin"){
+                    $("#keep_add").show();
+                }else if(row.currency != "0"){
+                    $("#keep_add").show();
+                }else{
+                    $("#keep_add").hide();
+                }
                 var data = {
                     roleid: row.roleid,
                     currentpage: "",
@@ -87,6 +95,7 @@ var RoleTable = function () {
                 FunctionTable.init();
                 $("#menu_table").bootstrapTable('destroy');
                 MenuTable.init();
+                $("#keep_add").show();
             }
         });
     };

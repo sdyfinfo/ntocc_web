@@ -269,7 +269,7 @@ var ushEdit = function(){
             //清除校验错误信息
             validator.resetForm();
             $(".register-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("新增项目");
+            $(".modal-title").text("新增U盾信息");
             $(":input",".register-form").not(":button,:reset,:submit,:radio,:input[name=birthday],#evaluationneed").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
@@ -287,7 +287,7 @@ var ushEdit = function(){
             //清除校验错误信息
             validator.resetForm();
             $(".register-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("编辑项目");
+            $(".modal-title").text("编辑U盾信息");
             var exclude = [];
             var row = $(this).parents('tr')[0];
             var shieid = $("#ush_table").dataTable().fnGetData(row).shieid;
@@ -509,7 +509,7 @@ $("#ush_file").change(function(){
         var data = sendMessageEdit(DEFAULT,userid);
         formData.append("body",new Blob([data],{type:"application/json"}));
         $("#loading_edit").modal('show');
-        payeeUpload(formData);
+        ushieldUpload(formData);
     }else{
         $("#upload_name").html("");
     }

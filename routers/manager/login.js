@@ -268,6 +268,20 @@ router.get('/billpayment',function(req,res,next){
     }
 });
 
+//申请开票
+router.get('/invoiceapply',function(req,res,next){
+    console.info(req.url);
+    var uname = req.query.username;
+    if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
+        res.render('invoice/invoiceapply', {
+            menu: req.url.substr(1),
+            loginsucc: req.session["ywtLogin" + uname]
+        });
+    }else{
+        res.redirect('/');
+    }
+});
+
 router.get('/feature',function(req,res,next){
     console.info(req.url);
     var uname = req.query.username;
@@ -437,6 +451,48 @@ router.get('/downloadbillfile', function (req, res, next) {
         fs.createReadStream(filepath).pipe(res);
     } else {
         res.end(404);
+    }
+});
+
+//开票审核
+router.get('/invoicetrial',function(req,res,next){
+    console.info(req.url);
+    var uname = req.query.username;
+    if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
+        res.render('invoice/invoicetrial', {
+            menu: req.url.substr(1),
+            loginsucc: req.session["ywtLogin" + uname]
+        });
+    }else{
+        res.redirect('/');
+    }
+});
+
+//开票审核
+router.get('/invoicehistory',function(req,res,next){
+    console.info(req.url);
+    var uname = req.query.username;
+    if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
+        res.render('invoice/invoicehistory', {
+            menu: req.url.substr(1),
+            loginsucc: req.session["ywtLogin" + uname]
+        });
+    }else{
+        res.redirect('/');
+    }
+});
+
+//资金明细查询
+router.get('/capitaldetails',function(req,res,next){
+    console.info(req.url);
+    var uname = req.query.username;
+    if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
+        res.render('finance/capitaldetails', {
+            menu: req.url.substr(1),
+            loginsucc: req.session["ywtLogin" + uname]
+        });
+    }else{
+        res.redirect('/');
     }
 });
 

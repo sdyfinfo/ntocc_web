@@ -174,6 +174,10 @@ $(function () {
 
         // 选项卡菜单不存在
         if (flag) {
+            if(window.top.$('.J_menuTab').length > 10){
+                alert("只能打开10个页面");
+                return false;
+            }
             var str = '<a href="javascript:;" class="active J_menuTab" data-id="' + dataUrl + '">' + menuName + ' <i class="fa fa-times-circle"></i></a>';
             window.top.$('.J_menuTab').removeClass('active');
 

@@ -2270,3 +2270,144 @@ function getUserBalance(){
         }
     });
 }
+
+//获取开票运单信息
+function invoiceBillDataGet(data,callback){
+    App.blockUI({target:'#lay-out',boxed: true});
+    if(data == null){
+        data = {start_subtime: "",end_subtime:"", depart_start_subtime:"",loading_end_subtime:"",
+            payment_start_subtime:"",payment_end_subtime:"",project_id:"",lid:"",
+            currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "openInvoicequery",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("invoiceBillDataGet:" + JSON.stringify(result));
+            getInvoiceBillEnd(true, result,callback);
+        },
+        error: function (errorMsg) {
+            console.info("invoiceBillDataGet-error:" + JSON.stringify(errorMsg));
+            getInvoiceBillEnd(false, "",callback);
+        }
+    });
+}
+
+//申请开票(一键/选取)
+function invoiceApplyQuest(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "openInvoice",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("invoiceApplyQuest:" + JSON.stringify(result));
+            invoiceApplyQuestEnd(true, result);
+        },
+        error: function (errorMsg) {
+            console.info("invoiceApplyQuest-error:" + JSON.stringify(errorMsg));
+            invoiceApplyQuestEnd(false, "");
+        }
+    });
+}
+
+//获取开票审核信息
+function invoiceTrialDataGet(data,callback){
+    App.blockUI({target:'#lay-out',boxed: true});
+    if(data == null){
+        data = {start_subtime: "",end_subtime:"", depart_start_subtime:"",loading_end_subtime:"",
+            payment_start_subtime:"",payment_end_subtime:"",project_id:"",lid:"",
+            currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "auditquery",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("invoiceTrialDataGet:" + JSON.stringify(result));
+            getInvoiceTrialEnd(true, result,callback);
+        },
+        error: function (errorMsg) {
+            console.info("invoiceTrialDataGet-error:" + JSON.stringify(errorMsg));
+            getInvoiceTrialEnd(false, "",callback);
+        }
+    });
+}
+
+//开票关联运单明细查询
+function billDetailGet(data,callback){
+    App.blockUI({target:'#lay-out',boxed: true});
+
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "openInvoicequerys",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("billDetailGet:" + JSON.stringify(result));
+            getBillDetailEnd(true, result,callback);
+        },
+        error: function (errorMsg) {
+            console.info("billDetailGet-error:" + JSON.stringify(errorMsg));
+            getBillDetailEnd(false, "",callback);
+        }
+    });
+}
+
+//开票信息审核
+function invoiceTrial(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "toexamine",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("invoiceTrial:" + JSON.stringify(result));
+            invoiceTrailEnd(true, result);
+        },
+        error: function (errorMsg) {
+            console.info("invoiceTrial-error:" + JSON.stringify(errorMsg));
+            invoiceTrailEnd(false, "");
+        }
+    });
+}
+
+//获取资金明细信息
+function capitalDetailDataGet(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    if(data == null){
+        data = {starttime: "",endtime:"", transtype:"",drcr:"",
+            currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "capitalDetails",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("capitalDetailDataGet:" + JSON.stringify(result));
+            getCapitalDetailEnd(true, result);
+        },
+        error: function (errorMsg) {
+            console.info("capitalDetailDataGet-error:" + JSON.stringify(errorMsg));
+            getCapitalDetailEnd(false, "");
+        }
+    });
+}

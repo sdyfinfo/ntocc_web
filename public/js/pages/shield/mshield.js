@@ -6,7 +6,7 @@ var mshList = [];
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function () {
         //fun_power();
-        //收款人列表
+        //我的U盾
         mshieldGet();
         mshEdit.init();
     })
@@ -123,20 +123,19 @@ function getushEditEnd(flg, result, type){
     var alert = "";
     switch (type){
         case USHCHECK:
-            text = "效验";
+            text = "校验";
             break;
     }
     if(flg){
         if(result && result.retcode != SUCCESS){
             alert = result.retmsg;
         }
+        if (result && result.retcode == SUCCESS) {
+            res = "成功";
+        }
     }
     if(alert == ""){
-        if(type == USHCHECK){
-            alert = "效验" + text + res + "！";
-        }else{
-            alert = text + "效验" + res + "！";
-        }
+        alert = text + res + "！";
     }
     App.unblockUI('#lay-out');
     alertDialog(alert);

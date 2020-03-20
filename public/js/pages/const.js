@@ -153,10 +153,12 @@ const TableLanguage = {
 const TableLengthMenu = [
         [10, 20, 30, 50, -1],
         [10, 20, 30, 50, "所有"], // change per page values here
-        [20, 30, 50, 100]
+        [20, 30, 50, 100],
+        [50,100]
     ];
 
 var PageLength = 50;
+var InvoicePageLength = 100;
 //测试数据
 var userMenuList = {
     menulist:[

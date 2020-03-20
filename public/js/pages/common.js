@@ -63,6 +63,42 @@ function confirmDialog(tips, func, para){
     });
 }
 
+function confirmTrailDialog(tips, func, para){
+    bootbox.dialog({
+        message:"<h4 style='height: 40px;line-height: 40px'>"+tips+"</h4>"+
+                "<div class='row'>"+
+                    "<div class='form-group col-md-12'>"+
+                        "<label class='col-md-2 control-label'>审核意见</label>"+
+                        "<div class='col-md-10' style='padding-left: 10px;width: 80%'>"+
+                            "<textarea rows='3' class='form-control' placeholder='审核意见' id='audit_opinion'></textarea>"+
+                            "<span style='color:#e7505a' id='remian' hidden='hidden'>审核驳回时必须输入审核意见！</span>"+
+                        "</div>"+
+                    "</div>"+
+                "</div>",
+        title: "提示",
+        buttons: {
+            pass: {
+                label: "通过",
+                className: "blue",
+                callback: function(){
+                    func("1")
+                }
+            },
+            reject: {
+                label: "驳回",
+                className: "red",
+                callback: function(){
+                    func("4")
+                }
+            },
+            cancel:{
+                label: "取消",
+                className: "btn btn-info"
+            }
+        }
+    });
+}
+
 function alertDialog(tips){
     bootbox.dialog({
         message: tips,
@@ -619,7 +655,7 @@ function fun_power(){
         "#vehice_inquiry","#vehice_import","#pro_inquiry","#driver_inquiry","#driver_import","#consignor_inquiry","#addr_inquiry",
         "#lin_inquiry","#cons_inquiry","#pay_inquiry","#us_inquiry","#us_import","#inv_inquiry","#bill_inquiry",
         "#bill_import","#bill_submit","#bill_depart","#bill_done","#payment_inquiry","#bill_payment","#invoice_inquiry","#invoice_apply",
-        "#choose_apply","#vehiceImg_import","#driverImg_import","#capital_inquiry"];
+        "#choose_apply","#vehiceImg_import","#driverImg_import","#capital_inquiry","#invoice_trial","#invoiceHis_inquiry"];
     for(var i in list){
         if(!makeEdit(menu,loginSucc.functionlist,list[i])){
             $(list[i]).hide();

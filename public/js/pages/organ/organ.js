@@ -210,13 +210,23 @@ var OrganEdit = function() {
                     address:true
                 },
                 bank:{
+                    required: true,
                     bank_validator:true
+                },
+                bankname:{
+                    required: true
                 }
             },
 
             messages: {
                 taxpayer: {
                     required: "统一社会信用代码必须输入"
+                },
+                bankname:{
+                    required: "开户银行必须输入"
+                },
+                bank:{
+                    required: "银行账号必须输入"
                 }
             },
 

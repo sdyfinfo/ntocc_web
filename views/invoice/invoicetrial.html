@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+
+    <title>开票审核</title>
+
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/public/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="/public/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <link href="/public/css/animate.css" rel="stylesheet">
+    <link href="/public/css/components.min.css?v=4.1.0" rel="stylesheet">
+    <link href="/public/css/style.css?v=4.1.0" rel="stylesheet">
+    <!--本页面用到的样式-->
+    <link href="/public/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
+    <link href="/public/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="/public/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <link href="/public/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/public/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />
+    <link href="/public/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+    <link href="/public/plugins/jstree/dist/themes/default/style.min.css" rel="stylesheet" type="text/css" />
+    <link href="/public/css/plugins/iconfont/iconfont_z.css" rel="stylesheet" type="text/css"/>
+
+    <script>
+        //获取nodejs session中和localStorage中保存的菜单信息、权限信息。配置信息
+        var menu = '{{ menu }}';
+        var loginSucc = '{{ loginsucc }}';
+        loginSucc = JSON.parse(loginSucc.replace(/&quot;/g, "\""));
+    </script>
+
+    <style type="text/css">
+        .trialCheck-form .form-group{margin-bottom:5px!important;}
+    </style>
+
+</head>
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>开票审核</h5>
+                    </div>
+                    <!-- 搜索区 -->
+                    <div class="ibox-content">
+                        <form class="inquiry-form form-horizontal" role="form">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">申请时间</label>
+                                            <div class="col-md-5">
+                                                <div class="input-group input-large date-picker input-daterange" data-date="" data-date-format="yyyy/mm/dd">
+                                                    <input type="text" class="form-control" name="start_time" autocomplete="off" style="border-radius: 0px!important;">
+                                                    <span class="input-group-addon">~</span>
+                                                    <input type="text" class="form-control" name="end_time" autocomplete="off" style="border-radius: 0px!important;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">发票抬头</label>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" placeholder="发票抬头" name="rise_name" autocomplete="off">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label">发票状态</label>
+                                            <div class="col-md-8">
+                                                <select type="text" class="form-control" name="audit_status" id="audit_status">
+                                                    <option value="">请选择</option>
+                                                    <option value="0">审核中</option>
+                                                    <option value="1">审核通过</option>
+                                                    <option value="2">开票中</option>
+                                                    <option value="3">开票完成</option>
+                                                    <option value="4">审核驳回</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="ibox-content">
+                        <!-- 页面操作 -->
+                        <div class="table-toolbar">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <div class="btn-group">
+                                        <button id="invoice_inquiry" class="btn btn-success"> 查询
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button id="invoice_trial" class="btn btn-primary"> 审核
+                                            <i class="fa fa-hand-pointer-o"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 开票信息表格 -->
+                        <table class="table table-striped table-bordered table-hover table-checkable order-column" id="invoice_table">
+                            <thead>
+                            <tr>
+                                <th style="width: 30px"> 序号 </th>
+                                <th style="width: 30px">
+                                    <input type="checkbox" class="group-checkable" data-set="#invoice_table .checkboxes" />
+                                </th>
+                                <th> 发票id </th>
+                                <th> 发票抬头 </th>
+                                <th> 申请时间 </th>
+                                <th> 司机运费 </th>
+                                <th> 服务费 </th>
+                                <th> 开票总额 </th>
+                                <th> 发票状态 </th>
+                                <th> 操作 </th>
+                                <th> 关联运单 </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="odd gradeX">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <!-- 处理中遮罩 -->
+                        <div class="modal fade" id="loading" role="basic" aria-hidden="true" data-backdrop="static">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <img src="/public/img/loading-spinner-grey.gif" alt="" class="loading">
+                                        <span> &nbsp;&nbsp;正在处理中... </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 查看支付明细  -->
+    <div id="check_detail" class="modal fade" tabindex="-1" data-width="400" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">查看运单明细</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="trialCheck-form form-horizontal" role="form">
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-3 control-label">发票抬头</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control"  name="rise_name" autocomplete="off" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-3 control-label">申请时间</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control"  name="addTime" autocomplete="off" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-3 control-label">司机运费</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control"  name="freight" autocomplete="off" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-3 control-label">服务费</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control"  name="serviceFee" autocomplete="off" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-3 control-label">开票总额</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control"  name="invoice" autocomplete="off" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <h4 style="height: 30px;line-height: 30px">关联运单明细：</h4>
+                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="billDetail_table">
+                        <thead>
+                        <tr>
+                            <th style="width: 30px"> 序号 </th>
+                            <th> 项目名称 </th>
+                            <th> 线路 </th>
+                            <th> 运单描述 </th>
+                            <th> 司机 </th>
+                            <th> 车牌号 </th>
+                            <th> 运费 </th>
+                            <th> 服务费 </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="odd gradeX">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 处理中遮罩 -->
+    <div class="modal fade" id="loading_edit" role="basic" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="/public/img/loading-spinner-grey.gif" alt="" class="loading">
+                    <span> &nbsp;&nbsp;正在处理中... </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--本页面用到插件的JS-->
+    <script src="/public/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/public/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="/public/js/plugins/app.min.js" type="text/javascript"></script>
+    <script src="/public/js/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+    <script src="/public/js/pages/menu.js" type="text/javascript"></script>
+    <script src="/public/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/public/js/plugins/validate/messages_zh.min.js"></script>
+    <script src="/public/js/moment.min.js" type="text/javascript"></script>
+    <script src="/public/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+    <script src="/public/plugins/datatables/datatables.js" type="text/javascript"></script>
+    <script src="/public/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
+    <script src="/public/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>
+    <script src="/public/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js" type="text/javascript"></script>
+    <script src="/public/plugins/bootstrap-daterangepicker/daterangepicker.min.js" type="text/javascript"></script>
+    <script src="/public/js/components-date-time-pickers.min.js" type="text/javascript"></script>
+
+    <!--本页面用到的JS-->
+    <script type="text/javascript" src="/public/js/pages/form.js"></script>
+    <script type="text/javascript" src="/public/js/pages/const.js"></script>
+    <script type="text/javascript" src="/public/js/pages/common.js"></script>
+    <script type="text/javascript" src="/public/js/pages/data.js"></script>
+    <script type="text/javascript" src="/public/js/pages/user-rights.js"></script>
+
+    <script src="/public/js/pages/invoice/invoicetrial.js" type="text/javascript"></script>
+
+</body>
+</html>

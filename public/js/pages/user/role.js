@@ -50,7 +50,7 @@ var RoleTable = function () {
                 { "data": "operator" },
                 { "data": "operatetime" },
                 { "data": "remark" },
-                { "data": null }
+                { "data": "currency" }  //0 通用  1 不通用
             ],
             columnDefs: [
                 {
@@ -74,8 +74,17 @@ var RoleTable = function () {
                 },{
                     "targets":[8],
                     "render": function(data, type, row, meta) {
-                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")) return '-';
-                        return '<a href="javascript:;" id="op_edit">编辑</a>'
+                        if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
+                            return '-';
+                        }else{
+                            if(data == "0" && loginSucc.userid == "admin"){
+                                return '<a href="javascript:;" id="op_edit">编辑</a>'
+                            }else if(data == "1"){
+                                return '<a href="javascript:;" id="op_edit">编辑</a>'
+                            }else{
+                                return '-';
+                            }
+                        }
                     }
                 }
             ],
@@ -133,6 +142,9 @@ var RoleEdit = function() {
                 },
                 rolecode: {
                     required: true
+                },
+                currency:{
+                    currencyCheck:true
                 }
             },
 
@@ -171,9 +183,25 @@ var RoleEdit = function() {
                 form.submit();
             }
         });
+
+        //角色是否通用
+        jQuery.validator.addMethod("currencyCheck", function(value, element) {
+            var result = true;
+            if(loginSucc.userid == "admin"){  //用户为admin
+                if($("#currencyChoose").val() == ""){
+                    result = false;
+                }
+            }
+            return result;
+        }, "角色是否通用必须选择！");
+
         $('#role-add-confirm').click(function() {
             if ($('.register-form').validate().form()) {
                 var role = $('.register-form').getFormData();
+                //其他用户，角色为不通用1
+                if(loginSucc.userid != "admin"){
+                    role.currency = "1";
+                }
                 if($("input[name=edittype]").val() == ROLEADD){
                     $("#loading_edit").modal('show');
                     roleAdd(role);
@@ -193,6 +221,12 @@ var RoleEdit = function() {
                 .removeAttr("selected");
             //角色代码可以输入
             $(".register-form").find("input[name=rolecode]").attr("readonly", false);
+            //用户为admin显示角色通用
+            if(loginSucc.userid == "admin"){
+                $("#currency").show();
+            }else{
+                $("#currency").hide();
+            }
             $("input[name=edittype]").val(ROLEADD);
             $('#edit_role').modal('show');
         });
@@ -213,6 +247,12 @@ var RoleEdit = function() {
             }
             var options = { jsonValue: role, exclude:exclude, isDebug: false};
             $(".register-form").initForm(options);
+            //用户为admin显示角色通用
+            if(loginSucc.userid == "admin"){
+                $("#currency").show();
+            }else{
+                $("#currency").hide();
+            }
             //角色代码不可以输入
             $(".register-form").find("input[name=rolecode]").attr("readonly", true);
             $("input[name=edittype]").val(ROLEEDIT);
