@@ -11,7 +11,8 @@
 //     "gramtuWebUrl": hostIp + "8002/gramtu/web/"                       // web端URL
 // };
 
-var hostIp = "http://39.107.68.137";                       
+//var hostIp = "http://39.107.68.137";
+var hostIp = "http://ntocc.hxrzgroup.com";
 
 var regulateSucc = {
     "uploadFolder" : "/home/yfdev/src/ywt_web",                       // 上传文件所在文件夹
