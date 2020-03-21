@@ -571,6 +571,12 @@ var WayBillAdd = function() {
                         //显示车辆
                         $("#plate_number").val(driverList[i].plate_number);
                         $("input[name=vehicle_id]").val(driverList[i].vehicle_id);
+                        //显示载重
+                        for(var z in vehiceList){
+                            if(driverList[i].vehicle_id == vehiceList[z].vehid){
+                                $("input[name=load]").val(subStringNum(vehiceList[z].load/1000,3));
+                            }
+                        }
                         //显示收款人
                         for(var j in payeeList){
                             if(driverList[i].payid == payeeList[j].payid){
@@ -1105,18 +1111,9 @@ var WayBillDelete = function() {
             var bill = {waybillidlist:[]};
             $(".checkboxes:checked").parents("td").each(function () {
                 var row = $(this).parents('tr')[0];
-                //只有新建的运单可删除
-                var state = $("#bill_table").dataTable().fnGetData(row).state;
-                if(state == "01"){
-                    bill.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
-                }else{
-                    result = false;
-                }
+                //只有未支付的运单可删除
+                bill.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
             });
-            if(!result){
-                alertDialog("只有新建运单可删除");
-                return;
-            }
             $("#loading_edit").modal("show");
             wayBillDelete(bill);
         }

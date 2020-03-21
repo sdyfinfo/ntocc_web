@@ -138,6 +138,7 @@ $("#capital_inquiry").click(function(){
 
 //获取资金明细
 function getCapitalDetail(){
+    $("#loading").modal('show');
     var formData = $(".inquiry-form").getFormData();
     var starttime = "";
     var endtime = "";
@@ -159,6 +160,7 @@ function getCapitalDetail(){
 
 //获取资金明细返回结果
 function getCapitalDetailEnd(flg,result){
+    $("#loading").modal('hide');
     App.unblockUI('#lay-out');
     if(flg){
         if (result && result.retcode == SUCCESS) {
