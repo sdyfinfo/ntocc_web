@@ -165,7 +165,7 @@ function formatRoute(data){
             content += "<div><a href='javascript:;' id='route_detail' data-routeid='"+data[i].lineid+"'>"+data[i].line+"</a></div>";
         }
         var main =
-            "<div style='width: 300px;'>"+
+            "<div>"+
             "<div id='routeOpen'><i class='iconfont icon-jianhao'>点击收回</i></div>"+
             "<div id='routeContent'>"+content+"</div>"+
             "</div>";

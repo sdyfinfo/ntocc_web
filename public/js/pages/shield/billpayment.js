@@ -95,7 +95,8 @@ var BillPaymentTable = function () {
                 { "data": "freight"},
                 { "data": "payment_status"},
                 { "data": "paid"},
-                { "data": "updatetime"}
+                { "data": "wid"},   //显示收款人
+                { "data": "updateTime"}
             ],
             columnDefs: [
                 {
@@ -179,6 +180,16 @@ var BillPaymentTable = function () {
                 },{
                     "targets": [15],
                     "render": function (data, type, row, meta) {
+                        //显示收款人和账户（title）
+                        for(var i in paymentList){
+                            if(data == paymentList[i].wid){
+                                return '<span title="账户：'+paymentList[i].bank+'">'+paymentList[i].payee_name+'</span>'
+                            }
+                        }
+                    }
+                },{
+                    "targets": [16],
+                    "render": function (data, type, row, meta) {
                         if(data == undefined){
                             return "";
                         }
@@ -187,7 +198,7 @@ var BillPaymentTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(8),td:eq(14)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(8),td:eq(15)', nRow).attr('style', 'text-align: center;');
                 $('td:eq(9),td:eq(10),td:eq(11),td:eq(13)', nRow).attr('style', 'text-align: right;');
             }
         });
@@ -488,12 +499,12 @@ var paymentEdit = function() {
                 var paymentData = $('.payment-form').getFormData();
                 var len = $("#len").val();
                 if(len == 1){  //选择一条数据，如果运单未通过审核或状态不是完成时不可以全部支付
-                    if((Number(paymentData.amount)+Number(paymentData.payment)) == Number(paymentData.freight)){   //全部支付
+                    if((Number(paymentData.amount.replace(/,/g,""))+Number(paymentData.paid.replace(/,/g,""))) == Number(paymentData.freight.replace(/,/g,""))){   //全部支付
                         if(paymentData.verification_status == '02'){
                             alertDialog("运单未通过审核，不能全部支付！");
                             return;
                         }
-                        if(paymentData.status != '03'){
+                        if(paymentData.state != '03'){
                             alertDialog("运单状态不是完成状态，不能全部支付！");
                             return;
                         }
@@ -537,28 +548,34 @@ var paymentEdit = function() {
                 var row = $(this).parents('tr')[0];
                 //已支付的运单不可一键支付
                 var pay_state = $("#payment_table").dataTable().fnGetData(row).payment_status;
+                data.verification_status = $("#payment_table").dataTable().fnGetData(row).verification_status;
+                data.state = $("#payment_table").dataTable().fnGetData(row).state;
                 if(pay_state == '03'){
                     alertDialog("已支付的运单不可一键支付！");
                     result = false;
                     return false;
-                }else{
-                    var driver = $("#payment_table").dataTable().fnGetData(row).freight;
-                    var paied = $("#payment_table").dataTable().fnGetData(row).paid;
-                    data.widlist.push($("#payment_table").dataTable().fnGetData(row).wid);
-                    var rate = $("#payment_table").dataTable().fnGetData(row).rate;
-                    data.verification_status = $("#payment_table").dataTable().fnGetData(row).verification_status;
-                    data.state = $("#payment_table").dataTable().fnGetData(row).state;
-                    data.paidlist.push(paied);
-                    //累加司机运费
-                    data.freight += Number(driver);
-                    //累加已支付运费
-                    data.paid += Number(paied);
-                    //服务费
-                    if(rate == ""){
-                        rate = 0;
-                    }
-                    data.rate += Number(rate);
                 }
+                if(data.verification_status == "02" || data.state != '03'){      //未通过审核，不是完成状态不能多条一键支付
+                    if(len > 1){
+                        alertDialog("选择的运单包括未通过审核或未签收的运单，不可多条运单一键支付！");
+                        result = false;
+                        return false;
+                    }
+                }
+                var driver = $("#payment_table").dataTable().fnGetData(row).freight;
+                var paied = $("#payment_table").dataTable().fnGetData(row).paid;
+                data.widlist.push($("#payment_table").dataTable().fnGetData(row).wid);
+                var rate = $("#payment_table").dataTable().fnGetData(row).rate;
+                data.paidlist.push(paied);
+                //累加司机运费
+                data.freight += Number(driver);
+                //累加已支付运费
+                data.paid += Number(paied);
+                //服务费
+                if(rate == ""){
+                    rate = 0;
+                }
+                data.rate += Number(rate);
             });
             if(result){
                 data.freight = get_thousand_num(data.freight);

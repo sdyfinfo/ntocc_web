@@ -7,12 +7,12 @@ var ushList = [];
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function () {
+        fun_power();
         //时间控件
         ComponentsDateTimePickers.init();
         //获取机构信息
         organDataGet();
-        //fun_power();
-        //收款人列表
+        //U盾列表
         ushTable.init();
         ushEdit.init();
     })
@@ -50,7 +50,7 @@ var ComponentsDateTimePickers = function () {
 }();
 
 
-//收货人表格
+//表格
 var ushTable = function () {
     var initTable = function () {
         var table = $('#ush_table');
@@ -264,7 +264,7 @@ var ushEdit = function(){
                 }
             }
         });
-        //新增项目
+        //新增u盾
         $('#op_add').click(function() {
             //清除校验错误信息
             validator.resetForm();
@@ -281,7 +281,7 @@ var ushEdit = function(){
             $(".con-hide1").show();
             $('#edit_ush').modal('show');
         });
-        //编辑
+        //编辑u盾
         $('#ush_table').on('click', '#op_edit', function (e) {
             e.preventDefault();
             //清除校验错误信息
@@ -338,6 +338,8 @@ var ushEdit = function(){
             $("input[name=edittype]").val(USHCHECK);
             $(".con-hide1,.con-hide2").hide();
             $(".con-hide3").show();
+            //清空动态密码输入框
+            $("#passwd").val("");
             $('#edit_ush').modal('show');
         });
     };
@@ -358,7 +360,7 @@ function ushieldAllone(id){
     }
 }
 
-//发货人
+//关联机构
 function ushieldAlltwo(id){
     if(id == 0){ //不允许
         //全部只读

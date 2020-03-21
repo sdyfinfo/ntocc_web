@@ -71,7 +71,7 @@ function confirmTrailDialog(tips, func, para){
                         "<label class='col-md-2 control-label'>审核意见</label>"+
                         "<div class='col-md-10' style='padding-left: 10px;width: 80%'>"+
                             "<textarea rows='3' class='form-control' placeholder='审核意见' id='audit_opinion'></textarea>"+
-                            "<span style='color:#e7505a' id='remian' hidden='hidden'>审核驳回时必须输入审核意见！</span>"+
+                            "<br><span style='color:#e7505a' id='remian'>审核驳回时必须输入审核意见！</span>"+
                         "</div>"+
                     "</div>"+
                 "</div>",

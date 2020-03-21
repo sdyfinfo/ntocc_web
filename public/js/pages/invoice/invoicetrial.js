@@ -188,6 +188,8 @@ $("#invoice_table").on('click',"#invoice_Check",function(){
             content.freight = get_thousand_num(invoiceTrialList[i].freight);
             content.serviceFee = get_thousand_num(invoiceTrialList[i].serviceFee);
             content.invoice = get_thousand_num(invoiceTrialList[i].invoice);
+            content.audit_opinion = invoiceTrialList[i].audit_opinion;
+            content.audit_status = invoiceTrialList[i].audit_status;
             widlist = invoiceTrialList[i].waybillid.split(",");
         }
     }
@@ -195,7 +197,12 @@ $("#invoice_table").on('click',"#invoice_Check",function(){
     var exclude = [];
     var options = { jsonValue: content, exclude:exclude,isDebug: false};
     $(".trialCheck-form").initForm(options);
-
+    //如果是审核驳回，则显示驳回信息
+    if(content.audit_status == "4"){
+        $("#opinion").show();
+    }else{
+        $("#opinion").hide();
+    }
     trialCheckTable.init();
     $("#check_detail").modal('show');
 });
@@ -311,9 +318,9 @@ var InvoiceTrial = function() {
         trialIn: function(data){
             var invoice = {oidlist:[],widlist:[],audit_status:data,audit_opinion:""};
             invoice.audit_opinion = $("#audit_opinion").val();
-            if(data == "0" && invoice.audit_opinion == ""){
-                $("#remian").show();
-                return;
+            if(data == "4" && invoice.audit_opinion == ""){
+                alertDialog("审核驳回时必须输入审核意见！");
+                return false;
             }
             var result = true;
             var idlist = "";
@@ -322,7 +329,7 @@ var InvoiceTrial = function() {
                 //只有审核中的信息能审核
                 var audit_status = $("#invoice_table").dataTable().fnGetData(row).audit_status;
                 idlist += $("#invoice_table").dataTable().fnGetData(row).waybillid + ",";
-                if(audit_status == "0"){
+                if(audit_status == "0" || audit_status == "4"){
                     invoice.oidlist.push($("#invoice_table").dataTable().fnGetData(row).oid);
                 }else{
                     result = false;
@@ -331,7 +338,7 @@ var InvoiceTrial = function() {
             invoice.widlist = idlist.split(",");
             invoice.widlist.pop();
             if(!result){
-                alertDialog("只有审核中的开票信息可审核");
+                alertDialog("只有审核中或被驳回的开票信息可审核");
                 return false;
             }
             $("#loading_edit").modal("show");

@@ -191,13 +191,20 @@ $("#invoice_table").on('click',"#invoice_Check",function(){
             data.freight = get_thousand_num(invoiceTrialList[i].freight);
             data.serviceFee = get_thousand_num(invoiceTrialList[i].serviceFee);
             data.invoice = get_thousand_num(invoiceTrialList[i].invoice);
+            data.audit_opinion = invoiceTrialList[i].audit_opinion;
+            data.audit_status = invoiceTrialList[i].audit_status;
             widlist = invoiceTrialList[i].waybillid.split(",");
         }
     }
     var exclude = [];
     var options = { jsonValue: data, exclude:exclude,isDebug: false};
     $(".trialCheck-form").initForm(options);
-
+    //如果是审核驳回，则显示驳回信息
+    if(data.audit_status == "4"){
+        $("#audit_opinion").show();
+    }else{
+        $("#audit_opinion").hide();
+    }
     trialCheckTable.init();
     $("#check_detail").modal('show');
 });

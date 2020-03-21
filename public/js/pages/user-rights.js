@@ -2322,8 +2322,7 @@ function invoiceApplyQuest(data){
 function invoiceTrialDataGet(data,callback){
     App.blockUI({target:'#lay-out',boxed: true});
     if(data == null){
-        data = {start_subtime: "",end_subtime:"", depart_start_subtime:"",loading_end_subtime:"",
-            payment_start_subtime:"",payment_end_subtime:"",project_id:"",lid:"",
+        data = {start_time: "",end_time:"", audit_status:"",rise_name:"",
             currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
