@@ -466,15 +466,15 @@ var WayBillAdd = function() {
         }, "请正确填写您的地址");
 
         //计划发车日期验证
-        jQuery.validator.addMethod("planTime", function(value, element) {
-            var result = true;
-            var nowDate = new Date(getNowFormatDate());
-            var planTime = new Date(value);
-            if(nowDate > planTime){
-                result = false;
-            }
-            return this.optional(element) || result;
-        }, "计划发车日期不能小于当前日期");
+        // jQuery.validator.addMethod("planTime", function(value, element) {
+        //     var result = true;
+        //     var nowDate = new Date(getNowFormatDate());
+        //     var planTime = new Date(value);
+        //     if(nowDate > planTime){
+        //         result = false;
+        //     }
+        //     return this.optional(element) || result;
+        // }, "计划发车日期不能小于当前日期");
 
         //计划卸货日期验证
         jQuery.validator.addMethod("estimated_unloading", function(value, element) {
