@@ -119,7 +119,7 @@ var WayBillTable = function () {
                 { "data": "wid" },    //运单描述
                 { "data": "name" },    //司机
                 { "data": "plate_number"},     //车牌号
-                { "data": "planTime"},
+                { "data": "loading_time"},
                 { "data": "disburden_time"},
                 { "data": "freight"},
                 { "data": "addTime"},
