@@ -352,8 +352,8 @@ var WayBillAdd = function() {
                     required: true
                 },
                 planTime:{
-                    required: true,
-                    planTime:true
+                    required: true
+//                    planTime:true
                 },
                 estimated_unloading:{
                     estimated_unloading:true
