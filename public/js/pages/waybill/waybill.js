@@ -235,8 +235,12 @@ var WayBillTable = function () {
                         var edit = '';
                         for(var i in wayBillList){
                             if(data == wayBillList[i].wid){
-                                if(window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit") && wayBillList[i].state == "01" &&  wayBillList[i].verification_status != "01"){
-                                    edit = '<a href="javascript:;" id="op_edit">编辑</a>';
+                                if(window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
+                                    if(wayBillList[i].payment_status == "01" || wayBillList[i].payment_status == "05"){
+                                        edit = '<a href="javascript:;" id="op_edit">编辑</a>';
+                                    }else{
+                                        edit = '-';
+                                    }
                                 }else{
                                     edit = '-';
                                 }
