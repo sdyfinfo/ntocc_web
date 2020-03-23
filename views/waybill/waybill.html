@@ -156,13 +156,13 @@
                                             <i class="fa fa-reply"></i>
                                         </button>
                                     </div>
+                                    <!--<div class="btn-group">-->
+                                        <!--<button id="bill_submit" class="btn btn-info"> 提交审验-->
+                                            <!--<i class="fa fa-hand-pointer-o"></i>-->
+                                        <!--</button>-->
+                                    <!--</div>-->
                                     <div class="btn-group">
-                                        <button id="bill_submit" class="btn btn-info"> 提交审验
-                                            <i class="fa fa-hand-pointer-o"></i>
-                                        </button>
-                                    </div>
-                                    <div class="btn-group">
-                                        <button id="bill_depart" class="btn btn-warning"> 发车
+                                        <button id="bill_depart" class="btn btn-danger"> 发车
                                             <i class="fa fa-truck"></i>
                                         </button>
                                     </div>
@@ -511,7 +511,7 @@
                             <label class="col-md-2 control-label" style="line-height: 30px" id="time_title">发车时间</label>
                             <div class="col-md-8">
                                 <input class="form-control layer-date" placeholder="YYYY-MM-DD hh:mm:ss" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" id="time_send" readonly>
-                                <br><br><span style="color: #ed5565">如果不输入则默认为当前时间</span>
+                                <br><span style="color: #ed5565;margin-top: 20px" id="remain">必须选择时间</span>
                             </div>
                         </div>
                     </div>

@@ -522,7 +522,7 @@ function consignorEditEnd(flg, result, type){
         if (result && result.retcode == SUCCESS) {
             res = "成功";
             ConsignorTable.init();
-            $('#edit_consignor').modal('hide');
+            $('#edit_consignor,#consignor_upload').modal('hide');
         }
     }
     if(alert == "") alert = text + "发货人" + res + "！";

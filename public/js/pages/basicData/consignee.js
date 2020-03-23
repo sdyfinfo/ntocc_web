@@ -425,7 +425,7 @@ function gennEditEnd(flg, result, type){
         if (result && result.retcode == SUCCESS) {
             res = "成功";
             ConsTable.init();
-            $('#edit_gnee').modal('hide');
+            $('#edit_gnee,#gnee_upload').modal('hide');
         }
     }
     if(alert == "")alert = text + "收货人信息" + res;

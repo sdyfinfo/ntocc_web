@@ -797,7 +797,9 @@ function getConsignorDataEnd(flg, result){
             $("#consignor").empty();
             $("#consignor").append("<option value=''>请选择</option>");
             for(var i = 0; i < consignorList.length; i++){
-                $("#consignor").append("<option value='"+consignorList[i].conid+"'>"+ consignorList[i].consignor +"</option>");
+                if(consignorList[i].state == "0"){
+                    $("#consignor").append("<option value='"+consignorList[i].conid+"'>"+ consignorList[i].consignor +"</option>");
+                }
             }
             //收货人信息获取
             consigneeidDateGet();
@@ -822,7 +824,9 @@ function getconsigneeidDataEnd(flg, result, callback){
             $("#consignee").empty();
             $("#consignee").append("<option value=''>请选择</option>");
             for(var i = 0; i < consigneeList.length; i++){
-                $("#consignee").append("<option value='"+consigneeList[i].conid+"'>"+ consigneeList[i].consignee +"</option>");
+                if(consigneeList[i].state == "0"){
+                    $("#consignee").append("<option value='"+consigneeList[i].conid+"'>"+ consigneeList[i].consignee +"</option>");
+                }
             }
             getData = true;
         }else{

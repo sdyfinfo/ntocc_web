@@ -1262,6 +1262,7 @@ $('#bill_depart').click(function() {
         $("#time_title").html("发车时间");
         $("#changeType").val("0");
         $("#time_send").val("");
+        $("#remain").hide();
         $(".modal-footer").show();
         $("#time_edit").modal('show');
     }
@@ -1293,6 +1294,7 @@ $('#bill_done').click(function() {
         $("#time_title").html("签收时间");
         $("#changeType").val("1");
         $("#time_send").val("");
+        $("#remain").hide();
         $(".modal-footer").show();
         $("#time_edit").modal('show');
     }
@@ -1301,7 +1303,12 @@ $('#bill_done').click(function() {
 $("#time-btn").click(function(){
     var type = $("#changeType").val();
     var time = $("#time_send").val();
+    if(time == ""){
+        $("#remain").show();
+        return;
+    }
     if(time != ""){
+        $("#remain").hide();
         time = time.replace(/-/g,'');
         time = time.replace(/:/g,'');
         time = time.replace(/\s+/g,"");
@@ -1491,7 +1498,9 @@ function getConsignorDataEnd(flg,result){
             consignorList = res.conlist;
             $("#consignorList").empty();
             for(var i in consignorList){
-                $("#consignorList").append("<option data-conid='"+consignorList[i].conid+"' value='"+consignorList[i].consignor+"'></option>");
+                if(consignorList[i].state == "0"){
+                    $("#consignorList").append("<option data-conid='"+consignorList[i].conid+"' value='"+consignorList[i].consignor+"'></option>");
+                }
             }
             //收货人信息获取
             consigneeidDateGet();
@@ -1514,7 +1523,9 @@ function getconsigneeidDataEnd(flg, result, callback){
             consigneeList = res.conlist;
             $("#consigneeList").empty();
             for(var i = 0; i < consigneeList.length; i++){
-                $("#consigneeList").append("<option data-conid='"+consigneeList[i].conid+"' value='"+ consigneeList[i].consignee+"'></option>");
+                if(consigneeList[i].state == "0"){
+                    $("#consigneeList").append("<option data-conid='"+consigneeList[i].conid+"' value='"+ consigneeList[i].consignee+"'></option>");
+                }
             }
             //获取收款人信息
             payeeDataGet();

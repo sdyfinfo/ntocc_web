@@ -497,6 +497,44 @@ router.get('/capitaldetails',function(req,res,next){
     }
 });
 
+//发货联系人模板下载
+var fs = require('fs');
+var path = require('path');
+router.get('/downloadconsignorfile', function (req, res, next) {
+    var filename = "发货联系人模版.xlsx";
+    var filepath = path.join(__dirname, '../upload/' + filename);
+    var stats = fs.statSync(filepath);
+    if (stats.isFile()) {
+        res.set({
+            'Content-Type': 'application/octet-stream',
+            'Content-Disposition': 'attachment; filename=' + encodeURIComponent(filename),
+            "Content-Length": stats.size
+        });
+        fs.createReadStream(filepath).pipe(res);
+    } else {
+        res.end(404);
+    }
+});
+
+//收货联系人模板下载
+var fs = require('fs');
+var path = require('path');
+router.get('/downloadgneefile', function (req, res, next) {
+    var filename = "收货联系人模版.xlsx";
+    var filepath = path.join(__dirname, '../upload/' + filename);
+    var stats = fs.statSync(filepath);
+    if (stats.isFile()) {
+        res.set({
+            'Content-Type': 'application/octet-stream',
+            'Content-Disposition': 'attachment; filename=' + encodeURIComponent(filename),
+            "Content-Length": stats.size
+        });
+        fs.createReadStream(filepath).pipe(res);
+    } else {
+        res.end(404);
+    }
+});
+
 router.get('/template',function(req,res,next){
     console.info(req.url);
     var artid = req.query.artid || '';
