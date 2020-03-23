@@ -24,6 +24,7 @@ if (App.isAngularJsApp() === false) {
 //运单支付表格
 var BillPaymentTable = function () {
     var initTable = function () {
+        $(".group-checkable").prop("checked", false);
         var table = $('#payment_table');
         pageLengthInit(table);
         table.dataTable({

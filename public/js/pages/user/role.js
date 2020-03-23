@@ -15,6 +15,7 @@ if (App.isAngularJsApp() === false) {
 
 var RoleTable = function () {
     var initTable = function () {
+        $(".group-checkable").prop("checked", false);
         var table = $('#role_table');
         pageLengthInit(table);
         table.dataTable({

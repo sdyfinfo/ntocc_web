@@ -59,6 +59,7 @@ var ComponentsDateTimePickers = function () {
 //司机表格
 var DriverTable = function () {
     var initTable = function () {
+        $(".group-checkable").prop("checked", false);
         var table = $('#driver_table');
         pageLengthInit(table);
         table.dataTable({

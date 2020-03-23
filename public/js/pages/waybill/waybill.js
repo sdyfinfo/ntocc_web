@@ -9,6 +9,7 @@ var wayBillList = [];
 var selectType = '0';
 var wayBillImport;
 var getData = false;
+var billEdit = {};
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
@@ -63,6 +64,7 @@ var ComponentsDateTimePickers = function () {
 //运单表格
 var WayBillTable = function () {
     var initTable = function () {
+        $(".group-checkable").prop("checked", false);
         var table = $('#bill_table');
         pageLengthInit(table);
         table.dataTable({
@@ -139,7 +141,9 @@ var WayBillTable = function () {
                 {
                     "targets": [1],
                     "render": function (data, type, row, meta) {
-                        return '<input type="checkbox" class="checkboxes" value="1" />';
+                        if(selectType == '0'){
+                            return '<input type="checkbox" class="checkboxes" value="1" />';
+                        }
                     }
                 },
                 {
@@ -1191,101 +1195,123 @@ var WayBillSubimt = function() {
         var len = $(".checkboxes:checked").length;
         if(len < 1){
             alertDialog("请选中一项！");
-        }else if(len > 1){
-            alertDialog("只能选中一项！");
         }else{
             confirmDialog("您确定要提交审验吗？", WayBillSubimt.deletePro)
         }
     });
     return{
         deletePro: function(){
-            var bill = {wid:"",verification_status:"01",driver_id:""};
-            var checked = $(".checkboxes:checked").parents("td");
-            var row = $(checked).parents('tr')[0];
-            var verification_status = $("#bill_table").dataTable().fnGetData(row).verification_status;
-            if(verification_status == "03"){
+            var billList = {list:[]};
+            var result = true;
+            $(".checkboxes:checked").parents("td").each(function (){
+                var row = $(this).parents('tr')[0];
+                var verification_status = $("#bill_table").dataTable().fnGetData(row).verification_status;
+                if(verification_status == "03"){
+                    result = false;
+                }
+                var bill = {wid:"",driver_id:""};
+                bill.wid = $("#bill_table").dataTable().fnGetData(row).wid;
+                for(var i in wayBillList){
+                    if(bill.wid == wayBillList[i].wid){
+                        bill.driver_id = wayBillList[i].driver_id;
+                    }
+                }
+                billList.list.push(bill);
+            });
+            if(!result){
                 alertDialog("审核通过的不能提交审验！");
                 return;
             }
-            bill.wid = $("#bill_table").dataTable().fnGetData(row).wid;
-            for(var i in wayBillList){
-                if(bill.wid == wayBillList[i].wid){
-                    bill.driver_id = wayBillList[i].driver_id;
-                }
-            }
             $("#loading_edit").modal("show");
-            wayBillVerification(bill,'提交审验');
+            wayBillVerification(billList,'提交审验');
         }
     }
 }();
 
 //运单发车
-var WayBillDepart = function() {
-    $('#bill_depart').click(function() {
-        var len = $(".checkboxes:checked").length;
-        if(len < 1){
-            alertDialog("至少选中一项！");
-        }else{
-            confirmDialog("您确定要发车吗？", WayBillDepart.deletePro)
-        }
-    });
-    return{
-        deletePro: function(){
-            var result = true;
-            var bill = {changetype:"0",waybillidlist:[],state:"02"};
-            $(".checkboxes:checked").parents("td").each(function () {
-                var row = $(this).parents('tr')[0];
-                //只有新建的运单可发车
-                var state = $("#bill_table").dataTable().fnGetData(row).state;
-                if(state == "01"){
-                    bill.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
-                }else{
-                    result = false;
-                }
-            });
-            if(!result){
-                alertDialog("只有新建的运单可发车");
-                return;
+$('#bill_depart').click(function() {
+    var len = $(".checkboxes:checked").length;
+    if(len < 1){
+        alertDialog("至少选中一项！");
+    }else{
+        var result = true;
+        billEdit = {changetype:"0",waybillidlist:[],state:"02",depart_time:""};
+        $(".checkboxes:checked").parents("td").each(function () {
+            var row = $(this).parents('tr')[0];
+            //只有新建的运单可发车
+            var state = $("#bill_table").dataTable().fnGetData(row).state;
+            if(state == "01"){
+                billEdit.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
+            }else{
+                result = false;
             }
-            $("#loading_edit").modal("show");
-            wayBillStateChange(bill,'发车');
+        });
+        if(!result){
+            alertDialog("只有新建的运单可发车");
+            return;
         }
+        $(".time-title").text("运单发车");
+        $("#time_title").html("发车时间");
+        $("#changeType").val("0");
+        $("#time_send").val("");
+        $(".modal-footer").show();
+        $("#time_edit").modal('show');
     }
-}();
+});
 
 //运单签收
-var WayBillDone = function() {
-    $('#bill_done').click(function() {
-        var len = $(".checkboxes:checked").length;
-        if(len < 1){
-            alertDialog("至少选中一项！");
-        }else{
-            confirmDialog("您确定要签收运单吗？", WayBillDone.deletePro)
-        }
-    });
-    return{
-        deletePro: function(){
-            var result = true;
-            var bill = {changetype:"1",waybillidlist:[],state:"03"};
-            $(".checkboxes:checked").parents("td").each(function () {
-                var row = $(this).parents('tr')[0];
-                //只有已发车中的运单可完成
-                var state = $("#bill_table").dataTable().fnGetData(row).state;
-                if(state == "02"){
-                    bill.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
-                }else{
-                    result = false;
-                }
-            });
-            if(!result){
-                alertDialog("只有已发车的运单可签收");
-                return;
+$('#bill_done').click(function() {
+    var len = $(".checkboxes:checked").length;
+    if(len < 1){
+        alertDialog("至少选中一项！");
+    }else{
+        var result = true;
+        billEdit = {changetype:"1",waybillidlist:[],state:"03",disburden_time:""};
+        $(".checkboxes:checked").parents("td").each(function () {
+            var row = $(this).parents('tr')[0];
+            //只有已发车中的运单可完成
+            var state = $("#bill_table").dataTable().fnGetData(row).state;
+            if(state == "02"){
+                billEdit.waybillidlist.push($("#bill_table").dataTable().fnGetData(row).wid);
+            }else{
+                result = false;
             }
-            $("#loading_edit").modal("show");
-            wayBillStateChange(bill,'签收');
+        });
+        if(!result){
+            alertDialog("只有已发车的运单可签收");
+            return;
         }
+        $(".time-title").text("运单签收");
+        $("#time_title").html("签收时间");
+        $("#changeType").val("1");
+        $("#time_send").val("");
+        $(".modal-footer").show();
+        $("#time_edit").modal('show');
     }
-}();
+});
+
+$("#time-btn").click(function(){
+    var type = $("#changeType").val();
+    var time = $("#time_send").val();
+    if(time != ""){
+        time = time.replace(/-/g,'');
+        time = time.replace(/:/g,'');
+        time = time.replace(/\s+/g,"");
+        time = time.substr(0,12) + "00";
+    }
+    switch(type){
+        case "0":   //发车
+            billEdit.depart_time = time;
+            $("#loading_edit").modal("show");
+            wayBillStateChange(billEdit,'发车');
+            break;
+        case "1":   //签收
+            billEdit.disburden_time = time;
+            $("#loading_edit").modal("show");
+            wayBillStateChange(billEdit,'签收');
+            break;
+    }
+});
 
 //运单操作返回结果
 function billEditEnd(flg, result, type,callback){
@@ -1321,7 +1347,7 @@ function billEditEnd(flg, result, type,callback){
                 selectType = "1";
             }
             WayBillTable.init();
-            $('#add_bill,#bill_upload').modal('hide');
+            $('#add_bill,#bill_upload,#time_edit').modal('hide');
         }
     }
     if(alert == "") alert = text + "运单" + res + "！";

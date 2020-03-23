@@ -746,7 +746,7 @@ function regDelete(data){
 function consigneeidDateGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
-        data = {conid: "", consignee:"", mobile:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+        data = {conid: "", consignee:"", mobile:"", state:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",
@@ -825,6 +825,28 @@ function gennDelete(data){
         error: function (errorMsg) {
             console.info("gennDelete-error:" + JSON.stringify(errorMsg));
             gennEditEnd(false, "", GENNDELETE);
+        }
+    });
+}
+
+//收货人导入
+function gneeUpload(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: false,
+        processData:false,
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "gneeimport",    //请求发送到TestServlet处
+        data: data,
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("billUpload:" + JSON.stringify(result));
+            gennEditEnd(true, result, CONSIGNEEUPLOAD);
+        },
+        error: function (errorMsg) {
+            console.info("billUpload-error:" + JSON.stringify(errorMsg));
+            gennEditEnd(false, "", CONSIGNEEUPLOAD);
         }
     });
 }
@@ -1897,7 +1919,7 @@ function dictQuery(data){
 function consignorDataGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
-        data = {conid: "",consignor: "",invoice_rise:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+        data = {conid: "",consignor: "",invoice_rise:"", state:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",
@@ -1976,6 +1998,28 @@ function consignorDelete(data){
         error: function (errorMsg) {
             console.info("consignorDelete-error:" + JSON.stringify(errorMsg));
             consignorEditEnd(false, "", CONSIGNORDELETE);
+        }
+    });
+}
+
+//发货人导入
+function consignorUpload(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: false,
+        processData:false,
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "consignorimport",    //请求发送到TestServlet处
+        data: data,
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("billUpload:" + JSON.stringify(result));
+            consignorEditEnd(true, result, CONSIGNORUPLOAD);
+        },
+        error: function (errorMsg) {
+            console.info("billUpload-error:" + JSON.stringify(errorMsg));
+            consignorEditEnd(false, "", CONSIGNORUPLOAD);
         }
     });
 }

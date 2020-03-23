@@ -53,6 +53,7 @@ var ComponentsDateTimePickers = function () {
 //表格
 var ushTable = function () {
     var initTable = function () {
+        $(".group-checkable").prop("checked", false);
         var table = $('#ush_table');
         pageLengthInit(table);
         table.dataTable({

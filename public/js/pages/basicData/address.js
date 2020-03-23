@@ -18,6 +18,7 @@ if(App.isAngularJsApp() == false){
 //项目列表
 var addressTable = function(){
     var initTable = function(){
+        $(".group-checkable").prop("checked", false);
         var table = $('#add_table');
         pageLengthInit(table);
         table.dataTable({

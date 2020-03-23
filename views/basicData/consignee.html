@@ -60,6 +60,18 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="col-md-4 control-label">状态</label>
+                                                <div class="col-md-6">
+                                                    <select class="form-control"  name="state">
+                                                        <option value="">请选择</option>
+                                                        <option value="0">正常</option>
+                                                        <option value="1">异常</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </form>
@@ -84,6 +96,11 @@
                                                 <i class="fa fa-remove"></i>
                                             </button>
                                         </div>
+                                        <div class="btn-group">
+                                            <button id="gnee_import" class="btn btn-warning"> 批量导入
+                                                <i class="fa fa-reply"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -98,9 +115,9 @@
                                     <th> 收货人id </th>
                                     <th> 收货人 </th>
                                     <th> 联系电话 </th>
-                                    <th> 社会信用代码(或身份证号) </th>
-                                    <th> 创建时间 </th>
-                                    <th> 更新时间 </th>
+                                    <th> 卸货地址 </th>
+                                    <th> 卸货详细地址 </th>
+                                    <th> 状态 </th>
                                     <th style="width: 30px"> 操作 </th>
                                 </tr>
                                 </thead>
@@ -208,6 +225,28 @@
                 <div class="modal-footer">
                     <button type="button" data-dismiss="modal" class="btn btn-danger btn-outline">取消</button>
                     <button type="submit" id="register-btn" class="btn btn-success">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 导入收货人文件弹框 -->
+    <div id="gnee_upload" class="modal fade" tabindex="-1" data-width="400" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">导入收货人</h4>
+                </div>
+                <div class="modal-body" style="vertical-align: middle;text-align: center;">
+                    <div style="height: 30px;line-height: 30px">只能上传xlsx格式文件,<a href="/downloadgneefile" download="收货人模板.xlsx">点击下载Excel模板</a></div>
+                    <div style="width: 360px;height: 200px;border: 1px dashed #0088cc;margin: 0 auto;" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <label contentEditable='true' style="width: 100%;height: 100%;padding-top: 50px" for="gnee_file">
+                            <img src="/public/img/file_upload.png" style="width: 100px;height: 80px">
+                            <div style="height: 50px;line-height: 50px">将文件拖到此处或点击上传</div>
+                        </label>
+                    </div>
+                    <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx" id="gnee_file" style="display: none">
+                    <div style="height: 30px;line-height: 30px" id="upload_name" hidden="hidden"></div>
                 </div>
             </div>
         </div>

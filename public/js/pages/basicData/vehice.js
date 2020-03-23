@@ -58,6 +58,7 @@ var ComponentsDateTimePickers = function () {
 //车辆表格
 var VehiceTable = function () {
     var initTable = function () {
+        $(".group-checkable").prop("checked", false);
         var table = $('#vehice_table');
         pageLengthInit(table);
         table.dataTable({

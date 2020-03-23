@@ -14,7 +14,7 @@ if (App.isAngularJsApp() === false) {
 
 var OrganTable = function () {
     var initTable = function () {
-
+        $(".group-checkable").prop("checked", false);
         var table = $('#organ_table');
         table.bootstrapTable({
             striped : true, //是否显示行间隔色

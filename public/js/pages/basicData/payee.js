@@ -22,6 +22,7 @@ if (App.isAngularJsApp() === false) {
 //收货人表格
 var PayeeTable = function () {
     var initTable = function () {
+        $(".group-checkable").prop("checked", false);
         var table = $('#payee_table');
         pageLengthInit(table);
         table.dataTable({
@@ -256,22 +257,17 @@ var payeeEdit = function(){
             if ($('.register-form').validate().form()) {
                 var pay = $('.register-form').getFormData();
                 pay.bankid = $("#bankList").find("option[value='"+pay.bankname+"']").attr('data-bankid');
+                pay.bank = pay.bank.replace(/\s+/g,"");
                 if($("input[name=edittype]").val() == PAYEEADD){
                     $("#loading_edit").modal("show");
                     payeeAdd(pay);
                 }else {
-                    var data;
-                    for(var i = 0; i < payeeList.length; i++) {
-                        if(pay.payid == payeeList[i].payid){
-                            data = payeeList[i];
-                        }
-                    }
                     $("#loading_edit").modal("show");
                     payeEdit(pay,PAYEEEDIT);
                 }
             }
         });
-        //新增项目
+        //新增收款人
         $('#op_add').click(function() {
             //清除校验错误信息
             validator.resetForm();
@@ -284,7 +280,7 @@ var payeeEdit = function(){
             $("input[name=edittype]").val(PAYEEADD);
             $('#edit_pay').modal('show');
         });
-        //编辑项目
+        //编辑收款人
         $('#payee_table').on('click', '#op_edit', function (e) {
             e.preventDefault();
             //清除校验错误信息

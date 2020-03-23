@@ -21,6 +21,7 @@ if (App.isAngularJsApp() === false) {
 //菜单相关
 var MenuTable = function () {
     var initTable = function () {
+        $(".group-checkable").prop("checked", false);
         var table = $('#mkuai_table');
         table.bootstrapTable({
             striped : true, //是否显示行间隔色

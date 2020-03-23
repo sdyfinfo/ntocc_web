@@ -23,6 +23,7 @@ if (App.isAngularJsApp() === false) {
 //发货人表格
 var ConsignorTable = function () {
     var initTable = function () {
+        $(".group-checkable").prop("checked", false);
         var table = $('#consignor_table');
         pageLengthInit(table);
         table.dataTable({
@@ -42,6 +43,7 @@ var ConsignorTable = function () {
                 var da = {
                     consignor: formData.consignor,
                     invoice_rise:formData.invoiceRise,
+                    state:formData.state,
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
@@ -56,7 +58,8 @@ var ConsignorTable = function () {
                 { "data": "consignor"},
                 { "data": "mobile" },
                 { "data": "loading_place" },
-                { "data": "updatetime" },
+                { "data": "loading_address" },
+                { "data": "state"},           //状态  0正常  1异常
                 { "data": null}
             ],
             columnDefs: [
@@ -78,13 +81,22 @@ var ConsignorTable = function () {
                         return '<a href="javascript:;" id="consignor_detail">'+data+'</a>';
                     }
                 },{
-                    "targets": [6],
+                    "targets": [7],
                     "render": function (data, type, row, meta) {
-                        return dateTimeFormat(data);
+                        var text = "";
+                        switch(data){
+                            case "0":
+                                text = "正常";
+                                break;
+                            case "1":
+                                text = "异常";
+                                break;
+                        }
+                        return text;
                     }
                 },
                 {
-                    "targets": [7],
+                    "targets": [8],
                     "render": function (data, type, row, meta) {
                         var edit = "";
                         if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
@@ -97,7 +109,7 @@ var ConsignorTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(3),td:eq(5),td:eq(6)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(3),td:eq(6),td:eq(7)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );
@@ -378,6 +390,71 @@ var ConsignorDelete = function() {
     }
 }();
 
+//发货人导入
+$("#consignor_import").on("click",function(){
+    $("#consignor_upload").find("input[type=file]").value = "";
+    $("#upload_name").hide();
+    $("#consignor_upload").modal('show');
+});
+
+//发货人文件点击上传
+$("#consignor_file").change(function(){
+    var img = $(this).siblings("label").find("img");
+    if(this.files[0]){
+        //显示上传文件名
+        $("#upload_name").show();
+        $("#upload_name").html("文件名："+this.files[0].name+"   文件大小："+((Number(this.files[0].size))/1024).toFixed(1)+"KB");
+        var formData = new FormData();
+        formData.append("file",this.files[0]);
+        var userid = {
+            "userid":loginSucc.userid,
+            "organid":loginSucc.organid
+        }
+        var data = sendMessageEdit(DEFAULT,userid);
+        formData.append("body",new Blob([data],{type:"application/json"}));
+        $("#loading_edit").modal("show");
+        consignorUpload(formData);
+    }else{
+        $("#upload_name").html("");
+    }
+});
+
+//发货人文件拖拽上传
+function allowDrop(ev) {
+    //阻止浏览器默认打开文件的操作
+    ev.preventDefault();
+};
+function drop(ev) {
+    ev.preventDefault();
+    var files = ev.dataTransfer.files;
+    var len = files.length;
+    if(len!=0){
+        var filesName=files[0].name;
+        var extStart=filesName.lastIndexOf(".");
+        var ext=filesName.substring(extStart,filesName.length).toUpperCase();
+        if(ext ==".xlsx" || ext ==".XLSX"){ //判断是否是需要的问件类型
+            //显示上传文件名
+            $("#upload_name").show();
+            $("#upload_name").html("文件名："+filesName+"   文件大小："+((Number(files[0].size))/1024).toFixed(1)+"KB");
+            var formData = new FormData();
+            formData.append("file",files[0]);
+            var userid = {
+                "userid":loginSucc.userid,
+                "organid":loginSucc.organid
+            }
+            var data = sendMessageEdit(DEFAULT,userid);
+            formData.append("body",new Blob([data],{type:"application/json"}));
+            $("#loading_edit").modal("show");
+            consignorUpload(formData);
+        }else{
+            alertDialog("请选择.xlsx类型的文件上传！");
+            return false;
+        }
+    }else{
+        $("#upload_name").html("");
+    }
+};
+
 //发票信息获取结果返回
 function getInvoiceDataEnd(flg,result){
     App.unblockUI('#lay-out');
@@ -433,6 +510,9 @@ function consignorEditEnd(flg, result, type){
             break;
         case CONSIGNORDELETE:
             text = "删除";
+            break;
+        case CONSIGNORUPLOAD:
+            text = "导入";
             break;
     }
     if(flg){

@@ -16,6 +16,7 @@ if (App.isAngularJsApp() === false) {
 //角色功能相关
 var RoleTable = function () {
     var initTable = function () {
+        $(".group-checkable").prop("checked", false);
         var table = $('#role_table');
         table.bootstrapTable({
             striped : true, //是否显示行间隔色

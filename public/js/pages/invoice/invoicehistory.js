@@ -15,6 +15,7 @@ if (App.isAngularJsApp() === false) {
 //开票信息表格
 var InvoiceTrialTable = function () {
     var initTable = function () {
+        $(".group-checkable").prop("checked", false);
         var table = $('#invoice_table');
         pageLengthInit(table);
         table.dataTable({

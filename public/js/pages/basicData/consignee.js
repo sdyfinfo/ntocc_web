@@ -18,6 +18,7 @@ if(App.isAngularJsApp() == false){
 //收货人信息列表
 var ConsTable = function(){
     var initTable = function(){
+        $(".group-checkable").prop("checked", false);
         var table = $('#gnee_table');
         pageLengthInit(table);
         table.dataTable({
@@ -38,6 +39,7 @@ var ConsTable = function(){
                     conid: formData.conid,
                     consignee: formData.consignee,
                     mobile: formData.mobile,
+                    state:formData.state,
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
@@ -51,9 +53,9 @@ var ConsTable = function(){
                 {"data":"conid", visible: false},
                 {"data":"consignee"},
                 {"data":"mobile"},
-                {"data":"credit_code"},
-                {"data":"addtime"},
-                {"data":"updatetime"},
+                {"data":"unloading_place"},
+                {"data":"unloading_address"},
+                {"data":"state"},
                 {"data":null}
             ],
             columnDefs:[
@@ -71,15 +73,18 @@ var ConsTable = function(){
                     }
                 },
                 {
-                    "targets":[6],
-                    "render": function (data, type, row ,meta) {
-                        return dateTimeFormat(data);
-                    }
-                },
-                {
                     "targets":[7],
                     "render": function (data, type, row ,meta) {
-                        return dateTimeFormat(data);
+                        var text = "";
+                        switch(data){
+                            case "0":
+                                text = "正常";
+                                break;
+                            case "1":
+                                text = "异常";
+                                break;
+                        }
+                        return text;
                     }
                 },
                 {
@@ -96,7 +101,7 @@ var ConsTable = function(){
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(3),td:eq(4),td:eq(5),td:eq(6),td:eq(7)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(3),td:eq(6),td:eq(7)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );
@@ -310,6 +315,71 @@ var GennDelete = function() {
     }
 }();
 
+//收货人导入
+$("#gnee_import").on("click",function(){
+    $("#gnee_upload").find("input[type=file]").value = "";
+    $("#upload_name").hide();
+    $("#gnee_upload").modal('show');
+});
+
+//收货人文件点击上传
+$("#gnee_file").change(function(){
+    var img = $(this).siblings("label").find("img");
+    if(this.files[0]){
+        //显示上传文件名
+        $("#upload_name").show();
+        $("#upload_name").html("文件名："+this.files[0].name+"   文件大小："+((Number(this.files[0].size))/1024).toFixed(1)+"KB");
+        var formData = new FormData();
+        formData.append("file",this.files[0]);
+        var userid = {
+            "userid":loginSucc.userid,
+            "organid":loginSucc.organid
+        }
+        var data = sendMessageEdit(DEFAULT,userid);
+        formData.append("body",new Blob([data],{type:"application/json"}));
+        $("#loading_edit").modal("show");
+        gneeUpload(formData);
+    }else{
+        $("#upload_name").html("");
+    }
+});
+
+//收货人文件拖拽上传
+function allowDrop(ev) {
+    //阻止浏览器默认打开文件的操作
+    ev.preventDefault();
+};
+function drop(ev) {
+    ev.preventDefault();
+    var files = ev.dataTransfer.files;
+    var len = files.length;
+    if(len!=0){
+        var filesName=files[0].name;
+        var extStart=filesName.lastIndexOf(".");
+        var ext=filesName.substring(extStart,filesName.length).toUpperCase();
+        if(ext ==".xlsx" || ext ==".XLSX"){ //判断是否是需要的问件类型
+            //显示上传文件名
+            $("#upload_name").show();
+            $("#upload_name").html("文件名："+filesName+"   文件大小："+((Number(files[0].size))/1024).toFixed(1)+"KB");
+            var formData = new FormData();
+            formData.append("file",files[0]);
+            var userid = {
+                "userid":loginSucc.userid,
+                "organid":loginSucc.organid
+            }
+            var data = sendMessageEdit(DEFAULT,userid);
+            formData.append("body",new Blob([data],{type:"application/json"}));
+            $("#loading_edit").modal("show");
+            gneeUpload(formData);
+        }else{
+            alertDialog("请选择.xlsx类型的文件上传！");
+            return false;
+        }
+    }else{
+        $("#upload_name").html("");
+    }
+};
+
 //查询返回结果
 function getconsigneeidDataEnd(flg, result, callback){
     App.unblockUI('#lay-out');
@@ -343,6 +413,9 @@ function gennEditEnd(flg, result, type){
             break;
         case GENNDELETE:
             text = "删除";
+            break;
+        case CONSIGNEEUPLOAD:
+            text = "导入";
             break;
     }
     if(flg){

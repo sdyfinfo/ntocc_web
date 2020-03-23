@@ -42,11 +42,23 @@
                         <form class="inquiry-form form-horizontal" role="form">
                             <div class="form-body">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">发货人名称</label>
                                             <div class="col-md-9">
                                                 <input type="text" class="form-control" placeholder="发货人名称" name="consignor" id="consignor"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label">状态</label>
+                                            <div class="col-md-6">
+                                                <select class="form-control"  name="state">
+                                                    <option value="">请选择</option>
+                                                    <option value="0">正常</option>
+                                                    <option value="1">异常</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -74,6 +86,11 @@
                                             <i class="fa fa-remove"></i>
                                         </button>
                                     </div>
+                                    <div class="btn-group">
+                                        <button id="consignor_import" class="btn btn-warning"> 批量导入
+                                            <i class="fa fa-reply"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -89,12 +106,14 @@
                                 <th> 发货人 </th>
                                 <th> 联系电话 </th>
                                 <th> 发货地址 </th>
-                                <th> 更新时间 </th>
+                                <th> 详细地址 </th>
+                                <th> 状态 </th>
                                 <th> 操作 </th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr class="odd gradeX">
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -184,6 +203,28 @@
                 <div class="modal-footer">
                     <button type="button" data-dismiss="modal" class="btn btn-danger btn-outline">取消</button>
                     <button type="submit" id="edit-btn" class="btn btn-success">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 导入发货人文件弹框 -->
+    <div id="consignor_upload" class="modal fade" tabindex="-1" data-width="400" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">导入发货人</h4>
+                </div>
+                <div class="modal-body" style="vertical-align: middle;text-align: center;">
+                    <div style="height: 30px;line-height: 30px">只能上传xlsx格式文件,<a href="/downloadconsignorfile" download="发货人模板.xlsx">点击下载Excel模板</a></div>
+                    <div style="width: 360px;height: 200px;border: 1px dashed #0088cc;margin: 0 auto;" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <label contentEditable='true' style="width: 100%;height: 100%;padding-top: 50px" for="consignor_file">
+                            <img src="/public/img/file_upload.png" style="width: 100px;height: 80px">
+                            <div style="height: 50px;line-height: 50px">将文件拖到此处或点击上传</div>
+                        </label>
+                    </div>
+                    <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx" id="consignor_file" style="display: none">
+                    <div style="height: 30px;line-height: 30px" id="upload_name" hidden="hidden"></div>
                 </div>
             </div>
         </div>

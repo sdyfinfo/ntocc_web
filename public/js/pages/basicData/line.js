@@ -23,6 +23,7 @@ if(App.isAngularJsApp() == false){
 //项目列表
 var LineTable = function(){
     var initTable = function(){
+        $(".group-checkable").prop("checked", false);
         var table = $('#line_table');
         pageLengthInit(table);
         table.dataTable({

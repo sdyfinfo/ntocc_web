@@ -19,6 +19,7 @@ if (App.isAngularJsApp() === false) {
 
 var invocreTable = function () {
     var initTable = function () {
+        $(".group-checkable").prop("checked", false);
         var table = $('#inv_table');
         pageLengthInit(table);
         table.dataTable({

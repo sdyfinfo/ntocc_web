@@ -76,6 +76,7 @@ var RoleSelect2 = function(){
 
 var UserTable = function () {
     var initTable = function () {
+        $(".group-checkable").prop("checked", false);
         var table = $('#user_table');
         pageLengthInit(table);
         table.dataTable({

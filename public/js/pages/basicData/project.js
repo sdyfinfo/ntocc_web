@@ -26,6 +26,7 @@ if (App.isAngularJsApp() === false) {
 //项目表格
 var ProjectTable = function () {
     var initTable = function () {
+        $(".group-checkable").prop("checked", false);
         var table = $('#pro_table');
         pageLengthInit(table);
         table.dataTable({

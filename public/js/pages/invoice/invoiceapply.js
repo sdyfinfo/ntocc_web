@@ -30,6 +30,7 @@ if (App.isAngularJsApp() === false) {
 //开票运单表格
 var InvoiceBillTable = function () {
     var initTable = function () {
+        $(".group-checkable").prop("checked", false);
         var table = $('#invoice_table');
         pageLengthInit(table);
         table.dataTable({
