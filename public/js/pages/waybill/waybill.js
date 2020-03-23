@@ -114,7 +114,7 @@ var WayBillTable = function () {
             },
             columns: [//返回的json数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 { "data": null},
-                { "data": "",orderable: false,sClass:"hiddenCol"},
+                { "data": ""},
                 { "data": "wid",visible: false },
                 { "data": "project_name"},     //项目
                 { "data": "linename" },    //线路
@@ -142,10 +142,10 @@ var WayBillTable = function () {
                     "targets": [1],
                     "render": function (data, type, row, meta) {
                         if(selectType == '0'){
-                            $(".hiddenCol").css("display","block");
+                            $(".group-checkable").show();
                             return '<input type="checkbox" class="checkboxes" value="1" />';
                         }else{
-                            $(".hiddenCol").css("display","none");
+                            $(".group-checkable").hide();
                             return '';
                         }
                     }
