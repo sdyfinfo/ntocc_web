@@ -598,13 +598,13 @@ var paymentEdit = function() {
 
                 $("#len").val(len);
                 $("#payment_len").html("共选择了"+len+"个运单");
-                if(len == 1){  //选择一个运单，显示已支付金额，支付金额可修改
-                    $("input[name=paid]").parents('.form-group').show();
-                    $("input[name=amount]").removeAttr("readonly");
-                }else{   //多个运单，已支付金额不显示，支付金额不可修改
-                    $("input[name=paid]").parents('.form-group').hide();
-                    $("input[name=amount]").attr("readonly","readonly");
-                }
+                // if(len == 1){  //选择一个运单，显示已支付金额，支付金额可修改
+                //     $("input[name=paid]").parents('.form-group').show();
+                //     $("input[name=amount]").removeAttr("readonly");
+                // }else{   //多个运单，已支付金额不显示，支付金额不可修改
+                $("input[name=paid]").parents('.form-group').hide();
+                $("input[name=amount]").attr("readonly","readonly");
+                // }
                 $("input[name=ushield]").val("");
                 $("#payment_edit").modal('show');
             }else{
