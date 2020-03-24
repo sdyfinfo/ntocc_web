@@ -563,10 +563,10 @@ var paymentEdit = function() {
                     result = false;
                 }
                 if(data.state != '03'){
-                    if(len > 1){
-                        remainList[2] = "1";
-                        result = false;
-                    }
+//                    if(len > 1){
+                      remainList[2] = "1";
+                      result = false;
+//                    }
                 }
                 var driver = $("#payment_table").dataTable().fnGetData(row).freight;
                 var paied = $("#payment_table").dataTable().fnGetData(row).paid;
