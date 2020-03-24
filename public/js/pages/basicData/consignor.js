@@ -93,6 +93,12 @@ var ConsignorTable = function () {
                                 break;
                         }
                         return text;
+                    },
+                    "createdCell":function(td,cellData,rowData,row,col){
+                        console.log(rowData);
+                        if(rowData['state'] == "1"){
+                            $(td).parent().css('background-color','#ed5565');
+                        }
                     }
                 },
                 {
@@ -517,6 +523,11 @@ function consignorEditEnd(flg, result, type){
     }
     if(flg){
         if(result && result.retcode != SUCCESS){
+            if(result.retcode == FAILED){
+                alert = result.retmsg;
+                ConsignorTable.init();
+                $('#edit_consignor,#consignor_upload').modal('hide');
+            }
             alert = result.retmsg;
         }
         if (result && result.retcode == SUCCESS) {

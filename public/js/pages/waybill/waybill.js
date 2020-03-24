@@ -1309,10 +1309,7 @@ $("#time-btn").click(function(){
     }
     if(time != ""){
         $("#remain").hide();
-        time = time.replace(/-/g,'');
-        time = time.replace(/:/g,'');
-        time = time.replace(/\s+/g,"");
-        time = time.substr(0,12) + "00";
+        time = timeFormat(time);
     }
     switch(type){
         case "0":   //发车

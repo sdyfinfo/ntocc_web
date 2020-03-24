@@ -21,6 +21,7 @@ var regulateSucc = {
 };
 
 const SUCCESS = "0000";
+const FAILED = "9998";
 
 const DEFAULT = 0;
 const USERADD = 1;

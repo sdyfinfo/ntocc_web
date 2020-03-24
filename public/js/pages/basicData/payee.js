@@ -158,6 +158,7 @@ var payeeEdit = function(){
                     required: true
                 },
                 idcard:{
+                    required: true,
                     idcard:true
                 },
                 addresseeTel:{
@@ -181,9 +182,9 @@ var payeeEdit = function(){
                 payname:{
                     required: "请输入银行开户户名"
                 },
-                //idcard:{
-                //    required: "请输入身份证号"
-                //},
+                idcard:{
+                    required: "请输入身份证号"
+                },
                 payphone:{
                     required: "请输入收款人手机号"
                 },
@@ -496,6 +497,12 @@ function payeeEditEnd(flg, result, type){
     }
     if(flg){
         if(result && result.retcode != SUCCESS){
+            if(result.retcode == FAILED){
+                alert = result.retmsg;
+                PayeeTable.init();
+                $('#edit_pay').modal('hide');
+                $('#pay_upload').modal('hide');
+            }
             alert = result.retmsg;
         }
         if (result && result.retcode == SUCCESS) {

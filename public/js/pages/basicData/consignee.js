@@ -85,6 +85,12 @@ var ConsTable = function(){
                                 break;
                         }
                         return text;
+                    },
+                    "createdCell":function(td,cellData,rowData,row,col){
+                        console.log(rowData);
+                        if(rowData['state'] == "1"){
+                            $(td).parent().css('background-color','#ed5565');
+                        }
                     }
                 },
                 {
@@ -420,6 +426,11 @@ function gennEditEnd(flg, result, type){
     }
     if(flg){
         if(result && result.retcode != SUCCESS){
+            if(result.retcode == FAILED){
+                alert = result.retmsg;
+                ConsTable.init();
+                $('#edit_gnee,#gnee_upload').modal('hide');
+            }
             alert = result.retmsg;
         }
         if (result && result.retcode == SUCCESS) {

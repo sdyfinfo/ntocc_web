@@ -130,6 +130,19 @@ function dateTimeFormat(datetime){
 }
 
 
+function dateTimeFormat1(datetime){
+    if(datetime == ""){
+        return datetime;
+    }
+    if(datetime.length == 8){
+        return datetime.substr(0, 4) + "-" + datetime.substr(4, 2) + "-" +
+            datetime.substr(6, 2) + " " +"00:00:00";
+    }
+    return datetime.substr(0, 4) + "-" + datetime.substr(4, 2) + "-" +
+        datetime.substr(6, 2) + " " + datetime.substr(8, 2) + ":" +
+        datetime.substr(10, 2) + ":" + datetime.substr(12, 2);
+}
+
 function conferenceDateFormat(dateRange){
     if(dateRange == "" || dateRange.length < 8) return dateRange;
     return dateRange.substr(0, 4) + "/" + dateRange.substr(4, 2) + "/" +
@@ -727,4 +740,14 @@ function get_thousand_num(num) {
             return n.slice(0, len % 3) + n.slice(len % 3).replace(/(\d{3})/g, ',$1');
         }
     });
+}
+
+
+//时间格式
+function timeFormat(time){
+    time = time.replace(/-/g,'');
+    time = time.replace(/:/g,'');
+    time = time.replace(/\s+/g,"");
+    time = time.substr(0,12) + "00";
+    return time;
 }
