@@ -576,7 +576,7 @@ var paymentEdit = function() {
                 if(rate == ""){
                     rate = 0;
                 }
-                data.rate += Number(rate);
+                data.rate = Number(rate);
             });
             if(result){
                 data.freight = get_thousand_num(data.freight);
