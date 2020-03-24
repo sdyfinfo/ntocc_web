@@ -501,7 +501,7 @@ router.get('/capitaldetails',function(req,res,next){
 var fs = require('fs');
 var path = require('path');
 router.get('/downloadconsignorfile', function (req, res, next) {
-    var filename = "发货联系人模版.xlsx";
+    var filename = "发货联系人模板.xlsx";
     var filepath = path.join(__dirname, '../upload/' + filename);
     var stats = fs.statSync(filepath);
     if (stats.isFile()) {
@@ -520,7 +520,7 @@ router.get('/downloadconsignorfile', function (req, res, next) {
 var fs = require('fs');
 var path = require('path');
 router.get('/downloadgneefile', function (req, res, next) {
-    var filename = "收货联系人模版.xlsx";
+    var filename = "收货联系人模板.xlsx";
     var filepath = path.join(__dirname, '../upload/' + filename);
     var stats = fs.statSync(filepath);
     if (stats.isFile()) {
