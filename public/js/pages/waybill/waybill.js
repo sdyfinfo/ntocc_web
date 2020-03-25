@@ -865,7 +865,7 @@ var WayBillAdd = function() {
                     wayBillAdd(bill);
                 }else{
                     bill.line_id = $("#lineList_add").val();
-                    bill.state = "10010,01";
+                    bill.state = "10010,"+bill.state;
                     $("#loading_edit").modal("show");
                     wayBillEdit(bill);
                 }
