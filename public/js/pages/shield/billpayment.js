@@ -69,6 +69,7 @@ var BillPaymentTable = function () {
                     loading_end_subtime:loading_end_subtime,
                     project_id:$("#proList").find("option[value='"+formData.project_id+"']").attr("data-proid") || "",
                     lid:lid,
+                    wabill_numbers:formData.wabill_numbers,
                     consignor:formData.consignor,
                     platenumber:formData.platenumber,
                     name:formData.driver_name,
@@ -463,7 +464,7 @@ var paymentEdit = function() {
             var result = true;
             var payment = ($("input[name=paid]").val()).replace(/,/g,"");
             var freight = ($('.payment-form').find("input[name=freight]").val()).replace(/,/g,"");
-            value = value.replace(/,/g,"")
+            value = value.replace(/,/g,"");
             if((Number(value)+Number(payment))>Number(freight)){
                 result = false;
             }

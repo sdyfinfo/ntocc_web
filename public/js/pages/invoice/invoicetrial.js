@@ -63,7 +63,7 @@ var InvoiceTrialTable = function () {
                 { "data": "serviceFee"},   //服务费
                 { "data": "invoice" },     //开票总额
                 { "data": "audit_status"},     //开票状态
-                { "data": null},
+                { "data": "audit_status"},
                 { "data": "waybillid",visible: false}
             ],
             columnDefs: [
@@ -128,7 +128,12 @@ var InvoiceTrialTable = function () {
                 },{
                     "targets": [9],
                     "render": function (data, type, row, meta) {
-                        return '<a href="javascript:;" id="invoice_Check">查看</a>';
+                        if(data == "1" || data == "2" || data == "3"){
+                            return '<a href="javascript:;" id="invoice_Check">查看</a>'+' | '+
+                                '<a href="javascript:;" id="bill_export">导出销货清单</a>';
+                        }else{
+                            return '<a href="javascript:;" id="invoice_Check">查看</a>';
+                        }
                     }
                 }
             ],
@@ -348,6 +353,17 @@ var InvoiceTrial = function() {
     }
 }();
 
+//导出运单
+$("#invoice_table").on('click',"#bill_export",function(){
+    var data = {};
+    var row = $(this).parents('tr')[0];
+    var oid = $("#invoice_table").dataTable().fnGetData(row).oid;
+    var rise_name = $("#invoice_table").dataTable().fnGetData(row).rise_name;
+    data.oid = oid;
+    data.organnames = rise_name;
+    billExport(data);
+});
+
 //开票运单信息获取结果返回
 function getInvoiceTrialEnd(flg,result,callback){
     App.unblockUI('#lay-out');
@@ -400,5 +416,26 @@ function getBillDetailEnd(flg,result,callback){
     }else{
         tableDataSet(0, 0, 0, [], callback);
         alertDialog("开票联动运单明细信息获取失败！");
+    }
+}
+
+//运单导出结果返回
+function billExportEnd(flg, obj){
+    App.unblockUI('#lay-out');
+    var name = "运单列表.xlsx";
+    if(flg){
+        var blob = obj.response;
+        var reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onload = function (e) {
+            var a = document.createElement('a');
+            a.download = name;
+            a.href = e.target.result;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    }else{
+        alertDialog("文件导出失败！");
     }
 }

@@ -187,7 +187,7 @@ $("#invoice_table").on('click',"#invoice_Check",function(){
     var data = {};
     for(var i in invoiceTrialList){
         if(oid == invoiceTrialList[i].oid){
-            data.rise_name = invoiceTrialList[i].rise_name
+            data.rise_name = invoiceTrialList[i].rise_name;
             data.addTime = dateTimeFormat(invoiceTrialList[i].addTime);
             data.freight = get_thousand_num(invoiceTrialList[i].freight);
             data.serviceFee = get_thousand_num(invoiceTrialList[i].serviceFee);

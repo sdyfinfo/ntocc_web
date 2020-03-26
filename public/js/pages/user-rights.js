@@ -2077,7 +2077,7 @@ function billDataGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
         data = {start_subtime: "",end_subtime:"", loading_start_subtime:"",loading_end_subtime:"",
-            project_id:"",lid:"",consignor:"",platenumber:"",driver_name:"",state:"",
+            project_id:"",lid:"",wabill_numbers:"",consignor:"",platenumber:"",driver_name:"",state:"",
             currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
@@ -2230,7 +2230,7 @@ function paymentDataGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
         data = {start_subtime: "",end_subtime:"", loading_start_subtime:"",loading_end_subtime:"",
-            project_id:"",lid:"",consignor:"",platenumber:"",driver_name:"",state:"",
+            project_id:"",lid:"",wabill_numbers:"",consignor:"",platenumber:"",driver_name:"",state:"",
             currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
@@ -2390,7 +2390,6 @@ function invoiceTrialDataGet(data,callback){
 //开票关联运单明细查询
 function billDetailGet(data,callback){
     App.blockUI({target:'#lay-out',boxed: true});
-
     $.ajax({
         type: "post",
         contentType: "application/json",
@@ -2407,6 +2406,24 @@ function billDetailGet(data,callback){
             getBillDetailEnd(false, "",callback);
         }
     });
+}
+
+//开票运单导出
+function billExport(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    var xhr = new XMLHttpRequest();
+    var url = businessUrl + "billexport";
+    xhr.open("POST", url, true);
+    //xhr.setRequestHeader('content-type', 'application/json; charset=UTF-8');
+    xhr.responseType = "blob";
+    xhr.onload = function () {
+        if (this.status === 200) {
+            billExportEnd(true, this);
+        }else {
+            billExportEnd(false, "")
+        }
+    };
+    xhr.send(sendMessageEdit(DEFAULT, data));
 }
 
 //开票信息审核

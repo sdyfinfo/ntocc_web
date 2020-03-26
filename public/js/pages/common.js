@@ -292,6 +292,15 @@ function bootstrapTableDataSet(totalcount, data, callback){
     callback(returnData);
 }
 
+function bootstrapTableDataSetService(totalcount, data, callback){
+    var returnData = {
+        "total": totalcount,
+        "rows": data         //服务端分页这个字段名为rows，客户端分页这个字段名为data
+    };
+
+    callback(returnData);
+}
+
 function dateFormat(date, sep){
     //如果日期不存在，或者为空，返回当前日期
     if(date == undefined || date == "" || typeof(date) != "string"){

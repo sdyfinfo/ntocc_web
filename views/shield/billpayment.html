@@ -31,6 +31,7 @@
         .goods_check{height: 20px;float: left;border: 1px solid #e5e6e7;line-height: 20px;margin-top: 5px;margin-left: 5px}
         .bill-form .form-group{margin-bottom:5px!important;}
         .balance{margin-left:20px;font-size: 15px;color: #e02222;font-weight: bold}
+        .inquiry-form .form-group{margin-bottom: 8px}
     </style>
 </head>
 <body class="gray-bg">
@@ -48,8 +49,20 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="col-md-4 control-label">所属项目</label>
+                                            <label class="col-md-3 control-label">创建起始时间</label>
                                             <div class="col-md-8">
+                                                <div class="input-group input-large date-picker input-daterange" data-date="" data-date-format="yyyy/mm/dd">
+                                                    <input type="text" class="form-control" name="start_subtime" autocomplete="off" style="border-radius: 0px!important;">
+                                                    <span class="input-group-addon">~</span>
+                                                    <input type="text" class="form-control" name="end_subtime" autocomplete="off" style="border-radius: 0px!important;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="col-md-5 control-label">所属项目</label>
+                                            <div class="col-md-7">
                                                 <input type="text" class="form-control" placeholder="请选择" id="project_id" name="project_id" list="proList" autocomplete="off">
                                                 <datalist id="proList">
                                                 </datalist>
@@ -59,17 +72,39 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">所属路线</label>
-                                            <div class="col-md-9">
+                                            <div class="col-md-8">
                                                 <select type="text" class="form-control" id="lineList" disabled>
                                                     <option value="">所属路线</option>
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">装货起始时间</label>
+                                            <div class="col-md-8">
+                                                <div class="input-group input-large date-picker input-daterange" data-date="" data-date-format="yyyy/mm/dd">
+                                                    <input type="text" class="form-control" name="loading_start_subtime" autocomplete="off" style="border-radius: 0px!important;">
+                                                    <span class="input-group-addon">~</span>
+                                                    <input type="text" class="form-control" name="loading_end_subtime" autocomplete="off" style="border-radius: 0px!important;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="col-md-5 control-label">运单号</label>
+                                            <div class="col-md-7">
+                                                <input type="text" class="form-control" placeholder="运单号" name="wabill_numbers" >
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">发货人</label>
-                                            <div class="col-md-9">
+                                            <div class="col-md-8">
                                                 <input type="text" class="form-control" placeholder="发货人" name="consignor" >
                                             </div>
                                         </div>
@@ -78,7 +113,7 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="col-md-4 control-label">车牌号</label>
+                                            <label class="col-md-3 control-label">车牌号</label>
                                             <div class="col-md-8">
                                                 <input type="text" class="form-control" placeholder="车牌号" name="platenumber"/>
                                             </div>
@@ -86,8 +121,8 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">司机姓名</label>
-                                            <div class="col-md-9">
+                                            <label class="col-md-5 control-label">司机姓名</label>
+                                            <div class="col-md-7">
                                                 <input type="text" class="form-control" placeholder="司机姓名" name="driver_name" >
                                             </div>
                                         </div>
@@ -95,36 +130,10 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">运单状态</label>
-                                            <div class="col-md-9">
+                                            <div class="col-md-8">
                                                 <select type="text" class="form-control" name="state" id="state">
                                                     <option value="">请选择</option>
                                                 </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="col-md-4 control-label">创建起始时间</label>
-                                            <div class="col-md-5">
-                                                <div class="input-group input-large date-picker input-daterange" data-date="" data-date-format="yyyy/mm/dd">
-                                                    <input type="text" class="form-control" name="start_subtime" autocomplete="off" style="border-radius: 0px!important;">
-                                                    <span class="input-group-addon">~</span>
-                                                    <input type="text" class="form-control" name="end_subtime" autocomplete="off" style="border-radius: 0px!important;">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="col-md-6 control-label">装货起始时间</label>
-                                            <div class="col-md-6">
-                                                <div class="input-group input-large date-picker input-daterange" data-date="" data-date-format="yyyy/mm/dd">
-                                                    <input type="text" class="form-control" name="loading_start_subtime" autocomplete="off" style="border-radius: 0px!important;">
-                                                    <span class="input-group-addon">~</span>
-                                                    <input type="text" class="form-control" name="loading_end_subtime" autocomplete="off" style="border-radius: 0px!important;">
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -300,7 +309,7 @@
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <label class="col-md-4 control-label">车辆载重<span class="required"> * </span></label>
+                                    <label class="col-md-4 control-label">车辆载重(吨)<span class="required"> * </span></label>
                                     <div class="col-md-8">
                                         <input type="text" class="form-control" placeholder="车辆载重"  name="load"/>
                                     </div>
@@ -309,6 +318,20 @@
                                     <label class="col-md-4 control-label">自定义单号</label>
                                     <div class="col-md-8">
                                         <input class="form-control" type="text"  name="odd_numbers"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">收款人<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" placeholder="收款人"  name="payee_name"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">银行卡号</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control" type="text" placeholder="银行卡号" name="banknumber"/>
                                     </div>
                                 </div>
                             </div>

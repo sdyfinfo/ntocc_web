@@ -138,13 +138,15 @@ var VehiceTable = function () {
                         //车长
                         return conductorDisplay(data);
                     }
-                },{
-                    "targets": [7],
-                    "render": function (data, type, row, meta) {
-                        //载重
-                        return subStringNum((data/1000),3);
-                    }
-                },{
+                },
+//                {
+//                    "targets": [7],
+//                    "render": function (data, type, row, meta) {
+//                        //载重
+//                        return subStringNum((data/1000),3);
+//                    }
+//                },
+                {
                     "targets": [11],
                     "render": function (data, type, row, meta) {
                         if(data == ""){
