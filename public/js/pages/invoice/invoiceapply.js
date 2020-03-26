@@ -383,10 +383,10 @@ var invoiceApply = function() {
                 data.widlist.push(invoiceBillList[i].wid);
             }
             data.invoice = Number(data.freight)+Number(data.serviceFee);
-            if(parseInt(data.invoice)>eval(100000000)){
-                alertDialog("单次开票合计不能超过100万！");
-                return;
-            }
+//            if(parseInt(data.invoice)>eval(100000000)){
+//                alertDialog("单次开票合计不能超过100万！");
+//                return;
+//            }
             data.freight = get_thousand_num(subStringNum(data.freight/100,2));
             data.serviceFee = get_thousand_num(subStringNum(data.serviceFee/100,2));
             data.invoice = get_thousand_num(subStringNum(data.invoice/100,2));
@@ -436,7 +436,6 @@ var invoiceApply = function() {
             $(".checkboxes:checked").parents("td").each(function(){
                 var row = $(this).parents('tr')[0];
                 if($("#invoice_table").dataTable().fnGetData(row).openinvoice_state == "1"){  //已申请的不能再次申请
-                    alertDialog("已申请开票的订单不能再次申请！");
                     result = false;
                 }
                 data.freight += Number($("#invoice_table").dataTable().fnGetData(row).freight)*100;
@@ -445,10 +444,10 @@ var invoiceApply = function() {
             });
             if(result){
                 data.invoice = Number(data.freight)+Number(data.serviceFee);
-                if(parseInt(data.invoice)>eval(100000000)){
-                    alertDialog("单次开票合计不能超过100万！");
-                    return;
-                }
+//                if(parseInt(data.invoice)>eval(100000000)){
+//                    alertDialog("单次开票合计不能超过100万！");
+//                    return;
+//                }
                 data.freight = get_thousand_num(subStringNum(data.freight/100,2));
                 data.serviceFee = get_thousand_num(subStringNum(data.serviceFee/100,2));
                 data.invoice = get_thousand_num(subStringNum(data.invoice/100,2));
@@ -476,6 +475,9 @@ var invoiceApply = function() {
                 $("input[name=invoicerise_address],input[name=invoicerise_tel],input[name=bank_name],input[name=bank]").removeAttr("readonly");
                 $(".modal-title").val("选单开票");
                 $("#invoice_edit").modal('show');
+            }else{
+                alertDialog("已申请开票的订单不能再次申请！");
+                return;
             }
         });
     };

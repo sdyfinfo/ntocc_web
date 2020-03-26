@@ -347,6 +347,7 @@ var InvoiceTrial = function() {
                 alertDialog("只有审核中或被驳回的开票信息可审核");
                 return false;
             }
+            $("#loading_edit").find('span').html("&nbsp;&nbsp;正在处理中...")
             $("#loading_edit").modal("show");
             invoiceTrial(invoice);
         }
@@ -361,6 +362,8 @@ $("#invoice_table").on('click',"#bill_export",function(){
     var rise_name = $("#invoice_table").dataTable().fnGetData(row).rise_name;
     data.oid = oid;
     data.organnames = rise_name;
+    $("#loading_edit").find('span').html("&nbsp;&nbsp;正在导出中...")
+    $("#loading_edit").modal("show");
     billExport(data);
 });
 
@@ -421,6 +424,7 @@ function getBillDetailEnd(flg,result,callback){
 
 //运单导出结果返回
 function billExportEnd(flg, obj){
+    $("#loading_edit").modal("hide");
     App.unblockUI('#lay-out');
     var name = "运单列表.xlsx";
     if(flg){
