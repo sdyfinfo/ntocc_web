@@ -426,7 +426,7 @@ function getBillDetailEnd(flg,result,callback){
 function billExportEnd(flg, obj){
     $("#loading_edit").modal("hide");
     App.unblockUI('#lay-out');
-    var name = "运单列表.xlsx";
+    var name = "销售货物或者提供应税劳务、服务清单.xlsx";
     if(flg){
         var blob = obj.response;
         var reader = new FileReader();
