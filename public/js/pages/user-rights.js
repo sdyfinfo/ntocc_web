@@ -1410,6 +1410,27 @@ function vehiceImgUpload(data){
     });
 }
 
+//车辆状态修改
+function vehiceState(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "vehicleStateUpdate",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("vehiceState:" + JSON.stringify(result));
+            vehiceEditEnd(true, result, VEHICESTATUS);
+        },
+        error: function (errorMsg) {
+            console.info("vehiceState-error:" + JSON.stringify(errorMsg));
+            vehiceEditEnd(false, "", VEHICESTATUS);
+        }
+    });
+}
+
 //线路新增
 function lineAdd(data){
     App.blockUI({target:'#lay-out',boxed: true});

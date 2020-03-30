@@ -238,6 +238,30 @@ var ushEdit = function(){
             }
         });
 
+        //关联机构判断
+        $("#organname").blur(function(){
+            var value = $(this).val();
+            var list = [];
+            for(var i = 0;i<organList.length;i++){
+                list.push(organList[i].organname);
+            }
+            if(list.indexOf(value) == -1){  //不存在
+                $(this).val("");
+                $("#organid").val("");
+            }else{
+                $("#organid").val(organList[i].organid);
+            }
+        });
+        $("#organname").change(function(e){
+            var value = $(this).val();
+            var id = $("#organList").find("option[value='"+value+"']").attr("data-oid");
+            if(id != undefined){
+                $("#organid").val(id);
+            }else{
+                $("#organid").val("");
+            }
+        });
+
         //点击确定按钮edittype
         $('#register-btn').click(function() {
             btnDisable($('#register-btn'));
@@ -300,18 +324,25 @@ var ushEdit = function(){
             }
             //效验通过或者已绑定状态
             if(ushield.check == "1"){
-                //input只读
+                //U盾相关只读
                 ushieldAllone(0);
-                //select可编辑
+                //机构可编辑
                 ushieldAlltwo(1);
             }else{
-                //select只读
+                //机构只读
                 ushieldAlltwo(0);
-                //input可编辑
+                //U盾相关可编辑
                 ushieldAllone(1);
             }
             var options = { jsonValue: ushield, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
+            //显示关联机构
+            for(var i in organList){
+                if(ushield.organid == organList[i].organid){
+                    $("#organname").val(organList[i].organname)
+                }
+            }
+            $("#organid").val(ushield.organid);
             $("input[name=organid_before]").val(ushield.organid);
             $("input[name=edittype]").val(USHEDIT);
             $(".con-hide1,.con-hide2").show();
@@ -355,9 +386,9 @@ var ushEdit = function(){
 function ushieldAllone(id){
     if(id == 0){ //不允许
         //全部只读
-        $(".register-form").find("input").attr("readonly", "readonly");
+        $(".register-form").find("input[name=unumber],input[name=secret_key]").attr("readonly", "readonly");
     }else{
-        $(".register-form").find("input").removeAttr("readonly");
+        $(".register-form").find("input[name=unumber],input[name=secret_key]").removeAttr("readonly");
     }
 }
 
@@ -365,9 +396,9 @@ function ushieldAllone(id){
 function ushieldAlltwo(id){
     if(id == 0){ //不允许
         //全部只读
-        $(".register-form").find("select").attr("disabled", true);
+        $(".register-form").find("input[name=organ]").attr("readonly", "readonly");
     }else{
-        $(".register-form").find("select").attr("disabled", false);
+        $(".register-form").find("input[name=organ]").removeAttr("readonly");
     }
 }
 
@@ -404,7 +435,7 @@ function getOrganDataEnd(flg, result){
             var res = result.response;
             organList = res.list;
             for(var i = 0; i < organList.length; i++){
-                $("#organid").append("<option value='"+organList[i].organid+"'>"+ organList[i].organname +"</option>");
+                $("#organList").append("<option data-oid='"+organList[i].organid+"' value='"+organList[i].organname+"'></option>");
             }
         }else{
             alertDialog("机构信息获取失败！");

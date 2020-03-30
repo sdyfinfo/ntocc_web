@@ -100,7 +100,8 @@ var VehiceTable = function () {
                 { "data": "license_key"},
                 { "data": "driving_img"},
                 { "data": "updatetime"},
-                { "data": null}
+                { "data": null},
+                { "data": "state"}
             ],
             columnDefs: [
                 {
@@ -170,6 +171,11 @@ var VehiceTable = function () {
                             edit = '<a href="javascript:;" id="op_edit">编辑</a>';
                         }
                         return edit;
+                    }
+                },{
+                    "targets": [14],
+                    "render": function (data, type, row, meta) {
+                        return statusFormat(data);
                     }
                 }
             ],
@@ -874,6 +880,9 @@ function vehiceEditEnd(flg, result, type){
         case VEHICEIMGUPLOAD:
             text = "证照导入";
             break;
+        case VEHICESTATUS:
+            text = "状态更改";
+            break;
     }
     if(flg){
         if(result && result.retcode != SUCCESS){
@@ -889,7 +898,7 @@ function vehiceEditEnd(flg, result, type){
         }
     }
     if(alert == ""){
-        if(type == VEHICEIMGUPLOAD){
+        if(type == VEHICEIMGUPLOAD || type == VEHICESTATUS){
             alert = "车辆"+ text + res + "！";
         }else{
             alert = text + "车辆信息" + res + "！";
@@ -1020,3 +1029,55 @@ function getDriverDataEnd(flg, result){
         getData = true;
     }
 }
+
+//车辆状态显示
+function statusFormat(data){
+    var content;
+    switch (data){
+        case "0":  //启用
+            content =
+                "<div class='switch'>"+
+                "<div class='onoffswitch'>"+
+                "<input type='checkbox' checked='' class='onoffswitch-checkbox'>"+
+                "<label class='onoffswitch-label' data-status='1' id='statusChange'>"+
+                "<span class='inner on_inner' style='float: left'>启用</span>"+
+                "<span class='switch' style='float: right'></span>"+
+                "</label>"+
+                "</div>"+
+                "</div>";
+            break;
+        case "1":  //启用
+            content =
+                "<div class='switch'>"+
+                "<div class='onoffswitch'>"+
+                "<input type='checkbox' checked='' class='onoffswitch-checkbox'>"+
+                "<label class='onoffswitch-label' style='border: 2px solid #ff0000;' data-status='0' id='statusChange'>"+
+                "<span class='inner off_inner' style='float: right'>停用</span>"+
+                "<span class='switch' style='float: left'></span>"+
+                "</label>"+
+                "</div>"+
+                "</div>";
+            break;
+    }
+    return content;
+}
+
+//车辆状态更改
+var StatusChange = function(){
+    var vehice = {};
+    $("#vehice_table").on('click','#statusChange',function(){
+        //获取id和status
+        var row = $(this).parents('tr')[0];
+        var vehid = $("#vehice_table").dataTable().fnGetData(row).vehid;
+        vehice.vehid = vehid;
+        vehice.state = $(this).data('status');
+        //先提示
+        confirmDialog("您确定要更改该车辆状态吗？", StatusChange.changeStatus);
+    });
+    return{
+        changeStatus: function(){
+            $("#loading_edit").modal("show");
+            vehiceState(vehice);
+        }
+    }
+}();

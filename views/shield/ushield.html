@@ -219,9 +219,10 @@
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label">关联机构</label>
                                     <div class="col-md-8">
-                                        <select class="form-control" name="organid" id="organid">
-                                            <option value="">请选择</option>
-                                        </select>
+                                        <input type="text" class="form-control" placeholder="请选择" id="organname" list="organList" autocomplete="off">
+                                        <input type="hidden" id="organid">
+                                        <datalist id="organList">
+                                        </datalist>
                                     </div>
                                 </div>
                             </div>

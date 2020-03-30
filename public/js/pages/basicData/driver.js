@@ -592,7 +592,7 @@ $("#img_check img").viewer({
     title: false
 });
 
-//项目状态显示
+//司机状态显示
 function statusFormat(data){
     var content;
     switch (data){
@@ -608,7 +608,7 @@ function statusFormat(data){
                 "</div>"+
                 "</div>";
             break;
-        case "1":  //启用
+        case "1":  //停用
             content =
                 "<div class='switch'>"+
                 "<div class='onoffswitch'>"+
@@ -624,7 +624,7 @@ function statusFormat(data){
     return content;
 }
 
-//项目状态更改
+//司机状态更改
 var StatusChange = function(){
     var driver = {};
     $("#driver_table").on('click','#statusChange',function(){
@@ -634,7 +634,7 @@ var StatusChange = function(){
         driver.did = did;
         driver.state = $(this).data('status');
         //先提示
-        confirmDialog("您确定要更改该项目状态吗？", StatusChange.changeStatus);
+        confirmDialog("您确定要更改该司机状态吗？", StatusChange.changeStatus);
     });
     return{
         changeStatus: function(){

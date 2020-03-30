@@ -37,6 +37,28 @@
             height: 150px;
             border: 1px solid #cccccc;
         }
+        .inner {
+            display: block;
+            width: 70%;
+            height: 20px;
+            padding: 0;
+            line-height: 20px;
+            font-size: 14px;
+            color: white;
+            font-family: Trebuchet, Arial, sans-serif;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+        .on_inner{
+            text-align: center;
+            background-color: #1AB394;
+            color: #FFFFFF;
+        }
+        .off_inner{
+            text-align: center;
+            background-color:#ff0000;
+            color: #FFFFFF;
+        }
     </style>
 
 </head>
@@ -138,10 +160,12 @@
                                 <th> 行驶证照片 </th>
                                 <th> 更新时间 </th>
                                 <th> 操作 </th>
+                                <th> 状态 </th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr class="odd gradeX">
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -204,6 +228,14 @@
                             <!-- 操作类型隐藏（用来区分新增还是编辑） -->
                             <input type="hidden" name="edittype">
                             <input type="hidden" class="form-control" name="vehid">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-4 control-label">所属机构<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" name="organname" readonly>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="form-group col-md-6">
                                     <label class="col-md-4 control-label">车牌号<span class="required"> * </span></label>
