@@ -509,6 +509,8 @@ var VehiceEdit = function() {
                       $("#group_photo").siblings("label").find("img").attr("src",vehice.group_photo || imgInit);
                       //是否允许上传图片
                       fileUploadAllowed(0);
+                      //显示所属机构
+                      $("input[name=organname]").parents(".row").show();
                       $(".modal-footer").hide();
                       $('#edit_vehice').modal('show');
                   }
@@ -567,6 +569,8 @@ var VehiceEdit = function() {
                         fileUploadAllowed(1);
                         //车牌号只读
                         $("#platenumber_edit").attr("disabled",true);
+                        //不显示所属机构
+                        $("input[name=organname]").parents(".row").hide();
                         $("input[name=edittype]").val(VEHICEEDIT);
                         $(".modal-footer").show();
                         $('#edit_vehice').modal('show');
@@ -589,6 +593,8 @@ var VehiceEdit = function() {
             //清空文件
             clearFile();
             fileUploadAllowed(1);
+            //不显示所属机构
+            $("input[name=organname]").parents(".row").hide();
             $("input[name=edittype]").val(VEHICEADD);
             $(".modal-footer").show();
             $('#edit_vehice').modal('show');

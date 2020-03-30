@@ -486,6 +486,8 @@ var DriverEdit = function() {
                         $("#qualification_img").siblings("label").find("img").attr("src",driver.qualification_img || imgInit);
                         //是否允许上传图片
                         fileUploadAllowed(0);
+                        //显示所属机构
+                        $("input[name=organname]").parents(".row").show();
                         $(".modal-footer").hide();
                         $('#edit_driver').modal('show');
                     }
@@ -539,6 +541,8 @@ var DriverEdit = function() {
                         //只读
                         $(".edit-form").find("input[name=name]").attr("readonly","readonly");
                         $(".edit-form").find("input[name=id_number]").attr("readonly","readonly");
+                        //不显示所属机构
+                        $("input[name=organname]").parents(".row").hide();
                         $("input[name=edittype]").val(VEHICEEDIT);
                         $(".modal-footer").show();
                         $('#edit_driver').modal('show');
@@ -564,6 +568,8 @@ var DriverEdit = function() {
             fileUploadAllowed(1);
             $(".edit-form").find("input[name=name]").removeAttr("readonly");
             $(".edit-form").find("input[name=id_number]").removeAttr("readonly");
+            //不显示所属机构
+            $("input[name=organname]").parents(".row").hide();
             $(".modal-footer").show();
             $("input[name=edittype]").val(DRIVERADD);
             $('#edit_driver').modal('show');
