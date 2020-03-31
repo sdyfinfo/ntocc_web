@@ -42,6 +42,7 @@ var PayeeTable = function () {
                 var da = {
                     payname: formData.payname,
                     bank:formData.banknumber,
+                    state:formData.state,
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
@@ -60,7 +61,7 @@ var PayeeTable = function () {
                 { "data": "bank" },
                 { "data": "bankname"},
                 { "data": "state"},
-                { "data": "updatetime"},
+                { "data": "updatetime",visible: false},
                 { "data": null}
             ],
             columnDefs: [
@@ -105,7 +106,7 @@ var PayeeTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(3),td:eq(4),td:eq(7),td:eq(8),td:eq(9)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(3),td:eq(4),td:eq(7),td:eq(8),td:eq(8)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );

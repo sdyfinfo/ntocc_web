@@ -32,8 +32,6 @@
         .goods_check{height: 20px;float: left;border: 1px solid #e5e6e7;line-height: 20px;margin-top: 5px;margin-left: 5px}
         .add-form .form-group{margin-bottom:5px!important;}
         .inquiry-form .form-group{margin-bottom: 8px}
-        .table-scrollable{height:500px;overflow-y:auto}
-        /*#bill_table>t{margin-top:-40px !important;}*/
 
     </style>
 </head>
@@ -141,6 +139,28 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">审验结果</label>
+                                            <div class="col-md-8">
+                                                <select type="text" class="form-control" name="verification_status" id="verification_status">
+                                                    <option value="">请选择</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="col-md-5 control-label">支付状态</label>
+                                            <div class="col-md-7">
+                                                <select type="text" class="form-control" name="payment_status" id="payment_status">
+                                                    <option value="">请选择</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -187,32 +207,34 @@
                             </div>
                         </div>
                         <!-- 运单表 -->
-                        <table class="table table-striped table-bordered table-hover table-checkable order-column" id="bill_table">
+                        <table class="table table-striped table-bordered table-hover table-checkable order-column" style="margin-top: 0px!important;" id="bill_table">
                             <thead>
                             <tr>
-                                <th style="width: 30px"> 序号 </th>
-                                <th style="width: 30px">
+                                <th width="36px"> 序号 </th>
+                                <th width="36px">
                                     <input type="checkbox" class="group-checkable" data-set="#bill_table .checkboxes" />
                                 </th>
                                 <th> 运单id </th>
-                                <th> 项目名称 </th>
-                                <th> 线路 </th>
-                                <th> 运单号 </th>
-                                <th> 运单描述 </th>
-                                <th> 司机 </th>
-                                <th> 车牌号 </th>
-                                <th> 发车时间 </th>
-                                <th> 卸车时间 </th>
-                                <th> 司机运费 </th>
-                                <th> 创建时间 </th>
-                                <th> 运单状态 </th>
-                                <th> 审验状态 </th>
-                                <th> 审验提示 </th>
-                                <th> 操作 </th>
+                                <th width="100px"> 项目名称 </th>
+                                <th width="100px"> 线路 </th>
+                                <th width="100px"> 运单号 </th>
+                                <th width="100px"> 运单描述 </th>
+                                <th width="80px"> 司机 </th>
+                                <th width="80px"> 车牌号 </th>
+                                <th width="100px"> 发车时间 </th>
+                                <th width="100px"> 卸车时间 </th>
+                                <th width="100px"> 司机运费 </th>
+                                <th width="100px"> 创建时间 </th>
+                                <th width="80px"> 运单状态 </th>
+                                <th width="80px"> 审验状态 </th>
+                                <th width="80px"> 审验提示 </th>
+                                <th width="80px"> 支付状态 </th>
+                                <th width="40px"> 操作 </th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr class="odd gradeX">
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>

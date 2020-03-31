@@ -64,7 +64,6 @@ var ComponentsDateTimePickers = function () {
 //运单表格
 var WayBillTable = function () {
     var initTable = function () {
-        $(".group-checkable").prop("checked", false);
         var table = $('#bill_table');
         pageLengthInit(table);
         table.dataTable({
@@ -78,9 +77,13 @@ var WayBillTable = function () {
             "processing": true,
             "searching": false,
             "ordering": false,
-            "bAutoWidth": false,
-//            "scrollY":"100%",
+            "bAutoWidth": true,
+            "scrollY":        500,
+            "deferRender":    true,
+            "scrollX":        true,
+            "scrollCollapse": true,
             "ajax":function (data, callback, settings) {
+                $(".group-checkable").prop("checked", false);
                 if(selectType == "0"){
                     var formData = $(".inquiry-form").getFormData();
                     var start_subtime = formData.start_subtime.replace(/-/g,'');
@@ -104,6 +107,8 @@ var WayBillTable = function () {
                         platenumber:formData.platenumber,
                         name:formData.driver_name,
                         state:state,
+                        verification_status:formData.verification_status,
+                        payment_status:formData.payment_status,
                         currentpage: (data.start / data.length) + 1,
                         pagesize: data.length == -1 ? "": data.length,
                         startindex: data.start,
@@ -131,6 +136,7 @@ var WayBillTable = function () {
                 { "data": "state"},
                 { "data": "verification_status"},
                 { "data": "tips"},
+                { "data": "payment_status"},
                 { "data": "wid"}
             ],
             columnDefs: [
@@ -234,6 +240,19 @@ var WayBillTable = function () {
                 {
                     "targets": [16],
                     "render": function (data, type, row, meta) {
+                        //支付状态
+                        var value = "";
+                        for(var i in payStateList){
+                            if(data == payStateList[i].code){
+                                value =  payStateList[i].value;
+                            }
+                        }
+                        return value;
+                    }
+                },
+                {
+                    "targets": [17],
+                    "render": function (data, type, row, meta) {
                         var edit = '';
                         for(var i in wayBillList){
                             if(data == wayBillList[i].wid){
@@ -257,12 +276,12 @@ var WayBillTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(7),td:eq(8),td:eq(9),td:eq(14)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(7),td:eq(8),td:eq(9),td:eq(15)', nRow).attr('style', 'text-align: center;');
                 $('td:eq(10)', nRow).attr('style', 'text-align: right;');
             }
         });
         //table.draw( false );
-        $("#bill_table").find('.group-checkable').change(function () {
+        $('.group-checkable').change(function () {
             var set = jQuery(this).attr("data-set");
             var checked = jQuery(this).is(":checked");
             jQuery(set).each(function () {
@@ -1585,7 +1604,9 @@ function getDictDataEnd(flg,result){
                         break;
                     case "10009":
                         payStateList = dictlist;
-                        $("#conductor").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
+                        if(dictlist[i].code != '02'){
+                            $("#payment_status").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
+                        }
                         break;
                     case "10010":
                         billStateList = dictlist;
@@ -1593,6 +1614,7 @@ function getDictDataEnd(flg,result){
                         break;
                     case "10011":
                         verificationList = dictlist;
+                        $("#verification_status").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
                         break;
                 }
             }

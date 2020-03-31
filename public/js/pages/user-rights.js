@@ -1606,7 +1606,7 @@ function addrDelete(data){
 function PDataGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
-        data = {payname: "",bankid:"", banknumber:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+        data = {payname: "",bankid:"", banknumber:"",state:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",
@@ -2099,7 +2099,7 @@ function billDataGet(data,callback){
     if(data == null){
         data = {start_subtime: "",end_subtime:"", loading_start_subtime:"",loading_end_subtime:"",
             project_id:"",lid:"",wabill_numbers:"",consignor:"",platenumber:"",driver_name:"",state:"",
-            currentpage: "", pagesize: "", startindex: "0", draw: 1}
+            verification_status:"",payment_status:"",currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",
@@ -2251,8 +2251,8 @@ function paymentDataGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
         data = {start_subtime: "",end_subtime:"", loading_start_subtime:"",loading_end_subtime:"",
-            project_id:"",lid:"",wabill_numbers:"",consignor:"",platenumber:"",driver_name:"",state:"",
-            currentpage: "", pagesize: "", startindex: "0", draw: 1}
+            project_id:"",lid:"",wabill_numbers:"",payee_name:"",platenumber:"",driver_name:"",state:"",
+            payment_status:"",currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",

@@ -38,8 +38,13 @@ var BillPaymentTable = function () {
             "processing": true,
             "searching": false,
             "ordering": false,
-            "bAutoWidth": false,
+            "bAutoWidth": true,
+            "scrollY":        500,
+            "deferRender":    true,
+            "scrollX":        true,
+            "scrollCollapse": true,
             "ajax":function (data, callback, settings) {
+                $(".group-checkable").prop("checked", false);
                 var formData = $(".inquiry-form").getFormData();
                 var start_subtime = "";
                 var end_subtime = "";
@@ -70,10 +75,11 @@ var BillPaymentTable = function () {
                     project_id:$("#proList").find("option[value='"+formData.project_id+"']").attr("data-proid") || "",
                     lid:lid,
                     wabill_numbers:formData.wabill_numbers,
-                    consignor:formData.consignor,
+                    payee_name:formData.payee_name,
                     platenumber:formData.platenumber,
                     name:formData.driver_name,
                     state:state,
+                    payment_status:formData.payment_status,
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
@@ -98,7 +104,8 @@ var BillPaymentTable = function () {
                 { "data": "payment_status"},
                 { "data": "paid"},
                 { "data": "wid"},   //显示收款人
-                { "data": "updateTime"}
+                { "data": "bank"},  //收款人银行卡号
+                { "data": "bankname"}    //显示收款人开户行
             ],
             columnDefs: [
                 {
@@ -194,23 +201,15 @@ var BillPaymentTable = function () {
                             }
                         }
                     }
-                },{
-                    "targets": [16],
-                    "render": function (data, type, row, meta) {
-                        if(data == undefined){
-                            return "";
-                        }
-                        return dateTimeFormat(data);
-                    }
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(8),td:eq(15)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(5),td:eq(6),td:eq(8)', nRow).attr('style', 'text-align: center;');
                 $('td:eq(9),td:eq(10),td:eq(11),td:eq(13)', nRow).attr('style', 'text-align: right;');
             }
         });
         //table.draw( false );
-        table.find('.group-checkable').change(function () {
+        $('.group-checkable').change(function () {
             var set = jQuery(this).attr("data-set");
             var checked = jQuery(this).is(":checked");
             jQuery(set).each(function () {
@@ -610,11 +609,11 @@ var paymentEdit = function() {
                 $("#payment_edit").modal('show');
             }else{
                 if(remainList[0] == "1"){
-                    alertDialog("已支付的运单不可一键支付！");
+                    alertDialog("已支付的运单不可支付！");
                 }else if(remainList[1] == "1"){
-                    alertDialog("未通过审核的运单，不可一键支付！");
+                    alertDialog("未通过审核的运单，不可支付！");
                 }else if(remainList[2] == "1"){
-                    alertDialog("选择的运单包含未签收的运单，不可一键支付！");
+                    alertDialog("选择的运单包含未签收的运单，不可支付！");
                 }
                 return;
             }
@@ -670,7 +669,7 @@ function getPaymentDetailEnd(flg,result,callback){
 function billPaymentEnd(flg,result){
     $("#loading_edit").modal("hide");
     var res = "失败";
-    var text = "一键支付";
+    var text = "支付";
     var alert = "";
     if(flg){
         if(result && result.retcode != SUCCESS){
@@ -773,7 +772,9 @@ function getDictDataEnd(flg,result){
                         break;
                     case "10009":
                         payStateList = dictlist;
-                        $("#conductor").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
+                        if(dictlist[i].code != '02'){
+                            $("#payment_status").append("<option value='"+dictlist[i].code+"'>"+dictlist[i].value+"</option>");
+                        }
                         break;
                     case "10010":
                         billStateList = dictlist;

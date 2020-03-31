@@ -103,9 +103,9 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">发货人</label>
+                                            <label class="col-md-3 control-label">收款人</label>
                                             <div class="col-md-8">
-                                                <input type="text" class="form-control" placeholder="发货人" name="consignor" >
+                                                <input type="text" class="form-control" placeholder="收款人" name="payee_name" >
                                             </div>
                                         </div>
                                     </div>
@@ -138,6 +138,18 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">支付状态</label>
+                                            <div class="col-md-8">
+                                                <select type="text" class="form-control" name="payment_status" id="payment_status">
+                                                    <option value="">请选择</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -151,7 +163,7 @@
                                         </button>
                                     </div>
                                     <div class="btn-group">
-                                        <button id="bill_payment" class="btn btn-primary"> 一键支付
+                                        <button id="bill_payment" class="btn btn-primary"> 选单支付
                                             <i class="fa fa-rmb"></i>
                                         </button>
                                     </div>
@@ -162,32 +174,34 @@
                             </div>
                         </div>
                         <!-- 运单支付表 -->
-                        <table class="table table-striped table-bordered table-hover table-checkable order-column" id="payment_table">
+                        <table class="table table-striped table-bordered table-hover table-checkable order-column" style="margin-top: 0px!important;" id="payment_table">
                             <thead>
                             <tr>
-                                <th style="width: 30px"> 序号 </th>
-                                <th style="width: 30px">
+                                <th width="30px"> 序号 </th>
+                                <th width="30px">
                                     <input type="checkbox" class="group-checkable" data-set="#payment_table .checkboxes" />
                                 </th>
                                 <th> 运单id </th>
-                                <th> 项目名称 </th>
-                                <th> 线路 </th>
-                                <th> 运单描述 </th>
-                                <th> 发车日期 </th>
-                                <th> 签收时间 </th>
-                                <th> 司机 </th>
-                                <th> 车牌号 </th>
-                                <th> 服务费率 </th>
-                                <th> 服务费 </th>
-                                <th> 司机运费 </th>
-                                <th> 支付状态 </th>
-                                <th> 已支付运费 </th>
-                                <th> 收款人 </th>
-                                <th> 更新时间 </th>
+                                <th width="100px"> 项目名称 </th>
+                                <th width="100px"> 线路 </th>
+                                <th width="100px"> 运单描述 </th>
+                                <th width="100px"> 发车日期 </th>
+                                <th width="100px"> 签收时间 </th>
+                                <th width="80px"> 司机 </th>
+                                <th width="80px"> 车牌号 </th>
+                                <th width="80px"> 服务费率 </th>
+                                <th width="100px"> 服务费 </th>
+                                <th width="100px"> 司机运费 </th>
+                                <th width="80px"> 支付状态 </th>
+                                <th width="100px"> 已支付运费 </th>
+                                <th width="80px"> 收款人 </th>
+                                <th width="100px"> 收款人银行卡号 </th>
+                                <th width="200px"> 收款人开户行 </th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr class="odd gradeX">
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -326,12 +340,6 @@
                                     <label class="col-md-4 control-label">收款人<span class="required"> * </span></label>
                                     <div class="col-md-8">
                                         <input type="text" class="form-control" placeholder="收款人"  name="payee_name"/>
-                                    </div>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label class="col-md-4 control-label">银行卡号</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" type="text" placeholder="银行卡号" name="banknumber"/>
                                     </div>
                                 </div>
                             </div>
