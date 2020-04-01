@@ -584,12 +584,12 @@ var paymentEdit = function() {
                 data.serviceFee += Number(serviceAmount);
             });
             if(result){
-                data.freight = get_thousand_num(data.freight);
-                data.paid = get_thousand_num(data.paid);
+                data.freight = get_thousand_num(Number(data.freight).toFixed(2));
+                data.paid = get_thousand_num(Number(data.paid).toFixed(2));
                 //支付金额=运费-已支付
                 data.amount = get_thousand_num(Number(data.freight.replace(/,/g,""))-Number(data.paid.replace(/,/g,"")));
                 //平台服务费=支付金额/(1-费率)*费率
-                data.serviceFee = get_thousand_num(data.serviceFee);
+                data.serviceFee = get_thousand_num(Number(data.serviceFee).toFixed(2));
                 //合计支付=支付金额+服务费
                 data.total = get_thousand_num(subStringNum(Number(data.amount.replace(/,/g,""))+Number(data.serviceFee.replace(/,/g,"")),2));
                 var exclude = [];

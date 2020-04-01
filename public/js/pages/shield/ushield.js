@@ -248,8 +248,6 @@ var ushEdit = function(){
             if(list.indexOf(value) == -1){  //不存在
                 $(this).val("");
                 $("#organid").val("");
-            }else{
-                $("#organid").val(organList[i].organid);
             }
         });
         $("#organname").change(function(e){
@@ -337,10 +335,14 @@ var ushEdit = function(){
             var options = { jsonValue: ushield, exclude:exclude,isDebug: false};
             $(".register-form").initForm(options);
             //显示关联机构
-            for(var i in organList){
-                if(ushield.organid == organList[i].organid){
-                    $("#organname").val(organList[i].organname)
+            if(ushield.organid!=""){
+                for(var i in organList){
+                    if(ushield.organid == organList[i].organid){
+                        $("#organname").val(organList[i].organname)
+                    }
                 }
+            }else{
+                $("#organname").val("");
             }
             $("#organid").val(ushield.organid);
             $("input[name=organid_before]").val(ushield.organid);
