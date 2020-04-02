@@ -3,14 +3,18 @@
  */
 
 var vehicleList = [];
+var organList = [];
 var plateColor,ve_conductor,vehicleType,energy_Type,driverList = [];
 var dictTrue = [];   //获取字典结果
 var imgInit = "/public/img/img_upload.png";
 var getData = false;
+var pageSize;  //表格显示页数，全选会用到
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
         fun_power();
+        //根据用户判断否显示所属机构
+        organDisplayCheck();
         //时间控件初始化
         ComponentsDateTimePickers.init();
         //获取字典相关信息
@@ -20,6 +24,8 @@ if (App.isAngularJsApp() === false) {
             data.lx = list[i];
             dictQuery(data);
         }
+        //获取机构
+        organDataGet();
         //车辆操作和查看
         VehiceEdit.init();
     });
@@ -58,7 +64,6 @@ var ComponentsDateTimePickers = function () {
 //车辆表格
 var VehiceTable = function () {
     var initTable = function () {
-        $(".group-checkable").prop("checked", false);
         var table = $('#vehice_table');
         pageLengthInit(table);
         table.dataTable({
@@ -72,13 +77,22 @@ var VehiceTable = function () {
             "processing": true,
             "searching": false,
             "ordering": false,
-            "bAutoWidth": false,
+            "bAutoWidth": true,
+            "scrollY":        ($(window).height())*0.7,
+            "deferRender":    true,
+            "scrollX":        true,
+            "scrollCollapse": true,
             "ajax":function (data, callback, settings) {
+                //获取页数
+                pageSize = data.length == -1 ? "": data.length;
+                $(".group-checkable").prop("checked", false);
                 var formData = $(".inquiry-form").getFormData();
+                var organname = $("#organids").val() || "";
                 var da = {
                     platenumber: formData.platenumber,
                     platecolor:formData.platecolor,
                     vehicletype:formData.vehicletype,
+                    organids:$("#organlist").find("option[value='"+organname+"']").attr("data-organid") || "",
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
@@ -86,11 +100,16 @@ var VehiceTable = function () {
                 };
                 vehiceDataGet(da, callback);
             },
+            "initComplete": function(settings, json) {
+                //根据用户判断否显示所属机构
+                organDisplayCheck();
+            },
             columns: [//返回的json数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 { "data": null},
                 { "data": null},
                 { "data": "vehid", visible: false},
                 { "data": "platenumber"},
+                { "data": "organname",sClass:"organ-display"},
                 { "data": "platecolor" },
                 { "data": "vehicletype"},
                 { "data": "conductor"},
@@ -122,19 +141,19 @@ var VehiceTable = function () {
                         return '<a href="javascript:;" id="vehice_detail">'+data+'</a>';
                     }
                 },{
-                    "targets": [4],
+                    "targets": [5],
                     "render": function (data, type, row, meta) {
                         //车辆颜色
                         return plateColorDisplay(data);
                     }
                 },{
-                    "targets": [5],
+                    "targets": [6],
                     "render": function (data, type, row, meta) {
                         //车型
                         return vehiceTypeDisplay(data);
                     }
                 },{
-                    "targets": [6],
+                    "targets": [7],
                     "render": function (data, type, row, meta) {
                         //车长
                         return conductorDisplay(data);
@@ -148,7 +167,7 @@ var VehiceTable = function () {
 //                    }
 //                },
                 {
-                    "targets": [11],
+                    "targets": [12],
                     "render": function (data, type, row, meta) {
                         if(data == ""){
                             return "暂无图片";
@@ -157,12 +176,12 @@ var VehiceTable = function () {
                         }
                     }
                 },{
-                    "targets": [12],
+                    "targets": [13],
                     "render": function (data, type, row, meta) {
                         return dateTimeFormat(data);
                     }
                 },{
-                    "targets": [13],
+                    "targets": [14],
                     "render": function (data, type, row, meta) {
                         var edit = '';
                         if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
@@ -173,19 +192,19 @@ var VehiceTable = function () {
                         return edit;
                     }
                 },{
-                    "targets": [14],
+                    "targets": [15],
                     "render": function (data, type, row, meta) {
                         return statusFormat(data);
                     }
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(2),td:eq(3),td:eq(4),td:eq(8),td:eq(9),td:eq(10),td:eq(11),td:eq(12)', nRow).attr('style', 'text-align: center;');
-                $('td:eq(5), td:eq(6)', nRow).attr('style', 'text-align: right;');
+                $('td:eq(0),td:eq(1),td:eq(2),td:eq(4),td:eq(9),td:eq(10),td:eq(11),td:eq(12),td:eq(13)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(6), td:eq(7)', nRow).attr('style', 'text-align: right;');
             }
         });
         //table.draw( false );
-        table.find('.group-checkable').change(function () {
+        $('.group-checkable').change(function () {
             var set = jQuery(this).attr("data-set");
             var checked = jQuery(this).is(":checked");
             jQuery(set).each(function () {
@@ -201,11 +220,10 @@ var VehiceTable = function () {
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
             //判断是否全选
-            var checklength = $("#vehice_table").find(".checkboxes:checked").length;
-            if(checklength == vehicleList.length){
-                $("#vehice_table").find(".group-checkable").prop("checked",true);
+            if(checkChooseAll("#vehice_table",pageSize,vehicleList)){
+                $(".group-checkable").prop("checked",true);
             }else{
-                $("#vehice_table").find(".group-checkable").prop("checked",false);
+                $(".group-checkable").prop("checked",false);
             }
         });
     };
@@ -224,6 +242,19 @@ var VehiceTable = function () {
 $("#vehice_inquiry").on("click", function(){
     VehiceTable.init();
 });
+
+//查询框所属机构
+$("#organids").blur(function(){
+    var value = $(this).val();
+    var list = [];
+    for(var i = 0;i<organList.length;i++){
+        list.push(organList[i].organname);
+    }
+    if(list.indexOf(value) == -1){  //不存在
+        $(this).val("");
+    }
+});
+
 
 //车辆信息查看和编辑
 var VehiceEdit = function() {
@@ -1087,3 +1118,23 @@ var StatusChange = function(){
         }
     }
 }();
+
+//获取机构结果返回
+function getOrganDataEnd(flg, result){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+            var res = result.response;
+            organList = res.list;
+            for(var i in organList){
+                if(organList[i].organlist == undefined){
+                    $("#organlist").append('<option data-organid = "'+organList[i].organid+'" value="'+organList[i].organname+'"></option>');
+                }
+            }
+        }else{
+            alertDialog("机构信息获取失败！");
+        }
+    }else{
+        alertDialog("机构信息获取失败！");
+    }
+}

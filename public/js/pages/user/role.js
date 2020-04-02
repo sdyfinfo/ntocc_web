@@ -5,6 +5,8 @@
  * Created by Administrator on 2019/2/19.
  */
 var roleList = [];
+var pageSize;  //表格显示页数，全选会用到
+
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
         fun_power();
@@ -15,7 +17,6 @@ if (App.isAngularJsApp() === false) {
 
 var RoleTable = function () {
     var initTable = function () {
-        $(".group-checkable").prop("checked", false);
         var table = $('#role_table');
         pageLengthInit(table);
         table.dataTable({
@@ -29,8 +30,15 @@ var RoleTable = function () {
             "processing": true,
             "searching": false,
             "ordering": false,
-            "autoWidth": false,
+            "autoWidth": true,
+            "scrollY":        ($(window).height())*0.7,
+            "deferRender":    true,
+            "scrollX":        true,
+            "scrollCollapse": true,
             "ajax":function (data, callback, settings) {
+                //获取页数
+                pageSize = data.length == -1 ? "": data.length;
+                $(".group-checkable").prop("checked", false);
                 var formData = $(".inquiry-form").getFormData();
                 var da = {
                     rolecode: formData.rolecode,
@@ -93,7 +101,7 @@ var RoleTable = function () {
             $('td:eq(0),td:eq(1),td:eq(5),td:eq(7)', nRow).attr('style', 'text-align: center;');
         }
         });
-        table.find('.group-checkable').change(function () {
+        $('.group-checkable').change(function () {
             var set = jQuery(this).attr("data-set");
             var checked = jQuery(this).is(":checked");
             jQuery(set).each(function () {
@@ -110,11 +118,10 @@ var RoleTable = function () {
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
             //判断是否全选
-            var checklength = $("#role_table").find(".checkboxes:checked").length;
-            if(checklength == roleList.length){
-                $("#role_table").find(".group-checkable").prop("checked",true);
+            if(checkChooseAll("#role_table",pageSize,roleList)){
+                $(".group-checkable").prop("checked",true);
             }else{
-                $("#role_table").find(".group-checkable").prop("checked",false);
+                $(".group-checkable").prop("checked",false);
             }
         });
 

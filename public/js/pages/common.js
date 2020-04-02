@@ -760,3 +760,28 @@ function timeFormat(time){
     time = time.substr(0,12) + "00";
     return time;
 }
+
+//判断checkbox是否全选
+function checkChooseAll(table,pageSize,dataList){
+    //选取的数
+    var checklength = $(table).find(".checkboxes:checked").length;
+    //一页显示的条数或获取数据的总数
+    var size = pageSize < dataList.length ? pageSize : dataList.length;
+    if(checklength == size){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+//根据用户判断否显示所属机构
+function organDisplayCheck(){
+    //admin和运营方可查看
+    if(loginSucc.userid == "admin" || loginSucc.types == "0"){
+        $("#organInquiry").show();
+        $(".organ-display").show();
+    }else{
+        $("#organInquiry").hide();
+        $(".organ-display").hide();
+    }
+}

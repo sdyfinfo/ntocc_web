@@ -10,6 +10,7 @@ var selectType = '0';
 var wayBillImport;
 var getData = false;
 var billEdit = {};
+var pageSize;  //表格显示页数，全选会用到
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
@@ -78,11 +79,13 @@ var WayBillTable = function () {
             "searching": false,
             "ordering": false,
             "bAutoWidth": true,
-            "scrollY":        500,
+            "scrollY":     ($(window).height())*0.7,
             "deferRender":    true,
             "scrollX":        true,
             "scrollCollapse": true,
             "ajax":function (data, callback, settings) {
+                //获取页数
+                pageSize = data.length == -1 ? "": data.length;
                 $(".group-checkable").prop("checked", false);
                 if(selectType == "0"){
                     var formData = $(".inquiry-form").getFormData();
@@ -297,11 +300,10 @@ var WayBillTable = function () {
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
             //判断是否全选
-            var checklength = $("#bill_table").find(".checkboxes:checked").length;
-            if(checklength == wayBillList.length){
-                $("#bill_table").find(".group-checkable").prop("checked",true);
+            if(checkChooseAll("#bill_table",pageSize,wayBillList)){
+                $(".group-checkable").prop("checked",true);
             }else{
-                $("#bill_table").find(".group-checkable").prop("checked",false);
+                $(".group-checkable").prop("checked",false);
             }
         });
 

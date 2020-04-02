@@ -1281,7 +1281,7 @@ function lineDataGet(data,callback){
 function vehiceDataGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
-        data = {platenumber: "", platecolor:"",vehicletype:"",currentpage: "", pagesize: "", startindex: "0", draw: 1}
+        data = {platenumber: "", platecolor:"",vehicletype:"",organids:"",currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",
@@ -1765,7 +1765,7 @@ function payeeUpload(data){
 function driverDataGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
-        data = {platenumber: "", name:"",id_number:"",receivables:"",currentpage: "", pagesize: "", startindex: "0", draw: 1}
+        data = {platenumber: "", name:"",id_number:"",receivables:"",organids:"",currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",

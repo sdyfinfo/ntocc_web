@@ -7,6 +7,8 @@ var addressidList = [];
 var invlist = [];
 var getData = false;
 var Questdraw = 0;
+var pageSize;  //表格显示页数，全选会用到
+
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function () {
         fun_power();
@@ -19,7 +21,6 @@ if (App.isAngularJsApp() === false) {
 
 var invocreTable = function () {
     var initTable = function () {
-        $(".group-checkable").prop("checked", false);
         var table = $('#inv_table');
         pageLengthInit(table);
         table.dataTable({
@@ -33,8 +34,15 @@ var invocreTable = function () {
             "processing": true,
             "searching": false,
             "ordering": false,
-            "bAutoWidth": false,
+            "bAutoWidth": true,
+            "scrollY":        ($(window).height())*0.7,
+            "deferRender":    true,
+            "scrollX":        true,
+            "scrollCollapse": true,
             "ajax":function (data, callback, settings) {
+                //获取页数
+                pageSize = data.length == -1 ? "": data.length;
+                $(".group-checkable").prop("checked", false);
                 var formData = $(".inquiry-form").getFormData();
                 var da = {
                     rise_name: formData.rise_name,
@@ -127,7 +135,7 @@ var invocreTable = function () {
             }
         });
         //table.draw( false );
-        table.find('.group-checkable').change(function () {
+        $('.group-checkable').change(function () {
             var set = jQuery(this).attr("data-set");
             var checked = jQuery(this).is(":checked");
             jQuery(set).each(function () {
@@ -143,11 +151,10 @@ var invocreTable = function () {
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
             //判断是否全选
-            var checklength = $("#inv_table").find(".checkboxes:checked").length;
-            if(checklength == invocerList.length){
-                $("#inv_table").find(".group-checkable").prop("checked",true);
+            if(checkChooseAll("#inv_table",pageSize,invocerList)){
+                $(".group-checkable").prop("checked",true);
             }else{
-                $("#inv_table").find(".group-checkable").prop("checked",false);
+                $(".group-checkable").prop("checked",false);
             }
         });
     };

@@ -4,14 +4,21 @@
 
 var driverList = [];
 var vehicleList = [];
+var organList = [];
 var payeeList = [];
 var dictlist = [];
 var imgInit = "/public/img/img_upload.png";
 var payeeMenuId = "";
 var getData = false;
+var pageSize;  //表格显示页数，全选会用到
+
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
         fun_power();
+        //根据用户判断否显示所属机构
+        organDisplayCheck();
+        //获取机构
+        organDataGet();
         //获取收款人菜单id，点击收款人一栏能用到
         payeeMenuIdGet();
         //获取车辆信息
@@ -59,7 +66,6 @@ var ComponentsDateTimePickers = function () {
 //司机表格
 var DriverTable = function () {
     var initTable = function () {
-        $(".group-checkable").prop("checked", false);
         var table = $('#driver_table');
         pageLengthInit(table);
         table.dataTable({
@@ -73,10 +79,18 @@ var DriverTable = function () {
             "processing": true,
             "searching": false,
             "ordering": false,
-            "bAutoWidth": false,
+            "bAutoWidth": true,
+            "scrollY":        ($(window).height())*0.7,
+            "deferRender":    true,
+            "scrollX":        true,
+            "scrollCollapse": true,
             "ajax":function (data, callback, settings) {
+                //获取页数
+                pageSize = data.length == -1 ? "": data.length;
+                $(".group-checkable").prop("checked", false);
                 var formData = $(".inquiry-form").getFormData();
                 var payid = $("#payeeList").find("option[value='"+formData.payeename+"']").attr('data-payid') || "";
+                var organname = $("#organids").val() || "";
                 var payee_name = "";
                 for(var i in payeeList){
                     if(payid == payeeList[i].payid){
@@ -94,12 +108,17 @@ var DriverTable = function () {
                     id_number:formData.id_number,
                     vehicle_id:vehicle_id,
                     payid:payid,
+                    organids:$("#organlist").find("option[value='"+organname+"']").attr("data-organid") || "",
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
                     draw: data.draw
                 };
                 driverDataGet(da, callback);
+            },
+            "initComplete": function(settings, json) {
+                //根据用户判断否显示所属机构
+                organDisplayCheck();
             },
             columns: [//返回的json数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 { "data": null},
@@ -108,6 +127,7 @@ var DriverTable = function () {
                 { "data": "name"},
                 { "data": "id_number" },
                 { "data": "phone" },
+                { "data": "organname",sClass:"organ-display"},
                 { "data": "quasi_driving" },
                 { "data": "qualification"},
                 { "data": "did"},
@@ -139,19 +159,19 @@ var DriverTable = function () {
                     }
                 },
                 {
-                    "targets": [6],
+                    "targets": [7],
                     "render": function (data, type, row, meta) {
                         //准驾车型
                         return quasiDisplay(data);
                     }
                 },
                 {
-                    "targets": [14],
+                    "targets": [15],
                     "render": function (data, type, row, meta) {
                         return dateTimeFormat(data);
                     }
                 },{
-                    "targets": [8],
+                    "targets": [9],
                     "render": function (data, type, row, meta) {
                         for(var i in driverList){
                             if(data == driverList[i].did){
@@ -168,7 +188,7 @@ var DriverTable = function () {
                         }
                     }
                 },{
-                    "targets": [9],
+                    "targets": [10],
                     "render": function (data, type, row, meta) {
                         if(data == ""){
                             return "暂无图片";
@@ -178,7 +198,7 @@ var DriverTable = function () {
                     }
                 },
                 {
-                    "targets": [10],
+                    "targets": [11],
                     "render": function (data, type, row, meta) {
                         for(var i in driverList){
                             if(data == driverList[i].did){
@@ -190,13 +210,13 @@ var DriverTable = function () {
 
                     }
                 },{
-                    "targets": [13],
+                    "targets": [14],
                     "render": function (data, type, row, meta) {
                         return statusFormat(data);
                     }
                 },
                 {
-                    "targets": [12],
+                    "targets": [13],
                     "render": function (data, type, row, meta) {
                         var edit = "";
                         if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
@@ -209,11 +229,11 @@ var DriverTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(3),td:eq(4),td:eq(5),td:eq(7),td:eq(8),td:eq(10),td:eq(11),td:eq(12),td:eq(13)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(3),td:eq(4),td:eq(6),td:eq(8),td:eq(9),td:eq(11),td:eq(12),td:eq(13),td:eq(14)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );
-        table.find('.group-checkable').change(function () {
+        $('.group-checkable').change(function () {
             var set = jQuery(this).attr("data-set");
             var checked = jQuery(this).is(":checked");
             jQuery(set).each(function () {
@@ -229,11 +249,10 @@ var DriverTable = function () {
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
             //判断是否全选
-            var checklength = $("#driver_table").find(".checkboxes:checked").length;
-            if(checklength == driverList.length){
-                $("#driver_table").find(".group-checkable").prop("checked",true);
+            if(checkChooseAll("#driver_table",pageSize,driverList)){
+                $(".group-checkable").prop("checked",true);
             }else{
-                $("#driver_table").find(".group-checkable").prop("checked",false);
+                $(".group-checkable").prop("checked",false);
             }
         });
     };
@@ -251,6 +270,18 @@ var DriverTable = function () {
 //司机查询
 $("#driver_inquiry").on("click", function(){
     DriverTable.init();
+});
+
+//查询框所属机构
+$("#organids").blur(function(){
+    var value = $(this).val();
+    var list = [];
+    for(var i = 0;i<organList.length;i++){
+        list.push(organList[i].organname);
+    }
+    if(list.indexOf(value) == -1){  //不存在
+        $(this).val("");
+    }
 });
 
 $("#driver_table").on('click',".payeeClick",function(){
@@ -639,6 +670,7 @@ var StatusChange = function(){
         var did = $("#driver_table").dataTable().fnGetData(row).did;
         driver.did = did;
         driver.state = $(this).data('status');
+        driver.organid = loginSucc.organid;
         //先提示
         confirmDialog("您确定要更改该司机状态吗？", StatusChange.changeStatus);
     });
@@ -1055,4 +1087,24 @@ function imgNameCheck(name){
         return false;
     }
     return true;
+}
+
+//获取机构结果返回
+function getOrganDataEnd(flg, result){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+            var res = result.response;
+            organList = res.list;
+            for(var i in organList){
+                if(organList[i].organlist == undefined){
+                    $("#organlist").append('<option data-organid = "'+organList[i].organid+'" value="'+organList[i].organname+'"></option>');
+                }
+            }
+        }else{
+            alertDialog("机构信息获取失败！");
+        }
+    }else{
+        alertDialog("机构信息获取失败！");
+    }
 }

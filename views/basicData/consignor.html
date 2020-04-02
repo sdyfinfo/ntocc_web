@@ -27,6 +27,11 @@
         var loginSucc = '{{ loginsucc }}';
         loginSucc = JSON.parse(loginSucc.replace(/&quot;/g, "\""));
     </script>
+    <style>
+        .dataTables_scrollBody > table{
+            width: 100% !important;
+        }
+    </style>
 
 </head>
 <body class="gray-bg">
@@ -95,7 +100,7 @@
                             </div>
                         </div>
                         <!-- 发货人表格 -->
-                        <table class="table table-striped table-bordered table-hover table-checkable order-column" id="consignor_table">
+                        <table class="table table-striped table-bordered table-hover table-checkable order-column" style="margin-top: 0px!important;" id="consignor_table">
                             <thead>
                             <tr>
                                 <th style="width: 30px"> 序号 </th>
@@ -103,12 +108,12 @@
                                     <input type="checkbox" class="group-checkable" data-set="#consignor_table .checkboxes" />
                                 </th>
                                 <th> 发货人id </th>
-                                <th> 发货人 </th>
-                                <th> 联系电话 </th>
-                                <th> 发货地址 </th>
-                                <th> 详细地址 </th>
-                                <th> 状态 </th>
-                                <th> 操作 </th>
+                                <th width="20%"> 发货人 </th>
+                                <th width="20%"> 联系电话 </th>
+                                <th width="30%"> 发货地址 </th>
+                                <th width="35%"> 详细地址 </th>
+                                <th width="30px"> 状态 </th>
+                                <th width="50px"> 操作 </th>
                             </tr>
                             </thead>
                             <tbody>

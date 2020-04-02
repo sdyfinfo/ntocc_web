@@ -3,6 +3,8 @@
  */
 var userList = [];
 var responseComplete = [0, 0];   //用户信息和机构全部返回
+var pageSize;  //表格显示页数，全选会用到
+
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
         fun_power();
@@ -76,7 +78,6 @@ var RoleSelect2 = function(){
 
 var UserTable = function () {
     var initTable = function () {
-        $(".group-checkable").prop("checked", false);
         var table = $('#user_table');
         pageLengthInit(table);
         table.dataTable({
@@ -90,8 +91,15 @@ var UserTable = function () {
             "processing": true,
             "searching": false,
             "ordering": false,
-            "autoWidth": false,
+            "autoWidth": true,
+            "scrollY":        ($(window).height())*0.7,
+            "deferRender":    true,
+            "scrollX":        true,
+            "scrollCollapse": true,
             "ajax":function (data, callback, settings) {
+                //获取页数
+                pageSize = data.length == -1 ? "": data.length;
+                $(".group-checkable").prop("checked", false);
                 var formData = $(".inquiry-form").getFormData();
                 var organ = "";
                 try{
@@ -162,11 +170,11 @@ var UserTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(1)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(4),td:eq(5),td:eq(9)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );
-        table.find('.group-checkable').change(function () {
+        $('.group-checkable').change(function () {
             var set = jQuery(this).attr("data-set");
             var checked = jQuery(this).is(":checked");
             jQuery(set).each(function () {
@@ -182,11 +190,10 @@ var UserTable = function () {
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
             //判断是否全选
-            var checklength = $("#user_table").find(".checkboxes:checked").length;
-            if(checklength == userList.length){
-                $("#user_table").find(".group-checkable").prop("checked",true);
+            if(checkChooseAll("#user_table",pageSize,userList)){
+                $(".group-checkable").prop("checked",true);
             }else{
-                $("#user_table").find(".group-checkable").prop("checked",false);
+                $(".group-checkable").prop("checked",false);
             }
         });
     };

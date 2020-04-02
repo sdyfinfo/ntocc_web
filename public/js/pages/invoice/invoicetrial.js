@@ -2,6 +2,7 @@
  * Created by haiyang on 2020/3/9.
  */
 var invoiceTrialList,billDetailList,widlist = [];
+var pageSize;  //表格显示页数，全选会用到
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
@@ -14,7 +15,6 @@ if (App.isAngularJsApp() === false) {
 //开票信息表格
 var InvoiceTrialTable = function () {
     var initTable = function () {
-        $(".group-checkable").prop("checked", false);
         var table = $('#invoice_table');
         pageLengthInit(table);
         table.dataTable({
@@ -28,8 +28,15 @@ var InvoiceTrialTable = function () {
             "processing": true,
             "searching": false,
             "ordering": false,
-            "bAutoWidth": false,
+            "bAutoWidth": true,
+            "scrollY":        ($(window).height())*0.7,
+            "deferRender":    true,
+            "scrollX":        true,
+            "scrollCollapse": true,
             "ajax":function (data, callback, settings) {
+                //获取页数
+                pageSize = data.length == -1 ? "": data.length;
+                $(".group-checkable").prop("checked", false);
                 var formData = $(".inquiry-form").getFormData();
                 //开票日期
                 var start_time = "";
@@ -142,7 +149,7 @@ var InvoiceTrialTable = function () {
                 $('td:eq(4),td:eq(5),td:eq(6)', nRow).attr('style', 'text-align: right;');
             }
         });
-        table.find('.group-checkable').change(function () {
+        $('.group-checkable').change(function () {
             var set = jQuery(this).attr("data-set");
             var checked = jQuery(this).is(":checked");
             jQuery(set).each(function () {
@@ -158,11 +165,10 @@ var InvoiceTrialTable = function () {
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
             //判断是否全选
-            var checklength = $("#invoice_table").find(".checkboxes:checked").length;
-            if(checklength == invoiceTrialList.length){
-                $("#invoice_table").find(".group-checkable").prop("checked",true);
+            if(checkChooseAll("#invoice_table",pageSize,invoiceTrialList)){
+                $(".group-checkable").prop("checked",true);
             }else{
-                $("#invoice_table").find(".group-checkable").prop("checked",false);
+                $(".group-checkable").prop("checked",false);
             }
         });
 

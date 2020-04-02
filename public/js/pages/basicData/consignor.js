@@ -5,6 +5,7 @@
 var invoiceList = [];
 var ConsignorList = [];
 var getData = false;
+var pageSize;  //表格显示页数，全选会用到
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
@@ -23,7 +24,6 @@ if (App.isAngularJsApp() === false) {
 //发货人表格
 var ConsignorTable = function () {
     var initTable = function () {
-        $(".group-checkable").prop("checked", false);
         var table = $('#consignor_table');
         pageLengthInit(table);
         table.dataTable({
@@ -37,8 +37,15 @@ var ConsignorTable = function () {
             "processing": true,
             "searching": false,
             "ordering": false,
-            "bAutoWidth": false,
+            "bAutoWidth": true,
+            "scrollY":        ($(window).height())*0.7,
+            "deferRender":    true,
+            "scrollX":        true,
+            "scrollCollapse": true,
             "ajax":function (data, callback, settings) {
+                //获取页数
+                pageSize = data.length == -1 ? "": data.length;
+                $(".group-checkable").prop("checked", false);
                 var formData = $(".inquiry-form").getFormData();
                 var da = {
                     consignor: formData.consignor,
@@ -119,7 +126,7 @@ var ConsignorTable = function () {
             }
         });
         //table.draw( false );
-        table.find('.group-checkable').change(function () {
+        $('.group-checkable').change(function () {
             var set = jQuery(this).attr("data-set");
             var checked = jQuery(this).is(":checked");
             jQuery(set).each(function () {
@@ -135,11 +142,10 @@ var ConsignorTable = function () {
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
             //判断是否全选
-            var checklength = $("#consignor_table").find(".checkboxes:checked").length;
-            if(checklength == ConsignorList.length){
-                $("#consignor_table").find(".group-checkable").prop("checked",true);
+            if(checkChooseAll("#consignor_table",pageSize,ConsignorList)){
+                $(".group-checkable").prop("checked",true);
             }else{
-                $("#consignor_table").find(".group-checkable").prop("checked",false);
+                $(".group-checkable").prop("checked",false);
             }
         });
     };

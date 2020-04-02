@@ -6,6 +6,8 @@ var lineList = [];
 var projectList,dictList,consigneeList,consignorList,goodsTypeList,unitList = [];
 var dictTrue = [];   //获取字典结果
 var getData = false;
+var pageSize;  //表格显示页数，全选会用到
+
 if(App.isAngularJsApp() == false){
     jQuery(document).ready(function(){
         fun_power();
@@ -23,7 +25,6 @@ if(App.isAngularJsApp() == false){
 //项目列表
 var LineTable = function(){
     var initTable = function(){
-        $(".group-checkable").prop("checked", false);
         var table = $('#line_table');
         pageLengthInit(table);
         table.dataTable({
@@ -37,8 +38,15 @@ var LineTable = function(){
             "processing": true,
             "searching": false,
             "ordering": false,
-            "autoWidth": false,
+            "autoWidth": true,
+            "scrollY":        ($(window).height())*0.7,
+            "deferRender":    true,
+            "scrollX":        true,
+            "scrollCollapse": true,
             "ajax":function (data, callback, settings) {
+                //获取页数
+                pageSize = data.length == -1 ? "": data.length;
+                $(".group-checkable").prop("checked", false);
                 var formData = $(".inquiry-form").getFormData();
                 var project_id = $("#projectname").find("option[value='"+formData.project_name+"']").attr("data-proid") || "";
                 var da = {
@@ -152,7 +160,7 @@ var LineTable = function(){
             }
         });
         //table.draw( false );
-        table.find('.group-checkable').change(function () {
+        $('.group-checkable').change(function () {
             var set = jQuery(this).attr("data-set");
             var checked = jQuery(this).is(":checked");
             jQuery(set).each(function () {
@@ -168,11 +176,10 @@ var LineTable = function(){
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
             //判断是否全选
-            var checklength = $("#line_table").find(".checkboxes:checked").length;
-            if(checklength == lineList.length){
-                $("#line_table").find(".group-checkable").prop("checked",true);
+            if(checkChooseAll("#line_table",pageSize,lineList)){
+                $(".group-checkable").prop("checked",true);
             }else{
-                $("#line_table").find(".group-checkable").prop("checked",false);
+                $(".group-checkable").prop("checked",false);
             }
         });
     };

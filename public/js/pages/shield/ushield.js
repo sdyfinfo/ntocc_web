@@ -4,6 +4,7 @@
 
 var organList = [];
 var ushList = [];
+var pageSize;  //表格显示页数，全选会用到
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function () {
@@ -53,7 +54,6 @@ var ComponentsDateTimePickers = function () {
 //表格
 var ushTable = function () {
     var initTable = function () {
-        $(".group-checkable").prop("checked", false);
         var table = $('#ush_table');
         pageLengthInit(table);
         table.dataTable({
@@ -67,8 +67,15 @@ var ushTable = function () {
             "processing": true,
             "searching": false,
             "ordering": false,
-            "bAutoWidth": false,
+            "bAutoWidth": true,
+            "scrollY":        ($(window).height())*0.7,
+            "deferRender":    true,
+            "scrollX":        true,
+            "scrollCollapse": true,
             "ajax":function (data, callback, settings) {
+                //获取页数
+                pageSize = data.length == -1 ? "": data.length;
+                $(".group-checkable").prop("checked", false);
                 var formData = $(".inquiry-form").getFormData();
                 var startdate = formData.startdate.replace(/-/g,'');
                 var enddate = formData.enddate.replace(/-/g,'');
@@ -154,7 +161,7 @@ var ushTable = function () {
             }
         });
         //table.draw( false );
-        table.find('.group-checkable').change(function () {
+        $('.group-checkable').change(function () {
             var set = jQuery(this).attr("data-set");
             var checked = jQuery(this).is(":checked");
             jQuery(set).each(function () {
@@ -169,6 +176,12 @@ var ushTable = function () {
         });
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
+            //判断是否全选
+            if(checkChooseAll("#ush_table",pageSize,ushList)){
+                $(".group-checkable").prop("checked",true);
+            }else{
+                $(".group-checkable").prop("checked",false);
+            }
         });
     };
     return {
