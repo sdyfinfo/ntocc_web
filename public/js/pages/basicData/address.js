@@ -8,6 +8,10 @@ var pageSize;  //表格显示页数，全选会用到
 if(App.isAngularJsApp() == false){
     jQuery(document).ready(function(){
         fun_power();
+        //根据用户判断否显示所属机构
+        organDisplayCheck();
+        //获取机构
+        organDataGet();
         //省市区三级联动
         addressDispaly("#provincecode");
         //地址列表
@@ -43,10 +47,12 @@ var addressTable = function(){
                 pageSize = data.length == -1 ? "": data.length;
                 $(".group-checkable").prop("checked", false);
                 var formData = $(".inquiry-form").getFormData();
+                var organname = $("#organids").val() || "";
                 var da = {
                     aid:formData.aid,
                     addressee:formData.addressee,
                     addresseeTel:formData.addresseeTel,
+                    organids:$("#organlist").find("option[value='"+organname+"']").attr("data-organid") || "",
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
@@ -54,14 +60,18 @@ var addressTable = function(){
                 };
                 addressDataGet(da, callback);
             },
+            "initComplete": function(settings, json) {
+                //根据用户判断否显示所属机构
+                organDisplayCheck();
+            },
             columns:[ //返回的json 数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 {"data":null},
                 {"data":null},
                 {"data":"aid",visible: false},
+                {"data":"organname",sClass:"organ-display"},
                 {"data":"ress"},
                 {"data":"addressee"},
                 {"data":"addresseeTel"},
-                {"data":"updateTime"},
                 {"data":null}
             ],
             columnDefs:[
@@ -79,12 +89,6 @@ var addressTable = function(){
                     }
                 },
                 {
-                    "targets":[6],
-                    "render": function (data, type, row ,meta) {
-                        return dateTimeFormat(data);
-                    }
-                },
-                {
                     "targets":[7],
                     "render": function (data, type, row, meta) {
                         var edit = "";
@@ -98,7 +102,7 @@ var addressTable = function(){
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(4),td:eq(5),td:eq(6)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(5),td:eq(6)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );
@@ -356,7 +360,39 @@ function addrEditEnd(flg, result, type){
     alertDialog(alert);
 }
 
-//项目名称查询
+//发票邮寄地址查询
 $("#addr_inquiry").on("click", function(){
     addressTable.init();
 });
+
+//查询框所属机构
+$("#organids").blur(function(){
+    var value = $(this).val();
+    var list = [];
+    for(var i = 0;i<organList.length;i++){
+        list.push(organList[i].organname);
+    }
+    if(list.indexOf(value) == -1){  //不存在
+        $(this).val("");
+    }
+});
+
+//获取机构结果返回
+function getOrganDataEnd(flg, result){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+            var res = result.response;
+            organList = res.list;
+            for(var i in organList){
+                if(organList[i].organlist == undefined){
+                    $("#organlist").append('<option data-organid = "'+organList[i].organid+'" value="'+organList[i].organname+'"></option>');
+                }
+            }
+        }else{
+            alertDialog("机构信息获取失败！");
+        }
+    }else{
+        alertDialog("机构信息获取失败！");
+    }
+}

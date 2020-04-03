@@ -160,6 +160,15 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-4" id="organInquiry">
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">所属机构</label>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" placeholder="请输入" id="organids" list="organlist"/>
+                                                <datalist id="organlist"></datalist>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </form>
@@ -215,6 +224,7 @@
                                     <input type="checkbox" class="group-checkable" data-set="#bill_table .checkboxes" />
                                 </th>
                                 <th> 运单id </th>
+                                <th width="250px"> 所属机构 </th>
                                 <th width="150px"> 项目名称 </th>
                                 <th width="150px"> 线路 </th>
                                 <th width="150px"> 运单号 </th>
@@ -234,6 +244,7 @@
                             </thead>
                             <tbody>
                             <tr class="odd gradeX">
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -295,6 +306,12 @@
                                             <option value="0">有</option>
                                             <option value="1">无</option>
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6" id="organname">
+                                    <label class="col-md-4 control-label">所属机构<span class="required"> * </span></label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" name="organname" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">

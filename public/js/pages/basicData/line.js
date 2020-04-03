@@ -11,9 +11,13 @@ var pageSize;  //表格显示页数，全选会用到
 if(App.isAngularJsApp() == false){
     jQuery(document).ready(function(){
         fun_power();
+        //根据用户判断否显示所属机构
+        organDisplayCheck();
         //省市区三级联动
         addressDispaly("#loading_provincecode");
         addressDispaly("#unloading_provincecode");
+        //获取机构
+        organDataGet();
         //线路表操作
         LineEdit.init();
         //项目名称获取
@@ -49,13 +53,14 @@ var LineTable = function(){
                 $(".group-checkable").prop("checked", false);
                 var formData = $(".inquiry-form").getFormData();
                 var project_id = $("#projectname").find("option[value='"+formData.project_name+"']").attr("data-proid") || "";
+                var organname = $("#organids").val() || "";
                 var da = {
                     lid:"",
                     project_id:project_id,
                     linename: formData.linename,
                     loading_place:formData.loading_place,
                     unloading_place:formData.unloading_place,
-                    goods:formData.goods,
+                    organids:$("#organlist").find("option[value='"+organname+"']").attr("data-organid") || "",
                     state:formData.state,
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
@@ -64,10 +69,15 @@ var LineTable = function(){
                 };
                 lineDataGet(da, callback);
             },
+            "initComplete": function(settings, json) {
+                //根据用户判断否显示所属机构
+                organDisplayCheck();
+            },
             columns:[ //返回的json 数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 {"data":null},
                 {"data":null},
                 {"data":"lid", visible: false},
+                {"data":"organname",sClass:"organ-display"},
                 {"data":"project_name"},
                 {"data":"linename"},
                 {"data":"loading_place"},
@@ -79,7 +89,6 @@ var LineTable = function(){
                 {"data":"unit"},
                 {"data":"univalence"},
                 {"data":"state"},
-                {"data":"addTime"},
                 {"data":"updateTime",visible: false},
                 {"data":"number",visible: false},
                 {"data":null}
@@ -98,45 +107,39 @@ var LineTable = function(){
                         return '<input type="checkbox" class="checkboxes" value="1" />';
                     }
                 },{
-                    "targets": [4],
+                    "targets": [5],
                     "render": function (data, type, row, meta) {
                         return '<a href="javascript:;" id="vehice_detail">'+data+'</a>';
                     }
                 },
                 {
-                    "targets":[9],
+                    "targets":[10],
                     "render":function (data, type, row, meta) {
                         //显示货物类型
                         return typeDisplay(data);
                     }
                 },{
-                    "targets":[11],
+                    "targets":[12],
                     "render":function (data, type, row, meta) {
                         //显示单位
                         return unitDisplay(data);
                     }
                 },
                 {
-                    "targets":[12],
+                    "targets":[13],
                     "render":function (data, type, row, meta) {
                         //显示单价
                       return   formatCurrency(data);
                     }
                 },
                 {
-                    "targets":[13],
+                    "targets":[14],
                     "render":function (data, type, row, meta) {
                         return statusFormat(data);
                     }
                 },
                 {
-                    "targets":[14],
-                    "render": function (data, type, row ,meta) {
-                        return dateTimeFormat(data);
-                    }
-                },
-                {
-                    "targets":[15],
+                    "targets":[16],
                     "render": function (data, type, row ,meta) {
                         return dateTimeFormat(data);
                     }
@@ -155,8 +158,8 @@ var LineTable = function(){
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(10),td:eq(12),td:eq(13),td:eq(14)', nRow).attr('style', 'text-align: center;');
-                $('td:eq(11)', nRow).attr('style', 'text-align: right;');
+                $('td:eq(0),td:eq(1),td:eq(14)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(12)', nRow).attr('style', 'text-align: right;');
             }
         });
         //table.draw( false );
@@ -214,6 +217,18 @@ function getlineDataEnd(flg, result, callback){
 $("#lin_inquiry").on("click",function(){
     //线路查询
     LineTable.init();
+});
+
+//查询框所属机构
+$("#organids").blur(function(){
+    var value = $(this).val();
+    var list = [];
+    for(var i = 0;i<organList.length;i++){
+        list.push(organList[i].organname);
+    }
+    if(list.indexOf(value) == -1){  //不存在
+        $(this).val("");
+    }
 });
 
 //线路操作表
@@ -914,4 +929,24 @@ function unitDisplay(data){
         }
     }
     return value;
+}
+
+//获取机构结果返回
+function getOrganDataEnd(flg, result){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+            var res = result.response;
+            organList = res.list;
+            for(var i in organList){
+                if(organList[i].organlist == undefined){
+                    $("#organlist").append('<option data-organid = "'+organList[i].organid+'" value="'+organList[i].organname+'"></option>');
+                }
+            }
+        }else{
+            alertDialog("机构信息获取失败！");
+        }
+    }else{
+        alertDialog("机构信息获取失败！");
+    }
 }

@@ -118,7 +118,7 @@ var VehiceTable = function () {
                 { "data": "transport_number"},
                 { "data": "license_key"},
                 { "data": "driving_img"},
-                { "data": "updatetime"},
+                { "data": "updatetime", visible: false},
                 { "data": null},
                 { "data": "state"}
             ],
@@ -199,7 +199,7 @@ var VehiceTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(2),td:eq(4),td:eq(9),td:eq(10),td:eq(11),td:eq(12),td:eq(13)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(2),td:eq(4),td:eq(9),td:eq(10),td:eq(11),td:eq(12)', nRow).attr('style', 'text-align: center;');
                 $('td:eq(6), td:eq(7)', nRow).attr('style', 'text-align: right;');
             }
         });

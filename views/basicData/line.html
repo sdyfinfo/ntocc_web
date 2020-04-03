@@ -117,11 +117,12 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-4" id="organInquiry">
                                         <div class="form-group">
-                                            <label class="col-md-4 control-label">货物地名称</label>
+                                            <label class="col-md-4 control-label">所属机构</label>
                                             <div class="col-md-8">
-                                                <input type="text" class="form-control" placeholder="货物名称" name="goods"/>
+                                                <input type="text" class="form-control" placeholder="请输入" id="organids" list="organlist"/>
+                                                <datalist id="organlist"></datalist>
                                             </div>
                                         </div>
                                     </div>
@@ -173,6 +174,7 @@
                                         <input type="checkbox" class="group-checkable" data-set="#line_table .checkboxes" />
                                     </th>
                                     <th> 线路id </th>
+                                    <th width="200px"> 所属机构 </th>
                                     <th width="150px"> 项目名称 </th>
                                     <th width="200px"> 线路名称 </th>
                                     <th width="150px"> 装货地点 </th>
@@ -184,7 +186,6 @@
                                     <th width="100px"> 计价单位 </th>
                                     <th width="100px"> 运费单价(元) </th>
                                     <th width="30px"> 状态 </th>
-                                    <th width="150px"> 创建时间 </th>
                                     <th width="150px"> 修改时间 </th>
                                     <th width="100px">总发运数量</th>
                                     <th width="50px"> 操作 </th>

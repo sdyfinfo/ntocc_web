@@ -54,6 +54,7 @@ var InvoiceBillTable = function () {
                 pageSize = data.length == -1 ? "": data.length;
                 $(".group-checkable").prop("checked", false);
                 var formData = $(".inquiry-form").getFormData();
+                var organname = $("#organids").val() || "";
                 //创建日期
                 var start_time = "";
                 var end_time = "";
@@ -71,6 +72,7 @@ var InvoiceBillTable = function () {
                     project_id:$("#proList").find("option[value='"+formData.project_id+"']").attr("data-proid") || "",
                     line_id:lid,
                     openinvoice_state:$("#openinvoice_state").val(),
+                    organids:$("#organlist").find("option[value='"+organname+"']").attr("data-organid") || "",
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
@@ -78,10 +80,15 @@ var InvoiceBillTable = function () {
                 };
                 invoiceBillDataGet(da, callback);
             },
+            "initComplete": function(settings, json) {
+                //根据用户判断否显示所属机构
+                organDisplayCheck();
+            },
             columns: [//返回的json数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 { "data": null},
                 { "data": null},
                 { "data": "wid",visible: false },
+                { "data": "organname",sClass:"organ-display"},
                 { "data": "project_name"},     //项目
                 { "data": "linename" },    //线路
                 { "data": "wid" },    //运单描述
@@ -111,7 +118,7 @@ var InvoiceBillTable = function () {
                     }
                 },
                 {
-                    "targets": [5],
+                    "targets": [6],
                     "render": function (data, type, row, meta) {
                         //显示运单号，发货到卸货地址
                         for(var i in invoiceBillList){
@@ -122,17 +129,17 @@ var InvoiceBillTable = function () {
                         }
                     }
                 },{
-                    "targets": [9],
+                    "targets": [10],
                     "render": function (data, type, row, meta) {
                         return data+"%";
                     }
                 },{
-                    "targets": [10],
+                    "targets": [11],
                     "render": function (data, type, row, meta) {
                         return formatCurrency(data);
                     }
                 },{
-                    "targets": [11],
+                    "targets": [12],
                     "render": function (data, type, row, meta) {
                         return formatCurrency(data);
                     }
@@ -147,7 +154,7 @@ var InvoiceBillTable = function () {
                         return formatCurrency(amount);
                     }
                 },{
-                    "targets": [13],
+                    "targets": [14],
                     "render": function (data, type, row, meta) {
                         var text = "";
                         switch (data){
@@ -161,7 +168,7 @@ var InvoiceBillTable = function () {
                         return text;
                     }
                 },{
-                    "targets": [14],
+                    "targets": [15],
                     "render": function (data, type, row, meta) {
                         if(data == undefined){
                             return "";
@@ -169,7 +176,7 @@ var InvoiceBillTable = function () {
                         return dateTimeFormat(data);
                     }
                 },{
-                    "targets": [15],
+                    "targets": [16],
                     "render": function (data, type, row, meta) {
                         if(data == undefined){
                             return "";
@@ -179,8 +186,8 @@ var InvoiceBillTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(13),td:eq(14)', nRow).attr('style', 'text-align: center;');
-                $('td:eq(8),td:eq(9),td:eq(10),td:eq(11)', nRow).attr('style', 'text-align: right;');
+                $('td:eq(0),td:eq(1),td:eq(14),td:eq(15)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(9),td:eq(10),td:eq(11),td:eq(12)', nRow).attr('style', 'text-align: right;');
             }
         });
 
@@ -222,6 +229,18 @@ var InvoiceBillTable = function () {
 //查询
 $("#invoice_inquiry").click(function(){
     InvoiceBillTable.init();
+});
+
+//查询框所属机构
+$("#organids").blur(function(){
+    var value = $(this).val();
+    var list = [];
+    for(var i = 0;i<organList.length;i++){
+        list.push(organList[i].organname);
+    }
+    if(list.indexOf(value) == -1){  //不存在
+        $(this).val("");
+    }
 });
 
 //查询框项目联动线路
@@ -366,6 +385,11 @@ var invoiceApply = function() {
         });
         //一键开票
         $("#invoice_apply").click(function(){
+            //admin和运营方不可操作
+            if(loginSucc.userid == "admin" || loginSucc.types == "0"){
+                alertDialog("admin和运营方不可进行此操作！");
+                return;
+            }
             validator.resetForm();
             $(".invoice-form").find(".has-error").removeClass("has-error");
             if(invoiceBillList.length < 1){
@@ -398,18 +422,23 @@ var invoiceApply = function() {
             data.invoice = get_thousand_num(subStringNum(data.invoice/100,2));
 
             //发票信息
-            data.rise_name = organList.rise_name;
-            data.taxpayer = organList.taxpayer;
-            if(organList.address_phone != ""){
-                var addresseeTel = (organList.address_phone.replace("/",",")).split(",");
-                data.invoicerise_address = addresseeTel[0];
-                data.invoicerise_tel = addresseeTel[1];
-            }else{
-                data.invoicerise_address = "";
-                data.invoicerise_tel = "";
+            for(var i in organList){
+                if(loginSucc.organids == organList[i].organid){
+                    data.rise_name = organList[i].rise_name;
+                    data.taxpayer = organList[i].taxpayer;
+                    if(organList[i].address_phone != ""){
+                        var addresseeTel = (organList[i].address_phone.replace("/",",")).split(",");
+                        data.invoicerise_address = addresseeTel[0];
+                        data.invoicerise_tel = addresseeTel[1];
+                    }else{
+                        data.invoicerise_address = "";
+                        data.invoicerise_tel = "";
+                    }
+                    data.bankname = organList[i].bankname;
+                    data.bank = organList[i].bank;
+                }
             }
-            data.bankname = organList.bankname;
-            data.bank = organList.bank;
+
 
             var exclude = [];
             var options = { jsonValue: data, exclude:exclude,isDebug: false};
@@ -424,6 +453,11 @@ var invoiceApply = function() {
 
         //选单开票
         $("#choose_apply").click(function(){
+            //admin和运营方不可操作
+            if(loginSucc.userid == "admin" || loginSucc.types == "0"){
+                alertDialog("admin和运营方不可进行此操作！");
+                return;
+            }
             validator.resetForm();
             $(".invoice-form").find(".has-error").removeClass("has-error");
             var len = $(".checkboxes:checked").length;
@@ -459,18 +493,22 @@ var invoiceApply = function() {
                 data.invoice = get_thousand_num(subStringNum(data.invoice/100,2));
 
                 //发票信息
-                data.rise_name = organList.rise_name;
-                data.taxpayer = organList.taxpayer;
-                if(organList.address_phone != ""){
-                    var addresseeTel = (organList.address_phone.replace("/",",")).split(",");
-                    data.invoicerise_address = addresseeTel[0];
-                    data.invoicerise_tel = addresseeTel[1];
-                }else{
-                    data.invoicerise_address = "";
-                    data.invoicerise_tel = "";
+                for(var i in organList){
+                    if(loginSucc.organids == organList[i].organid){
+                        data.rise_name = organList[i].rise_name;
+                        data.taxpayer = organList[i].taxpayer;
+                        if(organList[i].address_phone != ""){
+                            var addresseeTel = (organList[i].address_phone.replace("/",",")).split(",");
+                            data.invoicerise_address = addresseeTel[0];
+                            data.invoicerise_tel = addresseeTel[1];
+                        }else{
+                            data.invoicerise_address = "";
+                            data.invoicerise_tel = "";
+                        }
+                        data.bankname = organList[i].bankname;
+                        data.bank = organList[i].bank;
+                    }
                 }
-                data.bankname = organList.bankname;
-                data.bank = organList.bank;
 
                 var exclude = [];
                 var options = { jsonValue: data, exclude:exclude,isDebug: false};
@@ -539,19 +577,24 @@ function getOrganDataEnd(flg,result){
     if(flg){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
-            organList = res.list[0];
+            organList = res.list;
             //判断该用户所属机构是一级机构，则显示下属子机构
-            if(loginSucc.organid == loginSucc.organids){
-                $("#organlist").empty();
-                $("#organlist").append("<option value='"+organList.organid+"' selected>"+organList.organname+"</option>");
-                if(organList.organlist != undefined){
-                    for(var i in organList[i].organlist){
-                        $("#organlist").append("<option value='"+organList.organlist[i].organid+"'>"+organList.organlist[i].organname+"</option>");
-                    }
+//            if(loginSucc.organid == loginSucc.organids){
+//                $("#organlist").empty();
+//                $("#organlist").append("<option value='"+organList.organid+"' selected>"+organList.organname+"</option>");
+//                if(organList.organlist != undefined){
+//                    for(var i in organList[i].organlist){
+//                        $("#organlist").append("<option value='"+organList.organlist[i].organid+"'>"+organList.organlist[i].organname+"</option>");
+//                    }
+//                }
+//            }else{   //该用户所属机构为子机构，则只显示所属子机构
+//                $("#organlist").empty();
+//                $("#organlist").append("<option value='"+loginSucc.organid+"' selected>"+loginSucc.organname+"</option>");
+//            }
+            for(var i in organList){
+                if(organList[i].organlist == undefined){
+                    $("#organlist").append('<option data-organid = "'+organList[i].organid+'" value="'+organList[i].organname+'"></option>');
                 }
-            }else{   //该用户所属机构为子机构，则只显示所属子机构
-                $("#organlist").empty();
-                $("#organlist").append("<option value='"+loginSucc.organid+"' selected>"+loginSucc.organname+"</option>");
             }
             //获取项目信息
             projectDataGet();

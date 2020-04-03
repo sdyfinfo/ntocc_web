@@ -49,7 +49,7 @@
                             <form class="inquiry-form form-horizontal" role="form">
                                 <div class="form-body">
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="col-md-4 control-label">收货人姓名</label>
                                                 <div class="col-md-8">
@@ -57,7 +57,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="col-md-4 control-label">收货人电话</label>
                                                 <div class="col-md-8">
@@ -65,15 +65,24 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="col-md-4 control-label">状态</label>
-                                                <div class="col-md-6">
+                                                <div class="col-md-8">
                                                     <select class="form-control"  name="state">
                                                         <option value="">请选择</option>
                                                         <option value="0">正常</option>
                                                         <option value="1">异常</option>
                                                     </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3" id="organInquiry">
+                                            <div class="form-group">
+                                                <label class="col-md-4 control-label">所属机构</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" placeholder="请输入" id="organids" list="organlist"/>
+                                                    <datalist id="organlist"></datalist>
                                                 </div>
                                             </div>
                                         </div>
@@ -118,9 +127,10 @@
                                         <input type="checkbox" class="group-checkable" data-set="#gnee_table .checkboxes" />
                                     </th>
                                     <th> 收货人id </th>
-                                    <th width="20%"> 收货人 </th>
-                                    <th width="25%"> 联系电话 </th>
-                                    <th width="25%"> 卸货地址 </th>
+                                    <th width="25%"> 所属机构 </th>
+                                    <th width="15%"> 收货人 </th>
+                                    <th width="20%"> 联系电话 </th>
+                                    <th width="20%"> 卸货地址 </th>
                                     <th width="35%"> 卸货详细地址 </th>
                                     <th width="30px"> 状态 </th>
                                     <th width="50px"> 操作 </th>
@@ -128,6 +138,7 @@
                                 </thead>
                                 <tbody>
                                 <tr class="odd gradeX">
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>

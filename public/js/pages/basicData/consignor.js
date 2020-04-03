@@ -10,6 +10,10 @@ var pageSize;  //表格显示页数，全选会用到
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
         fun_power();
+        //根据用户判断否显示所属机构
+        organDisplayCheck();
+        //获取机构
+        organDataGet();
         //省市区三级联动
         addressDispaly("#loading_provincecode");
         //获取发票信息
@@ -46,11 +50,13 @@ var ConsignorTable = function () {
                 //获取页数
                 pageSize = data.length == -1 ? "": data.length;
                 $(".group-checkable").prop("checked", false);
+                var organname = $("#organids").val() || "";
                 var formData = $(".inquiry-form").getFormData();
                 var da = {
                     consignor: formData.consignor,
                     invoice_rise:formData.invoiceRise,
                     state:formData.state,
+                    organids:$("#organlist").find("option[value='"+organname+"']").attr("data-organid") || "",
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
@@ -58,10 +64,15 @@ var ConsignorTable = function () {
                 };
                 consignorDataGet(da, callback);
             },
+            "initComplete": function(settings, json) {
+                //根据用户判断否显示所属机构
+                organDisplayCheck();
+            },
             columns: [//返回的json数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 { "data": null},
                 { "data": null},
                 { "data": "conid",visible: false },
+                { "data": "organname",sClass:"organ-display"},
                 { "data": "consignor"},
                 { "data": "mobile" },
                 { "data": "loading_place" },
@@ -83,12 +94,12 @@ var ConsignorTable = function () {
                         return meta.settings._iDisplayStart + meta.row + 1;  //行号
                     }
                 },{
-                    "targets": [3],
+                    "targets": [4],
                     "render": function (data, type, row, meta) {
                         return '<a href="javascript:;" id="consignor_detail">'+data+'</a>';
                     }
                 },{
-                    "targets": [7],
+                    "targets": [8],
                     "render": function (data, type, row, meta) {
                         var text = "";
                         switch(data){
@@ -109,7 +120,7 @@ var ConsignorTable = function () {
                     }
                 },
                 {
-                    "targets": [8],
+                    "targets": [9],
                     "render": function (data, type, row, meta) {
                         var edit = "";
                         if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
@@ -122,7 +133,7 @@ var ConsignorTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(3),td:eq(6),td:eq(7)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(4),td:eq(7),td:eq(8)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );
@@ -379,6 +390,19 @@ $("#consignor_inquiry").on("click", function(){
     ConsignorTable.init();
 });
 
+//查询框所属机构
+$("#organids").blur(function(){
+    var value = $(this).val();
+    var list = [];
+    for(var i = 0;i<organList.length;i++){
+        list.push(organList[i].organname);
+    }
+    if(list.indexOf(value) == -1){  //不存在
+        $(this).val("");
+    }
+});
+
+
 //发货人删除
 var ConsignorDelete = function() {
     $('#op_del').click(function() {
@@ -545,4 +569,24 @@ function consignorEditEnd(flg, result, type){
     if(alert == "") alert = text + "发货人" + res + "！";
     App.unblockUI('#lay-out');
     alertDialog(alert);
+}
+
+//获取机构结果返回
+function getOrganDataEnd(flg, result){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+            var res = result.response;
+            organList = res.list;
+            for(var i in organList){
+                if(organList[i].organlist == undefined){
+                    $("#organlist").append('<option data-organid = "'+organList[i].organid+'" value="'+organList[i].organname+'"></option>');
+                }
+            }
+        }else{
+            alertDialog("机构信息获取失败！");
+        }
+    }else{
+        alertDialog("机构信息获取失败！");
+    }
 }

@@ -27,6 +27,9 @@
         var loginSucc = '{{ loginsucc }}';
         loginSucc = JSON.parse(loginSucc.replace(/&quot;/g, "\""));
     </script>
+    <style>
+        .inquiry-form .form-group{margin-bottom: 8px}
+    </style>
 </head>
 <body class="gray-bg">
     <div class="wrapper wrapper-content animated fadeInRight">
@@ -62,7 +65,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">是否已申请开票</label>
-                                            <div class="col-md-8">
+                                            <div class="col-md-6">
                                                 <select type="text" class="form-control" id="openinvoice_state" name="openinvoice_state">
                                                     <option value="">请选择</option>
                                                     <option value="0">未申请</option>
@@ -76,7 +79,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="col-md-4 control-label">所属项目</label>
-                                            <div class="col-md-8">
+                                            <div class="col-md-6">
                                                 <input type="text" class="form-control" placeholder="请选择" id="project_id" name="project_id" list="proList" autocomplete="off">
                                                 <datalist id="proList">
                                                 </datalist>
@@ -86,10 +89,21 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">所属路线</label>
-                                            <div class="col-md-8">
+                                            <div class="col-md-6">
                                                 <select type="text" class="form-control" id="lineList" disabled>
                                                     <option value="">所属路线</option>
                                                 </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6" id="organInquiry">
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label">所属机构</label>
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control" placeholder="请输入" id="organids" list="organlist"/>
+                                                <datalist id="organlist"></datalist>
                                             </div>
                                         </div>
                                     </div>
@@ -128,6 +142,7 @@
                                     <input type="checkbox" class="group-checkable" data-set="#invoice_table .checkboxes" />
                                 </th>
                                 <th> 运单id </th>
+                                <th width="200px"> 所属机构 </th>
                                 <th width="150px"> 项目名称 </th>
                                 <th width="150px"> 线路 </th>
                                 <th width="200px"> 运单描述 </th>
@@ -145,6 +160,7 @@
                             </thead>
                             <tbody>
                             <tr class="odd gradeX">
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>

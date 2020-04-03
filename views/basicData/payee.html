@@ -80,7 +80,7 @@
                             <form class="inquiry-form form-horizontal" role="form">
                                 <div class="form-body">
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="col-md-4 control-label">收款人姓名</label>
                                                 <div class="col-md-8">
@@ -88,7 +88,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="col-md-4 control-label">银行卡号</label>
                                                 <div class="col-md-8">
@@ -96,15 +96,24 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="col-md-4 control-label">状态</label>
-                                                <div class="col-md-6">
+                                                <div class="col-md-8">
                                                     <select class="form-control" placeholder="状态" name="state">
                                                         <option value="">请选择</option>
                                                         <option value="0">启用</option>
                                                         <option value="1">停用</option>
                                                     </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3" id="organInquiry">
+                                            <div class="form-group">
+                                                <label class="col-md-4 control-label">所属机构</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" placeholder="请输入" id="organids" list="organlist"/>
+                                                    <datalist id="organlist"></datalist>
                                                 </div>
                                             </div>
                                         </div>
@@ -150,18 +159,20 @@
                                     </th>
                                     <th> 收款人id </th>
                                     <th> 开户行id </th>
+                                    <th width="20%"> 所属机构 </th>
                                     <th width="10%"> 收款人姓名 </th>
-                                    <th width="20%"> 身份证号 </th>
+                                    <th width="15%"> 身份证号 </th>
                                     <th width="15%"> 收款人手机号 </th>
-                                    <th width="20%"> 银行卡号 </th>
-                                    <th width="30%"> 开户行(无需支行) </th>
+                                    <th width="15%"> 银行卡号 </th>
+                                    <th width="20%"> 开户行(无需支行) </th>
                                     <th width="30px"> 状态 </th>
-                                    <th width="10%"> 更新时间 </th>
+                                    <th> 更新时间 </th>
                                     <th width="30px"> 操作 </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr class="odd gradeX">
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>

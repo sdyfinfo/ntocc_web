@@ -47,10 +47,10 @@
                         <form class="inquiry-form form-horizontal" role="form">
                             <div class="form-body">
                                 <div class="row">
-                                    <div class="col-md-5">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="col-md-4 control-label">发货人名称</label>
-                                            <div class="col-md-8">
+                                            <div class="col-md-6">
                                                 <input type="text" class="form-control" placeholder="发货人名称" name="consignor" id="consignor"/>
                                             </div>
                                         </div>
@@ -64,6 +64,15 @@
                                                     <option value="0">正常</option>
                                                     <option value="1">异常</option>
                                                 </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" id="organInquiry">
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label">所属机构</label>
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control" placeholder="请输入" id="organids" list="organlist"/>
+                                                <datalist id="organlist"></datalist>
                                             </div>
                                         </div>
                                     </div>
@@ -108,9 +117,10 @@
                                     <input type="checkbox" class="group-checkable" data-set="#consignor_table .checkboxes" />
                                 </th>
                                 <th> 发货人id </th>
-                                <th width="20%"> 发货人 </th>
-                                <th width="20%"> 联系电话 </th>
-                                <th width="30%"> 发货地址 </th>
+                                <th width="25%"> 所属机构 </th>
+                                <th width="15%"> 发货人 </th>
+                                <th width="15%"> 联系电话 </th>
+                                <th width="20%"> 发货地址 </th>
                                 <th width="35%"> 详细地址 </th>
                                 <th width="30px"> 状态 </th>
                                 <th width="50px"> 操作 </th>
@@ -118,6 +128,7 @@
                             </thead>
                             <tbody>
                             <tr class="odd gradeX">
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>

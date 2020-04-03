@@ -10,6 +10,10 @@ var pageSize;  //表格显示页数，全选会用到
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
         fun_power();
+        //根据用户判断否显示所属机构
+        organDisplayCheck();
+        //获取机构
+        organDataGet();
         //字典获取
         //货物类型获取
         var list = ["10005","10006"];
@@ -49,10 +53,12 @@ var ProjectTable = function () {
                 //获取页数
                 pageSize = data.length == -1 ? "": data.length;
                 $(".group-checkable").prop("checked", false);
+                var organname = $("#organids").val() || "";
                 var formData = $(".inquiry-form").getFormData();
                 var da = {
                     userid:loginSucc.userid,
                     proname: formData.projectname,
+                    organids:$("#organlist").find("option[value='"+organname+"']").attr("data-organid") || "",
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
@@ -60,14 +66,18 @@ var ProjectTable = function () {
                 };
                 projectDataGet(da, callback);
             },
+            "initComplete": function(settings, json) {
+                //根据用户判断否显示所属机构
+                organDisplayCheck();
+            },
             columns: [//返回的json数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 { "data": null},
                 { "data": null},
                 { "data": "proid",visible: false },
+                { "data": "organname",sClass:"organ-display" },
                 { "data": "proname" },
                 { "data": "linelist" },
                 { "data": "addtime" },
-                { "data": "updatetime" },
                 { "data": "state"},
                 { "data": null }
             ],
@@ -85,18 +95,13 @@ var ProjectTable = function () {
                         return meta.settings._iDisplayStart + meta.row + 1;  //行号
                     }
                 },{
-                    "targets": [4],
+                    "targets": [5],
                     "render": function (data, type, row, meta) {
                         //做成可收缩格式
                         return formatRoute(data);
                     }
                 },
                 {
-                    "targets": [5],
-                    "render": function (data, type, row, meta) {
-                        return dateTimeFormat(data);
-                    }
-                },{
                     "targets": [6],
                     "render": function (data, type, row, meta) {
                         return dateTimeFormat(data);
@@ -120,7 +125,7 @@ var ProjectTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(4),td:eq(5),td:eq(6),td:eq(7)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(5),td:eq(7)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );
@@ -161,6 +166,18 @@ var ProjectTable = function () {
 //项目查询
 $("#pro_inquiry").on("click", function(){
     ProjectTable.init();
+});
+
+//查询框所属机构
+$("#organids").blur(function(){
+    var value = $(this).val();
+    var list = [];
+    for(var i = 0;i<organList.length;i++){
+        list.push(organList[i].organname);
+    }
+    if(list.indexOf(value) == -1){  //不存在
+        $(this).val("");
+    }
 });
 
 //将路线做成可收缩样式
@@ -499,5 +516,25 @@ function getDictDataEnd(flg, result){
                 }
             }
         }
+    }
+}
+
+//获取机构结果返回
+function getOrganDataEnd(flg, result){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+            var res = result.response;
+            organList = res.list;
+            for(var i in organList){
+                if(organList[i].organlist == undefined){
+                    $("#organlist").append('<option data-organid = "'+organList[i].organid+'" value="'+organList[i].organname+'"></option>');
+                }
+            }
+        }else{
+            alertDialog("机构信息获取失败！");
+        }
+    }else{
+        alertDialog("机构信息获取失败！");
     }
 }

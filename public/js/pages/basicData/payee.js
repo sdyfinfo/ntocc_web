@@ -10,10 +10,14 @@ if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function () {
         $(".inquiry-form").find("input[name=payname]").val(payname);
         $(".inquiry-form").find("input[name=banknumber]").val(banknumber);
-        //fun_power();
+        fun_power();
+        //根据用户判断否显示所属机构
+        organDisplayCheck();
+        //获取机构
+        organDataGet();
         //收款人列表
         PayeeTable.init();
-        //
+        //收款人操作
         payeeEdit.init();
         //获取开户银行信息
         bankNameDataGet();
@@ -47,10 +51,12 @@ var PayeeTable = function () {
                 pageSize = data.length == -1 ? "": data.length;
                 $(".group-checkable").prop("checked", false);
                 var formData = $(".inquiry-form").getFormData();
+                var organname = $("#organids").val() || "";
                 var da = {
                     payname: formData.payname,
                     bank:formData.banknumber,
                     state:formData.state,
+                    organids:$("#organlist").find("option[value='"+organname+"']").attr("data-organid") || "",
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
@@ -58,11 +64,16 @@ var PayeeTable = function () {
                 };
                 PDataGet(da, callback);
             },
+            "initComplete": function(settings, json) {
+                //根据用户判断否显示所属机构
+                organDisplayCheck();
+            },
             columns: [//返回的json数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 { "data": null},
                 { "data": null},
                 { "data": "payid",visible: false },
                 { "data": "bankid",visible: false },
+                { "data": "organname",sClass:"organ-display"},
                 { "data": "payname"},
                 { "data": "idcard" },
                 { "data": "payphone" },
@@ -87,34 +98,32 @@ var PayeeTable = function () {
                     }
                 },
                 {
-                    "targets":[9],
+                    "targets":[10],
                     "render":function (data, type, row, meta) {
                         return statusFormat(data);
                     }
                 },
                 {
-                    "targets":[10],
+                    "targets":[11],
                     "render": function (data, type, row ,meta) {
                         return dateTimeFormat(data);
                     }
                 },
                 {
-                    "targets": [11],
+                    "targets": [12],
                     "render": function (data, type, row, meta) {
-                        /*var edit = "";
+                        var edit = "";
                         if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")){
                             edit = '-';
                         }else{
                             edit = '<a href="javascript:;" id="op_edit">编辑</a>';
                         }
-                        return edit;*/
-                        //if(!window.parent.makeEdit(menu,loginSucc.functionlist,"#op_edit")) return '-';
-                        return '<a href="javascript:;" id="op_edit">编辑</a>'
+                        return edit;
                     }
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(3),td:eq(4),td:eq(7),td:eq(8),td:eq(8)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(4),td:eq(5),td:eq(9)', nRow).attr('style', 'text-align: center;');
             }
         });
         //table.draw( false );
@@ -341,7 +350,19 @@ function getPDataEnd(flg, result, callback){
 //查询按钮
 $("#pay_inquiry").on("click",function(){
     PayeeTable.init();
-})
+});
+
+//查询框所属机构
+$("#organids").blur(function(){
+    var value = $(this).val();
+    var list = [];
+    for(var i = 0;i<organList.length;i++){
+        list.push(organList[i].organname);
+    }
+    if(list.indexOf(value) == -1){  //不存在
+        $(this).val("");
+    }
+});
 
 //返回开户行结果
 function getbankNameDataEnd(flg, result, callback){
@@ -553,3 +574,23 @@ var PayeeDelete = function() {
         }
     }
 }();
+
+//获取机构结果返回
+function getOrganDataEnd(flg, result){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+            var res = result.response;
+            organList = res.list;
+            for(var i in organList){
+                if(organList[i].organlist == undefined){
+                    $("#organlist").append('<option data-organid = "'+organList[i].organid+'" value="'+organList[i].organname+'"></option>');
+                }
+            }
+        }else{
+            alertDialog("机构信息获取失败！");
+        }
+    }else{
+        alertDialog("机构信息获取失败！");
+    }
+}

@@ -136,7 +136,7 @@ var DriverTable = function () {
                 { "data": "plate_number"},
                 { "data": null},
                 { "data": "state"},
-                { "data": "updateTime"},
+                { "data": "updateTime",visible: false},
                 { "data": "bank",visible: false}
             ],
             columnDefs: [

@@ -15,6 +15,10 @@ var pageSize;  //表格显示页数，全选会用到
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
         fun_power();
+        //根据用户判断否显示所属机构
+        organDisplayCheck();
+        //获取机构
+        organDataGet();
         //时间控件初始化
         ComponentsDateTimePickers.init();
         //获取项目信息
@@ -89,6 +93,7 @@ var WayBillTable = function () {
                 $(".group-checkable").prop("checked", false);
                 if(selectType == "0"){
                     var formData = $(".inquiry-form").getFormData();
+                    var organname = $("#organids").val() || "";
                     var start_subtime = formData.start_subtime.replace(/-/g,'');
                     var end_subtime = formData.end_subtime.replace(/-/g,'');
                     var loading_start_subtime =formData.loading_start_subtime.replace(/-/g,'');
@@ -112,6 +117,7 @@ var WayBillTable = function () {
                         state:state,
                         verification_status:formData.verification_status,
                         payment_status:formData.payment_status,
+                        organids:$("#organlist").find("option[value='"+organname+"']").attr("data-organid") || "",
                         currentpage: (data.start / data.length) + 1,
                         pagesize: data.length == -1 ? "": data.length,
                         startindex: data.start,
@@ -122,10 +128,15 @@ var WayBillTable = function () {
                     getBillDataEnd(true, wayBillImport, callback,data);
                 }
             },
+            "initComplete": function(settings, json) {
+                //根据用户判断否显示所属机构
+                organDisplayCheck();
+            },
             columns: [//返回的json数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 { "data": null},
                 { "data": ""},
                 { "data": "wid",visible: false },
+                { "data": "organname",sClass:"organ-display"},
                 { "data": "project_name"},     //项目
                 { "data": "linename" },    //线路
                 { "data": "wabill_numbers"},
@@ -163,7 +174,7 @@ var WayBillTable = function () {
                     }
                 },
                 {
-                    "targets": [6],
+                    "targets": [7],
                     "render": function (data, type, row, meta) {
                         //显示运单号，发货到卸货地址
                         for(var i in wayBillList){
@@ -179,7 +190,7 @@ var WayBillTable = function () {
                     }
                 },
                 {
-                    "targets": [9],
+                    "targets": [10],
                     "render": function (data, type, row, meta) {
                         if(data == undefined){
                             return "";
@@ -187,7 +198,7 @@ var WayBillTable = function () {
                         return dateTimeFormat(data);
                     }
                 },{
-                    "targets": [10],
+                    "targets": [11],
                     "render": function (data, type, row, meta) {
                         if(data == undefined){
                             return "";
@@ -198,7 +209,7 @@ var WayBillTable = function () {
                         }
                     }
                 },{
-                    "targets": [11],
+                    "targets": [12],
                     "render": function (data, type, row, meta) {
                         if(data == undefined){
                             return "";
@@ -207,7 +218,7 @@ var WayBillTable = function () {
                     }
                 },
                 {
-                    "targets": [12],
+                    "targets": [13],
                     "render": function (data, type, row, meta) {
                         if(data == undefined){
                             return "";
@@ -215,7 +226,7 @@ var WayBillTable = function () {
                         return dateTimeFormat(data);
                     }
                 },{
-                    "targets": [13],
+                    "targets": [14],
                     "render": function (data, type, row, meta) {
                         //运单状态
                         var value = "";
@@ -228,7 +239,7 @@ var WayBillTable = function () {
                     }
                 },
                 {
-                    "targets": [14],
+                    "targets": [15],
                     "render": function (data, type, row, meta) {
                         //审验状态
                         var value = "";
@@ -241,7 +252,7 @@ var WayBillTable = function () {
                     }
                 },
                 {
-                    "targets": [16],
+                    "targets": [17],
                     "render": function (data, type, row, meta) {
                         //支付状态
                         var value = "";
@@ -254,7 +265,7 @@ var WayBillTable = function () {
                     }
                 },
                 {
-                    "targets": [17],
+                    "targets": [18],
                     "render": function (data, type, row, meta) {
                         var edit = '';
                         for(var i in wayBillList){
@@ -279,8 +290,8 @@ var WayBillTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(7),td:eq(8),td:eq(9),td:eq(15)', nRow).attr('style', 'text-align: center;');
-                $('td:eq(10)', nRow).attr('style', 'text-align: right;');
+                $('td:eq(0),td:eq(1),td:eq(8),td:eq(9),td:eq(10),td:eq(16)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(11)', nRow).attr('style', 'text-align: right;');
             }
         });
         //table.draw( false );
@@ -323,6 +334,18 @@ var WayBillTable = function () {
 $("#bill_inquiry").click(function(){
     selectType = '0';
     WayBillTable.init();
+});
+
+//查询框所属机构
+$("#organids").blur(function(){
+    var value = $(this).val();
+    var list = [];
+    for(var i = 0;i<organList.length;i++){
+        list.push(organList[i].organname);
+    }
+    if(list.indexOf(value) == -1){  //不存在
+        $(this).val("");
+    }
 });
 
 //运单新增
@@ -954,6 +977,8 @@ var WayBillAdd = function() {
 //                          var div = "<div class='goods_check'><span>×</span>"+goodsList[i]+"</div>";
 //                          $("#goods").append(div);
 //                      }
+                      //显示所属机构
+                      $("#organname").show();
                       //显示收款人信息
                       for(var i in payeeList){
                           if(bill.payee_id == payeeList[i].payid){
@@ -1023,6 +1048,8 @@ var WayBillAdd = function() {
                       }
                       var options = { jsonValue: bill, exclude:exclude,isDebug: false};
                       $(".add-form").initForm(options);
+                      //不显示所属机构
+                      $("#organname").hide();
                       //显示货物名称
 //                      goodsList = bill.goods.split(",");
 //                      for(var i in goodsList){
@@ -1086,6 +1113,8 @@ var WayBillAdd = function() {
             $("#project_add").removeAttr("readonly");
             $('.add-form').find("input,textarea,select").attr("disabled", false);
             $('.add-form').find("input[name=orderMaking_time]").attr("disabled", true);
+            //不显示所属机构
+            $("#organname").hide();
             ComponentsDateTimePickers.init();
             goodsList = [];
             $("input[name=edittype]").val(BILLADD);
@@ -1670,4 +1699,24 @@ function clearFormInfo(){
     $(":input",".add-form").not(":button,:reset,:submit,:radio,#evaluationneed,[name=orderMaking_time],[name=edittype],#lineHave").val("")
         .removeAttr("checked")
         .removeAttr("selected");
+}
+
+//获取机构结果返回
+function getOrganDataEnd(flg, result){
+    App.unblockUI('#lay-out');
+    if(flg){
+        if (result && result.retcode == SUCCESS) {
+            var res = result.response;
+            organList = res.list;
+            for(var i in organList){
+                if(organList[i].organlist == undefined){
+                    $("#organlist").append('<option data-organid = "'+organList[i].organid+'" value="'+organList[i].organname+'"></option>');
+                }
+            }
+        }else{
+            alertDialog("机构信息获取失败！");
+        }
+    }else{
+        alertDialog("机构信息获取失败！");
+    }
 }

@@ -89,11 +89,20 @@
                         <form class="inquiry-form form-horizontal" role="form">
                             <div class="form-body">
                                 <div class="row">
-                                    <div class="col-md-offset-4 col-md-4">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">项目名称</label>
                                             <div class="col-md-9">
                                                 <input type="text" class="form-control" placeholder="项目名称" name="projectname" id="projectname"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" id="organInquiry">
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">所属机构</label>
+                                            <div class="col-md-9">
+                                                <input type="text" class="form-control" placeholder="请输入" id="organids" list="organlist"/>
+                                                <datalist id="organlist"></datalist>
                                             </div>
                                         </div>
                                     </div>
@@ -133,10 +142,10 @@
                                         <input type="checkbox" class="group-checkable" data-set="#pro_table .checkboxes" />
                                     </th>
                                     <th> 项目id </th>
-                                    <th width="30%"> 项目名称 </th>
-                                    <th width="40%"> 关联线路 </th>
+                                    <th width="30%"> 所属机构 </th>
+                                    <th width="25%"> 项目名称 </th>
+                                    <th width="30%"> 关联线路 </th>
                                     <th width="15%"> 创建时间 </th>
-                                    <th width="15%"> 更新时间 </th>
                                     <th width="30px"> 状态 </th>
                                     <th width="30px"> 操作 </th>
                                 </tr>

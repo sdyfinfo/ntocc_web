@@ -746,7 +746,7 @@ function regDelete(data){
 function consigneeidDateGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
-        data = {conid: "", consignee:"", mobile:"", state:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+        data = {conid: "", consignee:"", mobile:"", state:"",organids:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",
@@ -1127,7 +1127,7 @@ function didDateGet(data,callback){
 function projectDataGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
-        data = {proname: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+        data = {proname: "",organids:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",
@@ -1257,7 +1257,7 @@ function routeDataGet(data){
 function lineDataGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
-        data = {lid:"",projectname: "", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+        data = {lid:"",projectname: "", organids:"",currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",
@@ -1520,7 +1520,7 @@ function lineDelete(data){
 function addressDataGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
-        data = {aid: "", addressee:"", addresseeTel:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+        data = {aid: "", addressee:"", addresseeTel:"", organids:"",currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",
@@ -1606,7 +1606,7 @@ function addrDelete(data){
 function PDataGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
-        data = {payname: "",bankid:"", banknumber:"",state:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+        data = {payname: "",bankid:"", banknumber:"",state:"",organids:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",
@@ -1940,7 +1940,7 @@ function dictQuery(data){
 function consignorDataGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
-        data = {conid: "",consignor: "",invoice_rise:"", state:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
+        data = {conid: "",consignor: "",invoice_rise:"", state:"",organids:"", currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",
@@ -2099,7 +2099,7 @@ function billDataGet(data,callback){
     if(data == null){
         data = {start_subtime: "",end_subtime:"", loading_start_subtime:"",loading_end_subtime:"",
             project_id:"",lid:"",wabill_numbers:"",consignor:"",platenumber:"",driver_name:"",state:"",
-            verification_status:"",payment_status:"",currentpage: "", pagesize: "", startindex: "0", draw: 1}
+            verification_status:"",payment_status:"",organids:"",currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",
@@ -2251,8 +2251,8 @@ function paymentDataGet(data,callback){
     App.blockUI({target: '#lay-out',boxed: true});
     if(data == null){
         data = {start_subtime: "",end_subtime:"", loading_start_subtime:"",loading_end_subtime:"",
-            project_id:"",lid:"",wabill_numbers:"",payee_name:"",platenumber:"",driver_name:"",state:"",
-            payment_status:"",currentpage: "", pagesize: "", startindex: "0", draw: 1}
+            project_id:"",lid:"",wabill_numbers:"",consignor:"",platenumber:"",driver_name:"",state:"",
+            payment_status:"",organids:"",currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({
         type: "post",
@@ -2341,7 +2341,7 @@ function invoiceBillDataGet(data,callback){
     App.blockUI({target:'#lay-out',boxed: true});
     if(data == null){
         data = {start_subtime: "",end_subtime:"", depart_start_subtime:"",loading_end_subtime:"",
-            payment_start_subtime:"",payment_end_subtime:"",project_id:"",lid:"",
+            payment_start_subtime:"",payment_end_subtime:"",project_id:"",lid:"",organids:"",
             currentpage: "", pagesize: "", startindex: "0", draw: 1}
     }
     $.ajax({

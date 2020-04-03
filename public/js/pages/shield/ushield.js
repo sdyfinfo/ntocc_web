@@ -569,7 +569,7 @@ $("#ush_file").change(function(){
 function allowDrop(ev) {
     //阻止浏览器默认打开文件的操作
     ev.preventDefault();
-};
+}
 function drop(ev) {
     ev.preventDefault();
     var files = ev.dataTransfer.files;
@@ -599,4 +599,4 @@ function drop(ev) {
     }else{
         $("#upload_name").html("");
     }
-};
+}
