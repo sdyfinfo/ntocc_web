@@ -82,14 +82,6 @@ var BillTable = function () {
                     }
                 },
                 {
-                    "targets": [5],
-                    "render": function (data, type, row, meta) {
-                        if(data == undefined){
-                            return "";
-                        }
-                        return dateTimeFormat(data);
-                    }
-                },{
                     "targets": [9],
                     "render": function (data, type, row, meta) {
                         if(data == undefined){
