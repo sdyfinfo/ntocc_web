@@ -3,7 +3,7 @@
  */
 
 var billStateList,payStateList,goodsTypeList,unitList,verificationList,dictTrue = [];   //字典
-var projectList,driverList,vehiceList,consignorList,consigneeList,payeeList = [];
+var projectList,driverList,vehiceList,consignorList,consigneeList,payeeList,organList = [];
 var wayBillList = [];
 //var goodsList = [];  //货物名称
 var selectType = '0';

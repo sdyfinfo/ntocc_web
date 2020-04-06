@@ -2,7 +2,7 @@
  * Created by Lenovo on 2020/2/10.
  */
 
-var addressidList = [];
+var addressidList,organList = [];
 var pageSize;  //表格显示页数，全选会用到
 
 if(App.isAngularJsApp() == false){

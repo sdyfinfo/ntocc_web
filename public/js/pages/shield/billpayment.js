@@ -3,7 +3,7 @@
  */
 
 var billStateList,payStateList,goodsTypeList,unitList,verificationList,dictTrue = [];   //字典
-var projectList = [];
+var projectList,organList = [];
 var paymentList = [];
 var paymentDetailWid = "";
 var pageSize;  //表格显示页数，全选会用到
@@ -85,7 +85,7 @@ var BillPaymentTable = function () {
                     payee_name:formData.payee_name,
                     platenumber:formData.platenumber,
                     name:formData.driver_name,
-                    state:state,
+                    state:"",
                     payment_status:formData.payment_status,
                     organids:$("#organlist").find("option[value='"+organname+"']").attr("data-organid") || "",
                     currentpage: (data.start / data.length) + 1,

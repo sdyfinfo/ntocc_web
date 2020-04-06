@@ -1,7 +1,7 @@
 /**
  * Created by Lenovo on 2020/2/12.
  */
-var conList = [];
+var conList,organList = [];
 var pageSize;  //表格显示页数，全选会用到
 
 if(App.isAngularJsApp() == false){

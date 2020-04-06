@@ -677,7 +677,8 @@ function fun_power(){
         "#vehice_inquiry","#vehice_import","#pro_inquiry","#driver_inquiry","#driver_import","#consignor_inquiry","#addr_inquiry",
         "#lin_inquiry","#cons_inquiry","#pay_inquiry","#us_inquiry","#us_import","#inv_inquiry","#bill_inquiry",
         "#bill_import","#bill_submit","#bill_depart","#bill_done","#payment_inquiry","#bill_payment","#invoice_inquiry","#invoice_apply",
-        "#choose_apply","#vehiceImg_import","#driverImg_import","#capital_inquiry","#invoice_trial","#invoiceHis_inquiry","#consignor_import","#gnee_import"];
+        "#choose_apply","#vehiceImg_import","#driverImg_import","#capital_inquiry","#invoice_trial","#invoiceHis_inquiry","#consignor_import","#gnee_import",
+        "#billdown_inquiry","#bill_export"];
     for(var i in list){
         if(!makeEdit(menu,loginSucc.functionlist,list[i])){
             $(list[i]).hide();

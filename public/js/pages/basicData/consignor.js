@@ -2,7 +2,7 @@
  * Created by haiyang on 2020/2/11.
  */
 
-var invoiceList = [];
+var invoiceList,organList = [];
 var ConsignorList = [];
 var getData = false;
 var pageSize;  //表格显示页数，全选会用到

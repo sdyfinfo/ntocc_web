@@ -3,7 +3,7 @@
  */
 
 var lineList = [];
-var projectList,dictList,consigneeList,consignorList,goodsTypeList,unitList = [];
+var projectList,dictList,consigneeList,consignorList,goodsTypeList,unitList,organList = [];
 var dictTrue = [];   //获取字典结果
 var getData = false;
 var pageSize;  //表格显示页数，全选会用到

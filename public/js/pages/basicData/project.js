@@ -4,7 +4,7 @@
 
 var projectList = [];
 var routeInfo = {};
-var goodsTypeList,unitList = [];
+var goodsTypeList,unitList,organList = [];
 var pageSize;  //表格显示页数，全选会用到
 
 if (App.isAngularJsApp() === false) {

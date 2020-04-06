@@ -2492,3 +2492,48 @@ function capitalDetailDataGet(data){
         }
     });
 }
+
+
+
+//账单下载查询
+function billDownDataGet(data,callback){
+    App.blockUI({target:'#lay-out',boxed: true});
+    if(data == null){
+        data = {start_time: "",end_time:"", payname:"",platenumber:"",organids:"",
+            currentpage: "", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "billquery",    //请求发送到TestServlet处
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("billDownDataGet:" + JSON.stringify(result));
+            getBillEnd(true, result,callback);
+        },
+        error: function (errorMsg) {
+            console.info("billDownDataGet-error:" + JSON.stringify(errorMsg));
+            getBillEnd(false, "",callback);
+        }
+    });
+}
+
+//导出对账单
+function billDownLoad(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    var xhr = new XMLHttpRequest();
+    var url = businessUrl + "billexports";
+    xhr.open("POST", url, true);
+    //xhr.setRequestHeader('content-type', 'application/json; charset=UTF-8');
+    xhr.responseType = "blob";
+    xhr.onload = function () {
+        if (this.status === 200) {
+            billDownLoadEnd(true, this);
+        }else {
+            billDownLoadEnd(false, "")
+        }
+    };
+    xhr.send(sendMessageEdit(DEFAULT, data));
+}
