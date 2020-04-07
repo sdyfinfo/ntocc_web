@@ -430,9 +430,9 @@ var VehiceEdit = function() {
 
         //核载重
         jQuery.validator.addMethod("load", function(value, element){
-            var num = /(^[1-9]\d*$)/;
+            var num = /^\d+$|^\d*\.\d+$/g;
             return this.optional(element) || (num.test(value));
-        }, "只能输入数字");
+        }, "只能输入数字和一个小数点");
 
         //司机信息联动
         $("#driver_add").blur(function(){
