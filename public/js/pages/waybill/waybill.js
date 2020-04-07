@@ -136,7 +136,7 @@ var WayBillTable = function () {
                 { "data": null},
                 { "data": ""},
                 { "data": "wid",visible: false },
-                { "data": "organname",sClass:"organ-display"},
+                { "data": "wid",sClass:"organ-display"},
                 { "data": "project_name"},     //项目
                 { "data": "linename" },    //线路
                 { "data": "wabill_numbers"},
@@ -169,6 +169,23 @@ var WayBillTable = function () {
                             return '<input type="checkbox" class="checkboxes" value="1" />';
                         }else{
                             $(".group-checkable").hide();
+                            return '';
+                        }
+                    }
+                },
+                {
+                    "targets": [3],
+                    "render": function (data, type, row, meta) {
+                        if(selectType == '0'){
+                            for(var i in wayBillList){
+                                if(data == ""){
+                                    return '';
+                                }
+                                if(data == wayBillList[i].wid){
+                                    return wayBillList[i].organname;
+                                }
+                            }
+                        }else{
                             return '';
                         }
                     }
