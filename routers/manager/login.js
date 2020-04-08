@@ -12,7 +12,11 @@ router.get('/',function(req,res,next){
 
 router.get('/index',function(req,res,next){
     console.info(req.url);
-    res.render('index');
+    var uname = req.query.username;
+    res.render('index', {
+        menu: 'index',
+        loginsucc: req.session["ywtLogin" + uname]
+    });
 });
 
 router.post('/main',function(req,res,next){
