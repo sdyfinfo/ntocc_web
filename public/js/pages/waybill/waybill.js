@@ -52,8 +52,13 @@ var ComponentsDateTimePickers = function () {
             todayHighlight: true
         });
       var date = getNowFormatDate();
+      //计划发车日期只能选到当前日期45天之前
+      var enddays = new Date() - 1000 * 60 * 60 * 24 * 45;
+      $("input[name='planTime']").datepicker("setStartDate",new Date(enddays));
+
       $("input[name='orderMaking_time']").datepicker("setDate",date);
-      $("input[name='planTime'],input[name='estimated_unloading']").datepicker("setDate","");
+      $("input[name='estimated_unloading']").datepicker("setDate","");
+
 
   }
 };
