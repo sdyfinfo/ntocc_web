@@ -385,6 +385,7 @@ var OrganEdit = function() {
                             //所属机构初始化
                             clearSelectCheck($("#organtree"));
                             $('#organtree').jstree(true).select_node(loginSucc.organids);
+                            $('#organ').attr("disabled",true);
                         }else{
                             //清空机构输入框
                             clearSelect($("#organtree"));
@@ -444,6 +445,16 @@ var OrganEdit = function() {
             }else{
                 $("#rate").show();
                 $("#rate").find("input").attr("readonly","readonly");
+            }
+            //如果不是admin和华夏融智，所属机构直接显示登录者一级机构且不可编辑
+            if(loginSucc.userid != "admin"){
+                for(var i in organList){
+                    if(loginSucc.organids == organList[i].organid){
+                        if(organList[i].types != "0"){    //不是华夏融智
+                            $('#organ').attr("disabled",true);
+                        }
+                    }
+                }
             }
             //tab显示
             tabDisplay();
