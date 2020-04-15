@@ -307,9 +307,9 @@ var VehiceEdit = function() {
                     required: true,
                     load:true
                 },
-                transport_number:{
-                    required: true
-                },
+//                transport_number:{
+//                    required: true
+//                },
                 //licensekey:{
                 //    required: true
                 //},
@@ -370,9 +370,9 @@ var VehiceEdit = function() {
                 total_mass:{
                     required: "总质量必须输入"
                 },
-                transport_number:{
-                    required: "道路运输证号必须输入"
-                },
+//                transport_number:{
+//                    required: "道路运输证号必须输入"
+//                },
                 //licensekey:{
                 //    required: "道路经营许可证号必须输入"
                 //},
