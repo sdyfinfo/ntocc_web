@@ -4,6 +4,7 @@
 
 var invoiceTrialList,billDetailList,widlist = [];
 var pageSize;  //表格显示页数，全选会用到
+var check = true;  //判断是否前端分页
 
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
@@ -212,6 +213,7 @@ $("#invoice_table").on('click',"#invoice_Check",function(){
     }else{
         $("#audit_opinion").hide();
     }
+    check = true;
     trialCheckTable.init();
     $("#check_detail").modal('show');
 });
@@ -234,14 +236,19 @@ var trialCheckTable = function (){
             "ordering": false,
             "bAutoWidth": false,
             "ajax":function (data, callback, settings) {
-                var da = {
-                    widlist:widlist,
-                    currentpage: (data.start / data.length) + 1,
-                    pagesize: data.length == -1 ? "": data.length,
-                    startindex: data.start,
-                    draw: data.draw
-                };
-                billDetailGet(da, callback);
+                if(check){  //不需要前端分页
+                    var da = {
+                        widlist:widlist,
+                        currentpage: (data.start / data.length) + 1,
+                        pagesize: data.length == -1 ? "": data.length,
+                        startindex: data.start,
+                        draw: data.draw
+                    };
+                    billDetailGet(da, callback);
+                }else{
+                    getBillDetailEnd(true, billDetailList, callback,data);
+                }
+
             },
             columns: [//返回的json数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 { "data": null},
@@ -332,15 +339,28 @@ function getInvoiceTrialEnd(flg,result,callback){
 }
 
 //关联运单明细查询
-function getBillDetailEnd(flg,result,callback){
+function getBillDetailEnd(flg,result,callback,data){
     if(flg){
-        if (result && result.retcode == SUCCESS) {
-            var res = result.response;
-            billDetailList = res.list;
-            tableDataSet(res.draw, res.totalcount, res.totalcount, billDetailList, callback);
+        if(check){
+            if (result && result.retcode == SUCCESS) {
+                var res = result.response;
+                billDetailList = res.list;
+                check = false;
+                tableDataSet(res.draw, res.totalcount, res.totalcount, billDetailList, callback);
+            }else{
+                tableDataSet(0, 0, 0, [], callback);
+                alertDialog("开票联动运单明细信息获取失败！");
+            }
         }else{
-            tableDataSet(0, 0, 0, [], callback);
-            alertDialog("开票联动运单明细信息获取失败！");
+            var displayList = [];
+            var pagesize = data.length == -1 ? "": data.length;
+            var startindex = data.start;
+            for(var i = startindex; i < billDetailList.length;i++ ){
+                if(displayList.length != pagesize){
+                    displayList.push(billDetailList[i]);
+                }
+            }
+            tableDataSet(data.draw, billDetailList.length, billDetailList.length, displayList, callback);
         }
     }else{
         tableDataSet(0, 0, 0, [], callback);

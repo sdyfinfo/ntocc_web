@@ -98,7 +98,7 @@ var InvoiceBillTable = function () {
                 { "data": "rate"},
                 { "data": "serviceFee"},
                 { "data": "freight"},
-                { "data": "wid"},    //总运费
+                { "data": "amount"},    //总运费
                 { "data": "openinvoice_state"}, //申请开票状态
                 { "data": "loading_time"},  //发车时间
                 { "data": "disburden_time"}      //签收时间
@@ -144,14 +144,9 @@ var InvoiceBillTable = function () {
                         return formatCurrency(data);
                     }
                 },{
-                    "targets": [12],
+                    "targets": [13],
                     "render": function (data, type, row, meta) {
-                        for(var i in invoiceBillList){
-                            if(data == invoiceBillList[i].wid){
-                                var amount = Number(invoiceBillList[i].serviceFee)+Number(invoiceBillList[i].freight)
-                            }
-                        }
-                        return formatCurrency(amount);
+                        return formatCurrency(data);
                     }
                 },{
                     "targets": [14],
@@ -410,9 +405,9 @@ var invoiceApply = function() {
                 }
                 data.freight += Number(invoiceBillList[i].freight)*100;
                 data.serviceFee += Number(invoiceBillList[i].serviceFee)*100;
+                data.invoice += Number(invoiceBillList[i].amount)*100;
                 data.widlist.push(invoiceBillList[i].wid);
             }
-            data.invoice = Number(data.freight)+Number(data.serviceFee);
 //            if(parseInt(data.invoice)>eval(100000000)){
 //                alertDialog("单次开票合计不能超过100万！");
 //                return;
@@ -480,10 +475,11 @@ var invoiceApply = function() {
                 }
                 data.freight += Number($("#invoice_table").dataTable().fnGetData(row).freight)*100;
                 data.serviceFee += Number($("#invoice_table").dataTable().fnGetData(row).serviceFee)*100;
+                data.invoice += Number($("#invoice_table").dataTable().fnGetData(row).amount)*100;
                 data.widlist.push($("#invoice_table").dataTable().fnGetData(row).wid);
             });
             if(result){
-                data.invoice = Number(data.freight)+Number(data.serviceFee);
+                //data.invoice = Number(data.freight)+Number(data.serviceFee);
 //                if(parseInt(data.invoice)>eval(100000000)){
 //                    alertDialog("单次开票合计不能超过100万！");
 //                    return;
