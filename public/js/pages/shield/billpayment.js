@@ -615,7 +615,7 @@ var paymentEdit = function() {
                 //平台服务费=支付金额/(1-费率)*费率
                 data.serviceFee = get_thousand_num(Number(data.serviceFee).toFixed(2));
                 //合计支付=支付金额+服务费
-                data.total = get_thousand_num(subStringNum(Number(data.amount.replace(/,/g,""))+Number(data.serviceFee.replace(/,/g,"")),2));
+                data.total = get_thousand_num(floatObj.add(Number(data.amount.replace(/,/g,"")),Number(data.serviceFee.replace(/,/g,""))));
                 var exclude = [];
                 var options = { jsonValue: data, exclude:exclude,isDebug: false};
                 $(".payment-form").initForm(options);
