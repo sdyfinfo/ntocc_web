@@ -534,6 +534,8 @@ router.get('/downloadconsignorfile', function (req, res, next) {
     }
 });
 
+
+
 //收货联系人模板下载
 var fs = require('fs');
 var path = require('path');
@@ -567,8 +569,7 @@ router.post('/vehiceTrajectory',function(req,res,next){
         res.redirect('/');
     }
 });
-    }
-});
+
 
 router.get('/template',function(req,res,next){
     console.info(req.url);
