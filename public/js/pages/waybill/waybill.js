@@ -146,6 +146,7 @@ var WayBillTable = function () {
                 { "data": "linename" },    //线路
                 { "data": "wabill_numbers"},
                 { "data": "wid" },    //运单描述
+                { "data": "wid"},     //车辆轨迹
                 { "data": "name" },    //司机
                 { "data": "plate_number"},     //车牌号
                 { "data": "loading_time"},
@@ -212,7 +213,23 @@ var WayBillTable = function () {
                     }
                 },
                 {
-                    "targets": [10],
+                    "targets": [8],
+                    "render": function (data, type, row, meta) {
+                        //车辆轨迹，用url传递json串
+                        for(var i in wayBillList){
+                            if(data == wayBillList[i].wid){
+                                //运单状态未审验通过和未发车的运单不能查看
+                                if(wayBillList[i].state != '01' && wayBillList[i].verification_status != '02'){
+                                    return '<a href="javascript:;" class="vehiceTrajectory">查看车辆轨迹</a>';
+                                }else{
+                                    return '暂无车辆轨迹';
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "targets": [11],
                     "render": function (data, type, row, meta) {
                         if(data == undefined){
                             return "";
@@ -220,7 +237,7 @@ var WayBillTable = function () {
                         return dateTimeFormat(data);
                     }
                 },{
-                    "targets": [11],
+                    "targets": [12],
                     "render": function (data, type, row, meta) {
                         if(data == undefined){
                             return "";
@@ -231,7 +248,7 @@ var WayBillTable = function () {
                         }
                     }
                 },{
-                    "targets": [12],
+                    "targets": [13],
                     "render": function (data, type, row, meta) {
                         if(data == undefined){
                             return "";
@@ -240,7 +257,7 @@ var WayBillTable = function () {
                     }
                 },
                 {
-                    "targets": [13],
+                    "targets": [14],
                     "render": function (data, type, row, meta) {
                         if(data == undefined){
                             return "";
@@ -248,7 +265,7 @@ var WayBillTable = function () {
                         return dateTimeFormat(data);
                     }
                 },{
-                    "targets": [14],
+                    "targets": [15],
                     "render": function (data, type, row, meta) {
                         //运单状态
                         var value = "";
@@ -261,7 +278,7 @@ var WayBillTable = function () {
                     }
                 },
                 {
-                    "targets": [15],
+                    "targets": [16],
                     "render": function (data, type, row, meta) {
                         //审验状态
                         var value = "";
@@ -274,7 +291,7 @@ var WayBillTable = function () {
                     }
                 },
                 {
-                    "targets": [17],
+                    "targets": [18],
                     "render": function (data, type, row, meta) {
                         //支付状态
                         var value = "";
@@ -287,7 +304,7 @@ var WayBillTable = function () {
                     }
                 },
                 {
-                    "targets": [18],
+                    "targets": [19],
                     "render": function (data, type, row, meta) {
                         var edit = '';
                         for(var i in wayBillList){
@@ -312,8 +329,8 @@ var WayBillTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(0),td:eq(1),td:eq(8),td:eq(9),td:eq(10),td:eq(16)', nRow).attr('style', 'text-align: center;');
-                $('td:eq(11)', nRow).attr('style', 'text-align: right;');
+                $('td:eq(0),td:eq(1),td:eq(7),td:eq(9),td:eq(10),td:eq(11),td:eq(17)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(12)', nRow).attr('style', 'text-align: right;');
             }
         });
         //table.draw( false );
@@ -368,6 +385,27 @@ $("#organids").blur(function(){
     if(list.indexOf(value) == -1){  //不存在
         $(this).val("");
     }
+});
+
+//跳转到车辆轨迹
+$("#bill_table").on('click','.vehiceTrajectory',function(){
+    var row = $(this).parents('tr')[0];
+    var wid = $("#bill_table").dataTable().fnGetData(row).wid;
+    var data = {};
+    for(var i in wayBillList){
+        if(wid == wayBillList[i].wid){
+            data = wayBillList[i];
+        }
+    }
+    //创建表单
+    var body = $("body");
+    //var href = "+"&billdata="+encodeURIComponent(JSON.stringify(wayBillList[i]));
+    var form = $("<form action='/vehiceTrajectory' method='post' data-index='vehiceTrajectory' data-text='车辆轨迹' target='iframevehiceTrajectory'></form>");
+    //将表单放入body中
+    body.append(form);
+    form.append($("<input/>").attr("type", "hidden").attr("name", "username").attr("value", loginSucc.userid));
+    form.append($("<input/>").attr("type", "hidden").attr("name", "billdata").attr("value", JSON.stringify(data)));
+    form.submit();
 });
 
 //运单新增

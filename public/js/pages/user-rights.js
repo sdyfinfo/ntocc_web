@@ -2538,3 +2538,23 @@ function billDownLoad(data){
     xhr.send(sendMessageEdit(DEFAULT, data));
 }
 
+//获取车辆轨迹
+function vehiceTrajectoryDataGet(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: businessUrl + "vcnquery",    //请求发送到TestServlet处  businessUrl + "vcnquery"
+        data: sendMessageEdit('', data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("vehiceTrajectoryDataGet:" + JSON.stringify(result));
+            vehiceTrajectoryDataEnd(true, result);
+        },
+        error: function (errorMsg) {
+            console.info("vehiceTrajectoryDataGet-error:" + JSON.stringify(errorMsg));
+            vehiceTrajectoryDataEnd(false, "");
+        }
+    });
+}

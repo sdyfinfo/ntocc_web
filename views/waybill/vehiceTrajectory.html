@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>车辆轨迹</title>
+
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/public/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="/public/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <link href="/public/css/animate.css" rel="stylesheet">
+    <link href="/public/css/components.min.css?v=4.1.0" rel="stylesheet">
+    <link href="/public/css/style.css?v=4.1.0" rel="stylesheet">
+    <!--本页面用到的样式-->
+    <link href="/public/css/assets/bootstrap-table.css" rel="stylesheet" type="text/css" />
+    <link href="/public/css/plugins/datatables/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
+    <!--高德地图 -->
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.15&key=f6f68560271048b40b595d960c79b846"></script>
+
+    <script>
+        //获取nodejs session中和localStorage中保存的菜单信息、权限信息。配置信息和运单信息
+        var menu = '{{ menu }}';
+        var loginSucc = '{{ loginsucc }}';
+        loginSucc = JSON.parse(loginSucc.replace(/&quot;/g, "\""));
+        var billData = '{{billdata}}';
+        billData = decodeURIComponent(billData);
+        billData = JSON.parse(billData.replace(/&quot;/g, "\""));
+    </script>
+
+    <style>
+        .ibox-title input{
+            border-radius: 0px!important;
+            border:0px solid !important;
+        }
+        input[disabled]{
+            background-color: #FFFFFF!important;
+        }
+        .form-group{
+            margin-bottom: 0px !important;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <form class="billdata-form">
+                        <div class="ibox-title">
+                            <h5 style="float: left">运单号：<input name="wabill_numbers" disabled></h5>
+                            <h5 style="float: right">所属机构：<input name="organname" disabled></h5>
+                        </div>
+                        <div class="ibox-title">
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label>装货地点：<input name="loading_place" disabled></label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>发货人：<input name="consignor" disabled></label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>发货人电话：<input name="consignorTel" disabled></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label>卸货地点：<input name="unloading_place" disabled></label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>收货人：<input name="consignee" disabled></label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>收货人电话：<input name="consigneeTel" disabled></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label>货物名称：<input name="goods" disabled></label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>货物类型：<input name="goods_type" disabled></label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>总运发数量：<input name="number" disabled></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ibox-title">
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label>司机运费：<input name="freight" disabled></label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>司机：<input name="name" disabled></label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>运输车辆：<input name="plate_number" disabled></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label>运单状态：<input name="state" disabled></label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>支付状态：<input name="payment_status" disabled></label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="container" style="width:100%; height:600px"></div>
+                <!-- 处理中遮罩 -->
+                <div class="modal fade" id="loading" role="basic" aria-hidden="true" data-backdrop="static">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <img src="/public/img/loading-spinner-grey.gif" alt="" class="loading">
+                                <span> &nbsp;&nbsp;正在加载中...请稍候 </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--本页面用到插件的JS-->
+    <script src="/public/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/public/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="/public/js/plugins/app.min.js" type="text/javascript"></script>
+    <script src="/public/js/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+    <script src="/public/js/pages/menu.js" type="text/javascript"></script>
+    <script src="/public/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/public/js/plugins/validate/messages_zh.min.js"></script>
+    <script src="/public/js/moment.min.js" type="text/javascript"></script>
+    <script src="/public/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+
+    <script src="/public/plugins/datatables/datatables.js" type="text/javascript"></script>
+    <script src="/public/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
+    <script src="/public/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>
+    <script src="/public/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js" type="text/javascript"></script>
+    <script src="/public/plugins/bootstrap-daterangepicker/daterangepicker.min.js" type="text/javascript"></script>
+    <script src="/public/js/components-date-time-pickers.min.js" type="text/javascript"></script>
+    <script src="/public/js/plugins/layer/laydate/laydate.js"></script>
+
+    <!--本页面用到的JS-->
+    <script type="text/javascript" src="/public/js/pages/form.js"></script>
+    <script type="text/javascript" src="/public/js/pages/const.js"></script>
+    <script type="text/javascript" src="/public/js/pages/common.js"></script>
+    <script type="text/javascript" src="/public/js/pages/data.js"></script>
+    <script type="text/javascript" src="/public/js/pages/user-rights.js"></script>
+    <script type="text/javascript" src="/public/js/pages/areaCode.js"></script>
+
+    <script src="/public/js/pages/waybill/vehiceTrajectory.js" type="text/javascript"></script>
+</body>
+</html>

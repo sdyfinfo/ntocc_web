@@ -550,6 +550,20 @@ router.get('/downloadgneefile', function (req, res, next) {
         fs.createReadStream(filepath).pipe(res);
     } else {
         res.end(404);
+//车辆轨迹显示
+router.post('/vehiceTrajectory',function(req,res,next){
+    var uname = req.body.username;
+    var billdata = req.body.billdata;
+    if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
+        res.render('waybill/vehiceTrajectory', {
+            menu: req.url.substr(1),
+            loginsucc: req.session["ywtLogin" + uname],
+            billdata:billdata
+        });
+    }else{
+        res.redirect('/');
+    }
+});
     }
 });
 
