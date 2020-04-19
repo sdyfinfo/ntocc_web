@@ -26,7 +26,7 @@ if (App.isAngularJsApp() === false) {
 function loadCoordinateGet(){
     var load_address = billData.loading_place;   //地方名称
     //var url = 'https://api.map.baidu.com/geocoder/v2/?ak=eIxDStjzbtH0WtU50gqdXYCz&output=json&address=' + encodeURIComponent(load_address);
-    var url = "http://restapi.amap.com/v3/geocode/geo?key=f6f68560271048b40b595d960c79b846&s=rsv3&city=35&address=" + encodeURIComponent(load_address);
+    var url = "https://restapi.amap.com/v3/geocode/geo?key=f6f68560271048b40b595d960c79b846&s=rsv3&city=35&address=" + encodeURIComponent(load_address);
     $.ajax({
         type: "POST",
         url: url,
@@ -55,7 +55,7 @@ function loadCoordinateGet(){
 function unloadCoordinateGet(){
     var unload_address = billData.unloading_place;   //地方名称
     //var url = 'https://api.map.baidu.com/geocoder/v2/?ak=eIxDStjzbtH0WtU50gqdXYCz&output=json&address=' + encodeURIComponent(unload_address);
-    var url = "http://restapi.amap.com/v3/geocode/geo?key=f6f68560271048b40b595d960c79b846&s=rsv3&city=35&address=" + encodeURIComponent(unload_address);
+    var url = "https://restapi.amap.com/v3/geocode/geo?key=f6f68560271048b40b595d960c79b846&s=rsv3&city=35&address=" + encodeURIComponent(unload_address);
     $.ajax({
         type: "POST",
         url: url,
