@@ -550,6 +550,9 @@ router.get('/downloadgneefile', function (req, res, next) {
         fs.createReadStream(filepath).pipe(res);
     } else {
         res.end(404);
+    }
+});
+
 //车辆轨迹显示
 router.post('/vehiceTrajectory',function(req,res,next){
     var uname = req.body.username;
