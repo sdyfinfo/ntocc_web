@@ -133,7 +133,7 @@ var WayBillTable = function () {
                     getBillDataEnd(true, wayBillImport, callback,data);
                 }
             },
-            "initComplete": function(settings, json) {
+            "drawCallback": function(settings, json) {
                 //根据用户判断否显示所属机构
                 organDisplayCheck();
             },
