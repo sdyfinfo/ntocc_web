@@ -9,6 +9,8 @@ var pageSize;  //表格显示页数，全选会用到
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function () {
         fun_power();
+        //根据用户判断否显示所属机构
+        organDisplayCheck();
         //时间控件
         ComponentsDateTimePickers.init();
         //获取机构信息
@@ -79,11 +81,13 @@ var ushTable = function () {
                 var formData = $(".inquiry-form").getFormData();
                 var startdate = formData.startdate.replace(/-/g,'');
                 var enddate = formData.enddate.replace(/-/g,'');
+                var organname = $("#organids").val() || "";
                 var da = {
                     startdate: startdate,
                     enddate:enddate,
                     unumber:formData.unumber,
                     shieid: formData.shieid,
+                    organids:$("#organlist_query").find("option[value='"+organname+"']").attr("data-organid") || "",
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
@@ -195,6 +199,17 @@ var ushTable = function () {
 
 }();
 
+//查询框所属机构
+$("#organids").blur(function(){
+    var value = $(this).val();
+    var list = [];
+    for(var i = 0;i<organList.length;i++){
+        list.push(organList[i].organname);
+    }
+    if(list.indexOf(value) == -1){  //不存在
+        $(this).val("");
+    }
+});
 
 
 var ushEdit = function(){
@@ -451,6 +466,7 @@ function getOrganDataEnd(flg, result){
             organList = res.list;
             for(var i = 0; i < organList.length; i++){
                 $("#organList").append("<option data-oid='"+organList[i].organid+"' value='"+organList[i].organname+"'></option>");
+                $("#organlist_query").append('<option data-organid = "'+organList[i].organid+'" value="'+organList[i].organname+'"></option>');
             }
         }else{
             alertDialog("机构信息获取失败！");
