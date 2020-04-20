@@ -326,8 +326,9 @@ var invEdit = function(){
         }, "不能含有特殊字符");
 
         //选择邮寄地址，显示收件人、电话、邮箱
-        $("#addrid").change(function(){
-            var id = $(this).val();
+        $("input[name=addrid]").change(function(){
+            var name = $(this).val();
+            var id = $("#addrList").find("option[value='"+name+"']").attr("data-addrid") || "";
             if(id != ""){
                 for(var i in addressidList){
                     if(id == addressidList[i].aid){
@@ -341,13 +342,16 @@ var invEdit = function(){
             }
 
         });
-        //选择发货人或发货人显示
-        $("#addrid").change(function(){
-            var id = $(this).val();
-            for(var i in addressidList){
-                if(id == addressidList[i].aid){
-                    $("input[name=address]").val(addressidList[i].ress);
-                }
+        //邮寄地址输入事件
+        $("input[name=addrid]").blur(function(){
+            var value = $(this).val();
+            var list = [];
+            for(var i = 0;i<addressidList.length;i++){
+                list.push(addressidList[i].ress + '——收件人:' + addressidList[i].addressee);
+            }
+            if(list.indexOf(value) == -1){  //不存在
+                $(this).val("");
+                $("input[name=addressee],input[name=addresseeTel],input[name=email]").val("");
             }
         });
 
@@ -395,6 +399,7 @@ var invEdit = function(){
             btnDisable($('#register-replace'));
             if ($('.address-form').validate().form()) {
                 var inv = $('.address-form').getFormData();
+                inv.addrid = $("#addrList").find("option[value='"+inv.addrid+"']").attr("data-addrid") || "";
                 $("#loading_edit").modal("show");
                 invoReplaceEdit(inv);
             }
@@ -428,6 +433,12 @@ var invEdit = function(){
                         }
                         var options = { jsonValue: invo, exclude:exclude,isDebug: false};
                         $(".address-form").initForm(options);
+                        //显示邮寄地址
+                        for(var i in addressidList){
+                            if(invo.addrid == addressidList[i].aid){
+                                $("input[name=addrid]").val(addressidList[i].ress+ '——收件人:'+ addressidList[i].addressee);
+                            }
+                        }
                         $("input[name=edittype]").val(INVREPLACE);
                         $('#edit_replace').modal('show');
                     }
@@ -532,10 +543,9 @@ function getaddressDataEnd(flg, result, callback){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
             addressidList = res.list;
-            $("#addrid").empty();
-            $("#addrid").append("<option value=''>请选择</option>");
+            $("#addrList").empty();
             for(var i = 0; i < addressidList.length; i++){
-                $("#addrid").append("<option value='"+addressidList[i].aid+"'>" + addressidList[i].ress+"</option>");
+                $("#addrList").append("<option data-addrid='"+addressidList[i].aid+"' value='"+ addressidList[i].ress + '——收件人:'+ addressidList[i].addressee+"'></option>");
             }
             getData = true;
             if(Questdraw == 0){
