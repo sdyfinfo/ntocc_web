@@ -136,6 +136,8 @@ var WayBillTable = function () {
             "drawCallback": function(settings, json) {
                 //根据用户判断否显示所属机构
                 organDisplayCheck();
+                //根据用户判断是否显示车辆轨迹查看
+                trajectoryDisplayCheck();
             },
             columns: [//返回的json数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 { "data": null},
@@ -146,7 +148,7 @@ var WayBillTable = function () {
                 { "data": "linename" },    //线路
                 { "data": "wabill_numbers"},
                 { "data": "wid" },    //运单描述
-                { "data": "wid"},     //车辆轨迹
+                { "data": "wid",sClass:"trajectory-display"},     //车辆轨迹
                 { "data": "name" },    //司机
                 { "data": "plate_number"},     //车牌号
                 { "data": "loading_time"},
@@ -215,7 +217,7 @@ var WayBillTable = function () {
                 {
                     "targets": [8],
                     "render": function (data, type, row, meta) {
-                        //车辆轨迹，用url传递json串
+                        //车辆轨迹，用form表单传递json串
                         for(var i in wayBillList){
                             if(data == wayBillList[i].wid){
                                 //运单状态未审验通过和未发车的运单不能查看
@@ -1778,5 +1780,15 @@ function getOrganDataEnd(flg, result){
         }
     }else{
         alertDialog("机构信息获取失败！");
+    }
+}
+
+//根据用户判断是否显示车辆轨迹查看
+function trajectoryDisplayCheck(){
+    //admin和运营方可查看
+    if(loginSucc.userid == "admin" || loginSucc.types == "0"){
+        $(".trajectory-display").show();
+    }else{
+        $(".trajectory-display").hide();
     }
 }
