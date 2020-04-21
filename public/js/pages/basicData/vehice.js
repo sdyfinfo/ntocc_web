@@ -424,7 +424,7 @@ var VehiceEdit = function() {
 
         // 车牌号码验证
         jQuery.validator.addMethod("platenumber", function(value, element) {
-            var plate = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/;
+            var plate = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4,5}[A-Z0-9挂学警港澳]{1}$/;
             return this.optional(element) || (plate.test(value));
         }, "请正确填写您的车牌号");
 
@@ -1030,7 +1030,7 @@ function imgNameCheck(name){
     }
     var namelist = name.split("-");
     //判断车牌号格式
-    var plate = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/;
+    var plate = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4,5}[A-Z0-9挂学警港澳]{1}$/;
     if(!(plate.test(namelist[0]))){
         return false;
     }
