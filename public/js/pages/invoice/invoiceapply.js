@@ -342,9 +342,13 @@ var invoiceApply = function() {
         });
 
         jQuery.validator.addMethod("address", function(value, element) {
-            var rate = /^[\u4e00-\u9fa5a-zA-Z0-9]+$/;
-            return this.optional(element) || (rate.test(value));
-        }, "不能含有特殊字符");
+            var rate = /\//;
+            var result = true;
+            if(rate.test(value)){
+                result = false;
+            }
+            return this.optional(element) || result;
+        }, "不能输入带/的特殊字符");
 
         jQuery.validator.addMethod("bank_validator", function(value, element) {
             var reg = /^[0-9]*$/;

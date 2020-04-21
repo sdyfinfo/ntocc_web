@@ -250,8 +250,8 @@ var invEdit = function(){
                     required: true
                 },
                 addresseeTel:{
-                    required: true,
-                    payphone:true
+                    required: true
+//                    payphone:true
                 },
                 email:{
                     required: true,
@@ -316,14 +316,18 @@ var invEdit = function(){
         }, "请正确填写邮箱");
 
         jQuery.validator.addMethod("bank", function(value, element) {
-            var reg = /^([1-9]{1})(\d{14}|\d{18})$/;
+            var reg = /^[0-9]*$/;
             return this.optional(element) || (reg.test(value));
         }, "请正确填写您的银行卡号");
 
         jQuery.validator.addMethod("address", function(value, element) {
-            var rate = /^[\u4e00-\u9fa5a-zA-Z0-9]+$/;
-            return this.optional(element) || (rate.test(value));
-        }, "不能含有特殊字符");
+            var rate = /\//;
+            var result = true;
+            if(rate.test(value)){
+                result = false;
+            }
+            return this.optional(element) || result;
+        }, "不能输入带/的特殊字符");
 
         //选择邮寄地址，显示收件人、电话、邮箱
         $("input[name=addrid]").change(function(){
