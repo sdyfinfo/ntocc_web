@@ -5,13 +5,13 @@
 var bulletinList = [];
 var bulletinContent = {
     "title":"",
-    "content":"<p>因支付系统升级，<span style='color: #dc302e;font-weight: bolder'>4月8日18点～4月9日18点</span>支付系统暂停交易，请勿在此期间进行充值、运费支付操作；</p>"+
+    "content":"<p>因支付系统升级，<span style='color: #dc302e;font-weight: bolder'>到4月25日8点</span>运费支付系统暂停交易，请勿在此期间进行运费支付操作；</p>"+
         "<p>基础信息（车辆信息、司机信息、收发货人信息、收款人信息）、运单信息等操作可正常进行，不受影响；</p>"+
         "<p>系统升级，造成不变敬请谅解。</p>",
     "state":"0",
     "priority":"2",
     "sort":"1",
-    "time":"2020-04-09 18:00:00"
+    "time":"2020-04-25 8:00:00"
 };
 
 jQuery(document).ready(function(){
